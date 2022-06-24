@@ -2,7 +2,6 @@ name: Lint and Test Charts
 on:
   push:
     branches-ignore:
-      - master
       - gh-pages
 jobs:
   lint-test:
