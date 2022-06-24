@@ -1,0 +1,11 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: {{ include "microservice.application.name" . }}
+  labels:
+    {{- include "microservice.labels" . | nindent 4 }}
+  annotations:
+    {{- include "microservice.annotations" . | nindent 4 }}
+spec:
+  mtls:
+    mode: {{ .Values.istio.mtls.mode }}

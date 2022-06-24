@@ -1,0 +1,16 @@
+{{- if eq .Values.cloud.platform "Azure" }}
+{{- if eq .Values.azure.identity.enabled true }}
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  name: "{{ .Values.azure.identity.idName }}"
+  labels:
+    {{- include "microservice.labels" . | nindent 4 }}
+  annotations:
+    {{- include "microservice.annotations" . | nindent 4 }}
+spec:
+  type: 0
+  resourceID: "{{ .Values.azure.identity.resourceName }}"
+  clientID: "{{ .Values.azure.identity.clientName }}"
+{{- end }}
+{{- end }}

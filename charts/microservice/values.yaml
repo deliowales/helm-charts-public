@@ -1,0 +1,216 @@
+#######################################################################
+#                         VALUES FOR PHP CHART
+# THESE ARE DEFAULTS AND CAN BE OVERRIDDEN IN THE SERVICE'S VALUES FILE
+#######################################################################
+
+#######################################################################
+#                         Application Values
+#######################################################################
+application:
+  name: ""
+  language:
+  # Any args that need to be supplied to the ENTRYPOINT.
+  args: []
+  containerPort: ""
+  livenessProbe:
+    path: /_/system/liveness
+    httpHeaders: []
+  readinessProbe:
+    path: /_/system/readiness
+    httpHeaders: []
+  cron:
+    enabled: false
+  # Any environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt.
+  env: []
+  image:
+    repository:
+    tag: ""
+    pullPolicy: Always
+  # Old world variables - currently needed for Horizon and Event
+  oldWorld:
+    enabled: false
+    env: []
+    image:
+      repository:
+      tag: ""
+      pullPolicy: Always
+  # Feel free to use the default values listed below. However, you must ensure that these are fine-tuned when load-testing
+  # has been carried out and a baseline has been defined.
+  resources:
+    limits:
+      cpu: ""
+      memory: ""
+    requests:
+      cpu: ""
+      memory: ""
+
+#######################################################################
+#                         AWS Values
+#######################################################################
+aws:
+  iamRole: ""
+
+#######################################################################
+#                         Azure Values
+#######################################################################
+azure:
+  identity:
+    enabled: false
+    clientName: ""
+    name: ""
+    resourceName: ""
+
+clamAV:
+  enabled: true
+#######################################################################
+#                         Cloud Provider Values
+#######################################################################
+cloud:
+  # Required: `staging-demo, demo, staging-production (azure only), production.
+  environment: ""
+  # Required: AWS or Azure.
+  platform: ""
+  region: ""
+  containerRegistryURL: ""
+
+#######################################################################
+#                         Deployment Values
+#######################################################################
+deployment:
+  hpa:
+    maxReplicas: 10
+    minReplicas: 3
+    targetCPU: 70
+    # targetMemory: Default is (request+limit) / 2. Feel free to overwrite that here if necessary.
+    targetMemory: ""
+  topologySpreadConstraints: []
+  replicaCount: 3
+
+#######################################################################
+#                         FluentBit Values
+#######################################################################
+logging:
+  # If framework is laravel, you must use laravel.log instead of lumen.log
+  image:
+    repository: fluent-bit
+    tag: ""
+    pullPolicy: Always
+  logPath: /var/www/html/storage/logs/lumen.log
+  multiLine: "On"
+  parserPath: /fluent-bit/etc/php-parser.conf
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "100Mi"
+    requests:
+      cpu: "10m"
+      memory: "10Mi"
+
+#######################################################################
+#                         Ingress Values
+#######################################################################
+ingress:
+  enabled: false
+  path: ""
+  pathRouted: ""
+  v1:
+    enabled: false
+
+#######################################################################
+#                         Istio Values
+#######################################################################
+istio:
+  tls:
+    mode: ISTIO_MUTUAL
+  mtls:
+    mode: STRICT
+  principals: []
+  subsets: []
+
+#######################################################################
+#                         Kong Values
+#######################################################################
+kongIngress:
+  enabled: false
+
+#######################################################################
+#                         New Relic Values
+#######################################################################
+newrelic:
+  licenseKey:
+
+#######################################################################
+#                         Nginx Values
+#######################################################################
+nginx:
+  config:
+    clientMaxBodySize: ""
+  # Application healthcheck routes. Check with a dev to see if they are using legacy routes e.g. /healthcheck
+  image:
+    repository: nginx
+    tag: ""
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+    requests:
+      cpu: "10m"
+      memory: "10Mi"
+  service:
+    type: NodePort
+    internalPort: ""
+
+#######################################################################
+#                         PDB Values
+#######################################################################
+pdb:
+  enabled: false
+  minAvailable: 2
+
+#######################################################################
+#                         PHP Config Values
+#######################################################################
+phpConfig:
+  maxExecutionTime: ""
+  memoryLimit: ""
+  uploadMaxFilesize: ""
+  postMaxSize: ""
+
+#######################################################################
+#                         Service Values
+#######################################################################
+service:
+  externalDNS:
+    enabled: false
+    host: ""
+  port: 80
+  type: ClusterIP
+
+#######################################################################
+#                         Service Entry Values
+#######################################################################
+serviceEntry:
+  enabled: false
+  hosts: []
+  ports: []
+
+#######################################################################
+#                         Supervisor Values
+#######################################################################
+supervisor:
+  enabled: false
+
+#######################################################################
+#                         Vault Values
+#######################################################################
+vault:
+  env: ""
+  role: ""
+
+#######################################################################
+#                         Virtual Service Values
+#######################################################################
+virtualService:
+  gateways: []
+  hosts: []

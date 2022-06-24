@@ -1,0 +1,26 @@
+{{- if eq .Values.serviceEntry.enabled true }}
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: {{ include "microservice.application.name" . }}
+  labels:
+    {{- include "microservice.labels" . | nindent 4 }}
+  annotations:
+    {{- include "microservice.annotations" . | nindent 4 }}
+spec:
+  hosts:
+  {{- if .Values.serviceEntry.hosts -}}
+  {{- range .Values.serviceEntry.hosts }}
+    - {{ . }}
+  {{- end }}
+  {{- end }}
+  ports:
+  {{- if .Values.serviceEntry.ports }}
+  {{- range .Values.serviceEntry.ports }}
+    - name: {{ .name }}
+      number: {{ .number }}
+      protocol: {{ .protocol }}
+  {{- end }}
+  {{- end }}
+  resolution: DNS
+{{- end }}
