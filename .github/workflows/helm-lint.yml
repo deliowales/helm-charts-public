@@ -28,8 +28,7 @@ jobs:
         shell: bash
         run:  |
           search_dir=./charts
-          helm repo add --username ${{ secrets.ACTION_GITHUB_USERNAME }} --password ${{ secrets.ACTION_GITHUB_TOKEN }} delio \
-            https://raw.githubusercontent.com/deliowales/helm-charts/gh-pages
+          helm repo add delio https://raw.githubusercontent.com/deliowales/helm-charts-public/gh-pages
           for chart in "$search_dir"/*
           do
             /usr/local/bin/helm lint $chart --values=$chart/values.yaml
