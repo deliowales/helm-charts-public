@@ -137,14 +137,12 @@ kongIngress:
 #                         New Relic Values
 #######################################################################
 newrelic:
-  licenseKey:
+  licenseKey: ""
 
 #######################################################################
 #                         Nginx Values
 #######################################################################
 nginx:
-  config:
-    clientMaxBodySize: ""
   # Application healthcheck routes. Check with a dev to see if they are using legacy routes e.g. /healthcheck
   image:
     repository: nginx
