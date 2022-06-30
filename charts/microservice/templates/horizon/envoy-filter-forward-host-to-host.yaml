@@ -25,7 +25,7 @@ spec:
         value:
           name: envoy.lua
           typed_config:
-            "@type": "type.googleapis.com/envoy.config.filter.http.lua.v3.Lua"
+            "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
             inlineCode: |
               function envoy_on_request(request_handle)
                 headers = request_handle:headers()
