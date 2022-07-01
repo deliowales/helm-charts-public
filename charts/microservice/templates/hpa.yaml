@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "microservice.application.name" . }}
@@ -17,8 +17,12 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.deployment.hpa.targetCPU }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.deployment.hpa.targetCPU }}
     - type: Resource
       resource:
         name: memory
-        targetAverageValue: {{ include "microservice.hpa.targetMemory" . }}
+        target:
+          type: Value
+          averageValue: {{ include "microservice.hpa.targetMemory" . }}
