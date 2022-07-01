@@ -83,6 +83,8 @@ deployment:
     targetCPU: 70
     # targetMemory: Default is (request+limit) / 2. Feel free to overwrite that here if necessary.
     targetMemory: ""
+    v1:
+      enabled: false
   topologySpreadConstraints: []
   replicaCount: 3
 

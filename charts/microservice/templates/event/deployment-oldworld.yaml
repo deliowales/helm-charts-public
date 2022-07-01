@@ -10,7 +10,7 @@ metadata:
     {{- include "microservice.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
-  {{- if .Values.deployment.rolloutStrategyType -}}
+  {{ if .Values.deployment.rolloutStrategyType -}}
   strategy:
     type: {{ .Values.deployment.rolloutStrategyType }}
   {{- end -}}
