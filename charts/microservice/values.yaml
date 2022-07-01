@@ -38,7 +38,7 @@ application:
   # has been carried out and a baseline has been defined.
   resources:
     limits:
-      cpu: ""
+      cpu:
       memory: ""
     requests:
       cpu: ""
