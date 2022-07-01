@@ -41,6 +41,8 @@ jobs:
       - name: Release Charts
         shell: bash
         working-directory: dest
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           helm repo index . --url https://raw.githubusercontent.com/deliowales/helm-charts-public/gh-pages/
           git config user.name "Helm Updater"
