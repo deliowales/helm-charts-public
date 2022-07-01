@@ -1,3 +1,4 @@
+{{- if ne .Values.deployment.hpa.v1.enabled true }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -22,3 +23,4 @@ spec:
       resource:
         name: memory
         targetAverageValue: {{ include "microservice.hpa.targetMemory" . }}
+{{- end }}
