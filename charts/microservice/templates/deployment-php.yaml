@@ -60,7 +60,6 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.application.containerPort }}
-              protocol: TCP
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
           readinessProbe:
