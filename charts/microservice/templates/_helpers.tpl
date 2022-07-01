@@ -34,9 +34,9 @@ Container Registry URL
 Define container image tag
 */}}
 {{- define "microservice.application.image.tag" -}}
-  {{- $platform := .Values.cloud.platform -}}
-  {{- $environment := .Values.cloud.environment -}}
-  {{- if or (and (or (eq $environment "uat") (eq $environment "staging-demo")) (eq $platform "AWS")) (and (eq $environment "staging-production") (eq $platform "azure")) -}}
+  {{- $platform := .Values.cloud.platform | lower -}}
+  {{- $environment := .Values.cloud.environment | lower -}}
+  {{- if or (and (or (eq $environment "uat") (eq $environment "staging-demo")) (eq $platform "aws")) (and (eq $environment "staging-production") (eq $platform "azure")) -}}
     {{- default "latest" .Values.application.image.tag -}}
   {{- end -}}
 {{- end -}}
