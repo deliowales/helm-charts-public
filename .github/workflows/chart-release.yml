@@ -50,9 +50,9 @@ jobs:
           git commit -m "Updated from ref: $GITHUB_SHA"
           git push
 
-      - name: Push changes
-        uses: ad-m/github-push-action@19caa5c351f47734055690f7d01aaaef2f9114d5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          directory: dest
+#       - name: Push changes
+#         uses: ad-m/github-push-action@19caa5c351f47734055690f7d01aaaef2f9114d5
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           branch: gh-pages
+#           directory: dest
