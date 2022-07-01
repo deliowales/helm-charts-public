@@ -48,3 +48,4 @@ jobs:
           git add $(git ls-files -o --exclude-standard)
           git add index.yaml
           git commit -m "Updated from ref: $GITHUB_SHA"
+          git push
