@@ -1,3 +1,4 @@
+{{- if ne .Values.application.name "data-feed" }}
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
@@ -20,4 +21,5 @@ spec:
         {{ .name }}: {{ .value }}
       {{- end }}
     {{- end }}
+  {{- end -}}
   {{- end -}}
