@@ -1,4 +1,4 @@
-{{- if eq .Values.application.name "event" }}
+{{- if and (eq .Values.application.name "event") (le .Capabilities.KubeVersion.Minor "21") }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:

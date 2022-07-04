@@ -1,4 +1,4 @@
-{{- if eq .Values.application.name "horizon" }}
+{{- if and (eq .Values.application.name "horizon") (le .Capabilities.KubeVersion.Minor "21") }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
