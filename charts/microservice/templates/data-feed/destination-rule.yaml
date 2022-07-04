@@ -15,4 +15,4 @@ spec:
           number: 6379
         tls:
           mode: SIMPLE
-{{- end }}
+{{- end -}}
