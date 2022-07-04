@@ -1,4 +1,4 @@
-{{- if eq .Values.ingress.v1.enabled true }}
+{{- if and (eq .Values.ingress.enabled true) (ge .Capabilities.KubeVersion.Minor "21") }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
