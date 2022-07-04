@@ -78,13 +78,12 @@ cloud:
 #######################################################################
 deployment:
   hpa:
+    enabled: true
     maxReplicas: 10
     minReplicas: 3
     targetCPU: 70
     # targetMemory: Default is (request+limit) / 2. Feel free to overwrite that here if necessary.
     targetMemory: ""
-    v1:
-      enabled: false
   topologySpreadConstraints: []
   replicaCount: 3
 
@@ -115,8 +114,6 @@ ingress:
   enabled: false
   path: ""
   pathRouted: ""
-  v1:
-    enabled: false
 
 #######################################################################
 #                         Istio Values

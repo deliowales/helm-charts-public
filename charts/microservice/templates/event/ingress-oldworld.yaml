@@ -1,7 +1,6 @@
-{{- if eq .Values.application.name "event" }}
+{{- if and (eq .Values.application.name "event") (le .Capabilities.KubeVersion.Minor "21") }}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
-metadata:
   name: {{ include "microservice.application.name" . }}-oldworld
   labels:
     {{- include "microservice.labels" . | nindent 4 }}
