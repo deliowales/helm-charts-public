@@ -57,7 +57,7 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.application.containerPort }}
+              containerPort: {{ include "microservice.application.containerPort" . }}
               protocol: TCP
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
@@ -97,13 +97,13 @@ spec:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
           livenessProbe:
             httpGet:
-              port: {{ .Values.application.containerPort }}
+              port: {{ include "microservice.application.containerPort" . }}
               path: {{ .Values.nginx.livenessPath }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              port: {{ .Values.application.containerPort }}
+              port: {{ include "microservice.application.containerPort" . }}
               path: {{ .Values.nginx.readinessPath }}
             initialDelaySeconds: 5
             timeoutSeconds: 1

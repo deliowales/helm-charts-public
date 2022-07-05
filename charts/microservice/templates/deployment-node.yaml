@@ -1,4 +1,4 @@
-{{- if eq .Values.application.language "node" }}
+{{- if eq (include "microservice.application.language" .)  "node" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -62,19 +62,19 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.application.containerPort }}
+              containerPort: {{ include "microservice.application.containerPort" . }}
               protocol: TCP
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
           livenessProbe:
             httpGet:
-              port: {{ .Values.application.containerPort }}
+              port: {{ include "microservice.application.containerPort" . }}
               path: {{ .Values.application.livenessProbe.path }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              port: {{ .Values.application.containerPort }}
+              port: {{ include "microservice.application.containerPort" . }}
               path: {{ .Values.application.readinessProbe.path }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
