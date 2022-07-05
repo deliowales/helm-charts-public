@@ -20,7 +20,34 @@ Global annotations. Do not indent, this is done in the manifest.
 Application Name
 */}}
 {{- define "microservice.application.name" -}}
-  {{ .Values.application.name | lower | required "Required: Application Name << .Values.application.name >>" }}
+  {{ .Values.application.name | required "Required: Application Language << .Values.application.name >>" | lower }}
+{{- end -}}
+
+{{/*
+Container Port
+*/}}
+{{- define "microservice.application.language" -}}
+  {{- .Values.application.language | required "Required: Application Language << .Values.application.language >>" | lower }}
+{{- end -}}
+
+{{/*
+Container Port
+*/}}
+{{- define "microservice.application.containerPort" -}}
+  {{- if eq (include "microservice.application.language" . ) "php" }}
+    {{- default "8080" .Values.application.containerPort }}
+  {{- else if eq (include "microservice.application.language" . ) "node" }}
+    {{- default "3000" .Values.application.containerPort }}
+  {{- else }}
+    {{ .Values.application.containerPort }}
+  {{- end }}
+{{- end -}}
+
+{{/*
+Application Name
+*/}}
+{{- define "microservice.cloud.environment" -}}
+  {{ .Values.cloud.environment | lower | required "Required: Application Name << .Values.cloud.environment >>" }}
 {{- end -}}
 
 {{/*

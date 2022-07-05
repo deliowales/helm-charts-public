@@ -61,7 +61,7 @@ spec:
               value: "true"
           ports:
             - name: http
-              containerPort: {{ .Values.application.containerPort }}
+              containerPort: {{ include "microservice.application.containerPort" . }}
               protocol: TCP
           resources:
             limits:
@@ -113,12 +113,12 @@ spec:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
           livenessProbe:
             tcpSocket:
-              port: {{ .Values.application.containerPort }}
+              port: {{ include "microservice.application.containerPort" . }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.application.containerPort }}
+              port: {{ include "microservice.application.containerPort" . }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
