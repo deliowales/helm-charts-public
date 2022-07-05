@@ -50,6 +50,10 @@ Application Name
   {{ .Values.cloud.environment | lower | required "Required: Application Name << .Values.cloud.environment >>" }}
 {{- end -}}
 
+{{- define "microservice.cloud.platform" -}}
+  {{ .Values.cloud.platform | lower | required "Required: Application Name << .Values.cloud.platform >>" }}
+{{- end -}}
+
 {{/*
 Container Registry URL
 */}}
@@ -61,8 +65,8 @@ Container Registry URL
 Define container image tag
 */}}
 {{- define "microservice.application.image.tag" -}}
-  {{- $platform := .Values.cloud.platform | lower -}}
-  {{- $environment := .Values.cloud.environment | lower -}}
+  {{- $platform := (include "microservice.cloud.environment" .) | lower -}}
+  {{- $environment := (include "microservice.cloud.environment" .) | lower -}}
   {{- if or (and (or (eq $environment "uat") (eq $environment "staging-demo")) (eq $platform "aws")) (and (eq $environment "staging-production") (eq $platform "azure")) -}}
     {{- default "latest" .Values.application.image.tag -}}
   {{- end -}}
