@@ -51,7 +51,7 @@ Application Name
 {{- end -}}
 
 {{- define "microservice.cloud.platform" -}}
-  {{ .Values.cloud.platform | lower | required "Required: Cloud Plaform << .Values.cloud.platform >>" }}
+  {{ .Values.cloud.platform | lower | required "Required: Cloud Platform << .Values.cloud.platform >>" }}
 {{- end -}}
 
 {{/*
