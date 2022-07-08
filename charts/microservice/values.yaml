@@ -183,6 +183,8 @@ service:
     host: ""
   port: 80
   type: ClusterIP
+  kong:
+    stripPath: ""
 
 #######################################################################
 #                         Service Entry Values
@@ -190,6 +192,7 @@ service:
 serviceEntry:
   enabled: false
   hosts: []
+  location:
   ports: []
 
 #######################################################################
