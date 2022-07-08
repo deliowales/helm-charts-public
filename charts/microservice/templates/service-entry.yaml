@@ -23,4 +23,7 @@ spec:
   {{- end }}
   {{- end }}
   resolution: DNS
+  {{- if .Values.serviceEntry.location }}
+  location: {{ .Values.serviceEntry.location }}
+  {{- end }}
 {{- end }}
