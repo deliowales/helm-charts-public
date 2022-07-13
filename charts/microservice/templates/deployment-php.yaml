@@ -88,6 +88,7 @@ spec:
               mountPath: /home/app
             {{- end }}
 
+        {{- if eq .Values.nginx.enabled true }}
         - name: nginx
           image: {{ include "microservice.nginx.imageURL" . }}
           imagePullPolicy: {{  .Values.nginx.image.pullPolicy }}
@@ -137,6 +138,7 @@ spec:
               mountPath: /var/www/html
             - name: tmp
               mountPath: /tmp
+        {{- end }}
 
         - name: logs
           image: {{ include "microservice.logging.imageURL" . }}

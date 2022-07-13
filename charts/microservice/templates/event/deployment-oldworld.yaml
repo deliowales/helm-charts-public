@@ -1,4 +1,4 @@
-{{- if eq .Values.application.name "event" }}
+{{- if and (eq .Values.application.name "event") (eq .Values.application.oldWorld.enabled true) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -10,10 +10,6 @@ metadata:
     {{- include "microservice.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
-  {{ if .Values.deployment.rolloutStrategyType -}}
-  strategy:
-    type: {{ .Values.deployment.rolloutStrategyType }}
-  {{- end -}}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "microservice.application.name" . }}-oldworld
@@ -36,8 +32,8 @@ spec:
     spec:
       serviceAccountName: {{ include "microservice.application.name" . }}
       containers:
-        - name: {{ include "microservice.application.name" . }}
-          image: {{ include "microservice.project.imageURL" . }}
+        - name: {{ include "microservice.application.name" . }}-oldworld
+          image: {{ include "microservice.project.oldWorldImageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           securityContext:
             runAsUser: 1000
@@ -47,11 +43,13 @@ spec:
           env:
             - name: PLATFORM
               value: {{ .Values.cloud.platform }}
+            - name: APP_NAME
+              value: {{ .Values.application.name | lower | quote }}
             {{- if eq (.Values.cloud.platform|toString) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
             {{- end }}
-            {{- range .Values.application.env }}
+            {{- range .Values.application.oldWorld.env }}
             - name: "{{ .name }}"
               value: "{{ .value }}"
             {{- end }}
@@ -63,7 +61,7 @@ spec:
             {{- toYaml .Values.application.resources | nindent 12 }}
           readinessProbe:
             tcpSocket:
-              port: 9000
+              port: {{ include "microservice.application.containerPort" . }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
@@ -98,13 +96,13 @@ spec:
           livenessProbe:
             httpGet:
               port: {{ include "microservice.application.containerPort" . }}
-              path: {{ .Values.nginx.livenessPath }}
+              path: {{ .Values.nginx.livenessProbe.path }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
               port: {{ include "microservice.application.containerPort" . }}
-              path: {{ .Values.nginx.readinessPath }}
+              path: {{ .Values.nginx.readinessProbe.path }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
@@ -131,7 +129,7 @@ spec:
             - name: DOCKER_IMAGE
               value: {{ include "microservice.project.imageURL" . }}
             - name: ENVIRONMENT
-              value: {{ .Values.cloud.environment }}
+              value: {{ include "microservice.cloud.environment" . }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:

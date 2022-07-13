@@ -52,11 +52,6 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
-          readinessProbe:
-            tcpSocket:
-              port: 9000
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
           volumeMounts:
             - name: fpm-pool-config-volume
               mountPath: /usr/local/etc/php-fpm.d/www.conf

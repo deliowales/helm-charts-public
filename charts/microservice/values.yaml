@@ -13,9 +13,11 @@ application:
   args: []
   containerPort: ""
   livenessProbe:
+    type: http
     path: /_/system/liveness
     httpHeaders: []
   readinessProbe:
+    type: http
     path: /_/system/readiness
     httpHeaders: []
   cron:
@@ -26,7 +28,6 @@ application:
     repository:
     tag: ""
     pullPolicy: Always
-  # Old world variables - currently needed for Horizon and Event
   oldWorld:
     enabled: false
     env: []
@@ -44,6 +45,8 @@ application:
       cpu: ""
       memory: ""
 
+authorizationPolicy:
+  enabled: true
 #######################################################################
 #                         AWS Values
 #######################################################################
@@ -77,6 +80,7 @@ cloud:
 #                         Deployment Values
 #######################################################################
 deployment:
+  enabled: true
   hpa:
     enabled: true
     maxReplicas: 10
@@ -87,6 +91,8 @@ deployment:
   topologySpreadConstraints: []
   replicaCount: 3
 
+destinationRule:
+  enabled: true
 #######################################################################
 #                         FluentBit Values
 #######################################################################
@@ -142,6 +148,7 @@ newrelic:
 #                         Nginx Values
 #######################################################################
 nginx:
+  enabled: true
   # Application healthcheck routes. Check with a dev to see if they are using legacy routes e.g. /healthcheck
   image:
     repository: nginx
@@ -165,6 +172,8 @@ pdb:
   enabled: false
   minAvailable: 2
 
+peerAuthentication:
+  enabled: true
 #######################################################################
 #                         PHP Config Values
 #######################################################################
@@ -178,6 +187,7 @@ phpConfig:
 #                         Service Values
 #######################################################################
 service:
+  enabled: true
   externalDNS:
     enabled: false
     host: ""
@@ -186,6 +196,9 @@ service:
   kong:
     stripPath: ""
 
+serviceAccount:
+  enabled: true
+  name: ""
 #######################################################################
 #                         Service Entry Values
 #######################################################################
@@ -212,5 +225,6 @@ vault:
 #                         Virtual Service Values
 #######################################################################
 virtualService:
+  enabled: true
   gateways: []
   hosts: []

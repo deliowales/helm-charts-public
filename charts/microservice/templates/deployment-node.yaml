@@ -1,4 +1,4 @@
-{{- if eq (include "microservice.application.language" .)  "node" }}
+{{- if and (eq (include "microservice.application.language" .)  "node") (eq .Values.deployment.enabled true)}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,7 +35,7 @@ spec:
               app: {{ $.Values.application.name | lower }}
       {{- end -}}
       {{- end }}
-      serviceAccountName: {{ include "microservice.application.name" . }}
+      serviceAccountName: {{ .Values.serviceAccount.name | default (include "microservice.application.name" .) }}
       containers:
         - name: {{ include "microservice.application.name" . }}
           image: {{ include "microservice.project.imageURL" . }}
@@ -67,15 +67,25 @@ spec:
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
           livenessProbe:
-            httpGet:
+            {{- if eq .Values.application.livenessProbe.type "tcp" }}
+            tcpSocket:
               port: {{ include "microservice.application.containerPort" . }}
-              path: {{ .Values.application.livenessProbe.path }}
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
-          readinessProbe:
+            {{- else }}
             httpGet:
               port: {{ include "microservice.application.containerPort" . }}
               path: {{ .Values.application.readinessProbe.path }}
+            {{- end }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            {{- if eq .Values.application.readinessProbe.type "tcp" }}
+            tcpSocket:
+              port: {{ include "microservice.application.containerPort" . }}
+            {{- else }}
+            httpGet:
+              port: {{ include "microservice.application.containerPort" . }}
+              path: {{ .Values.application.readinessProbe.path }}
+            {{- end }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
