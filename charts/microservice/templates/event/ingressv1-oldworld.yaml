@@ -1,40 +1,31 @@
-{{- if and (eq .Values.application.name "event") (ge .Capabilities.KubeVersion.Minor "21") }}
+{{- if and (eq .Values.application.name "event") (ge .Capabilities.KubeVersion.Minor "21") (eq .Values.application.oldWorld.enabled true) }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "microservice.application.name" . }}
+  name: {{ include "microservice.application.name" . }}-oldworld
   labels:
     {{- include "microservice.labels" . | nindent 4 }}
   annotations:
     {{- include "microservice.annotations" . | nindent 4 }}
     konghq.com/strip-path: "true"
-    configuration.konghq.com: do-not-preserve-host
+    configuration.konghq.com: do-not-preserve-host-oldworld
 spec:
   rules:
     - http:
         paths:
-          - path: {{ .Values.ingress.path }}
+          - path: {{ .Values.ingress.path }}-oldworld
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "microservice.application.name" . }}
+                name: {{ include "microservice.application.name" . }}-oldworld
                 port:
                   number: {{ .Values.service.port }}
           {{- if .Values.ingress.pathRouted }}
-          - path: {{ .Values.ingress.pathRouted }}
+          - path: {{ .Values.ingress.pathRouted }}-oldworld
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "microservice.application.name" . }}
-                port:
-                  number: {{ .Values.service.port }}
-          {{- end }}
-          {{- if .Values.ingress.pathMasked }}
-          - path: {{ .Values.ingress.pathMasked }}
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ include "microservice.application.name" . }}
+                name: {{ include "microservice.application.name" . }}-oldworld
                 port:
                   number: {{ .Values.service.port }}
           {{- end }}

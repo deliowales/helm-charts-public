@@ -1,3 +1,4 @@
+{{- if eq .Values.authorizationPolicy.enabled true }}
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -18,3 +19,4 @@ spec:
                 {{- end }}
               {{- end }}
             ]
+{{- end }}
