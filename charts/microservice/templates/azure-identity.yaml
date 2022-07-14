@@ -1,4 +1,4 @@
-{{- if eq .Values.cloud.platform "Azure" }}
+{{- if eq (include "microservice.cloud.provider" .) "Azure" }}
 {{- if eq .Values.azure.identity.enabled true }}
 apiVersion: "aadpodidentity.k8s.io/v1"
 kind: AzureIdentity

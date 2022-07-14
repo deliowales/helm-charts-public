@@ -1,0 +1,33 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+## Adding the Helm repo
+
+Before installing the chart, you need to add the helm repository
+
+```
+$ helm repo add delio https://raw.githubusercontent.com/deliowales/helm-charts-public/gh-pages
+```
+
+
+## Installing the Chart
+
+To install the chart with the release name `my-release`:
+helm install [RELEASE] [CHART] [flags]
+
+Example:
+```
+$ helm install horizon . --values uat-values.yaml --namespace horizon
+```
+
+Once its initally installed, from them on you need to run the `upgrade` command:
+helm upgrade [RELEASE] [CHART] [flags]
+
+Example:
+```
+$ helm upgrade horizon . --values uat-values.yaml --namespace horizon
+```
+
+{{ template "chart.valuesSection" . }}
