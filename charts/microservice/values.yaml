@@ -7,21 +7,19 @@ application:
   # -- Name of the application e.g. Deals
   name: ""
   # -- Application programming language used; `php`, `node` or `go`
-  language:
+  language: ""
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
   # -- Port that the container is running on. The default port depends on the programming language
   containerPort: ""
-  # -- Configure the liveness healthcheck for the application container
   livenessProbe:
-    # -- Type of healthcheck. `http` or `tcp`
+    # -- Type of liveness healthcheck. `http` or `tcp`
     type: http
     path: /_/system/liveness
     # -- Custom headers to set in the request. HTTP allows repeated headers.
     httpHeaders: []
-  # -- Configure the readiness healthcheck for the application container
   readinessProbe:
-    # -- Type of healthcheck. `http` or `tcp`
+    # -- Type of readiness healthcheck. `http` or `tcp`
     type: http
     path: /_/system/readiness
     # -- Custom headers to set in the request. HTTP allows repeated headers.
@@ -31,22 +29,22 @@ application:
     enabled: false
   # -- Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt.
   env: []
-  # -- Configure container registry details
+  # Configure container registry details
   image:
     # -- Name of the ECR/ACR repository
-    repository:
+    repository: ""
     # -- Image tag to be pulled
     tag: ""
     pullPolicy: Always
-  # -- Configure Old World deployments. Only to be used with `Horizon` or `Event`.
   oldWorld:
+    # -- Configure Old World deployments. Only to be used with `Horizon` or `Event`.
     enabled: false
     env: []
     image:
-      repository:
+      repository: ""
       tag: ""
       pullPolicy: Always
-  # -- Application container resources. Please ensure that these are fine-tuned when load-testing
+  # @ignored Application container resources. Please ensure that these are fine-tuned when load-testing
   # has been carried out and a baseline has been defined.
   resources:
     limits:
@@ -74,7 +72,7 @@ azure:
 clamAV:
   enabled: false
 
-# -- Configure cloud details
+# Configure cloud details
 cloud:
   # -- **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`.
   environment: ""
@@ -87,7 +85,7 @@ cloud:
 
 deployment:
   enabled: true
-  # -- Horizontal Pod Autoscaler configuration.
+  # Horizontal Pod Autoscaler configuration.
   hpa:
     enabled: true
     # -- Maximum number of replica pods
@@ -132,11 +130,11 @@ istio:
 kongIngress:
   enabled: false
 
-# -- Configure FluentBit - PHP services only
+# @ignored Configure FluentBit - PHP services only
 logging:
   image:
     repository: fluent-bit
-    tag: 1.9.1
+    tag: php-1.9.1
     pullPolicy: Always
   # -- Path to application log. If framework is `laravel`, you must use `laravel.log` instead of `lumen.log`
   logPath: /var/www/html/storage/logs/lumen.log
@@ -172,7 +170,7 @@ nginx:
     # -- Port that nginx is listening on
     internalPort: ""
 
-# -- Pod Disruption Budget. Leave as false unless instructed otherwise.
+# Pod Disruption Budget. Leave as false unless instructed otherwise.
 pdb:
   enabled: false
   minAvailable: 2
@@ -180,7 +178,7 @@ pdb:
 peerAuthentication:
   enabled: true
 
-# -- Configuration options for `php.ini`. Leave blank for default values.
+# Configuration options for `php.ini`. Leave blank for default values.
 phpConfig:
   maxExecutionTime: ""
   memoryLimit: ""
@@ -207,7 +205,7 @@ serviceAccount:
 serviceEntry:
   enabled: false
   hosts: []
-  location:
+  location: ""
   ports: []
 
 # -- Only needed for Analytics Old-world
