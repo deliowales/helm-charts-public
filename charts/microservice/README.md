@@ -95,6 +95,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nginx.service.type | string | `"NodePort"` |  |
 | pdb.enabled | bool | `false` |  |
 | pdb.minAvailable | int | `2` |  |
+| pdb.test | string | `""` |  |
 | peerAuthentication.enabled | bool | `true` |  |
 | phpConfig.maxExecutionTime | string | `""` |  |
 | phpConfig.memoryLimit | string | `""` |  |
