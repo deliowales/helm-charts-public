@@ -13,10 +13,11 @@ spec:
     - from:
         - source:
             principals: [
-              {{- if .Values.istio.principals }}
-                {{- range .Values.istio.principals }}
-                {{ . | quote }},
-                {{- end }}
-              {{- end }}
+              "cluster.local/ns/monitoring/sa/prometheus-blackbox-exporter",
+            {{- if .Values.istio.principals }}
+            {{- range .Values.istio.principals }}
+              "{{ . }}",
+            {{- end }}
+            {{- end }}
             ]
 {{- end }}

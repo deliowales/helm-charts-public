@@ -1,4 +1,4 @@
 apiVersion: v2
 name: microservice
-description: A Helm chart for Kubernetes
-version: "0.0.13"
+description: A generic chart to be used for all microervices
+version: "0.0.15"

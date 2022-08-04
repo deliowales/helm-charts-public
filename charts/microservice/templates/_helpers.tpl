@@ -1,3 +1,5 @@
+{{/* vim: set filetype=mustache: */}}
+
 {{/*
 Global labels. Do not indent, this is done in the manifest.
 */}}
@@ -50,8 +52,8 @@ Application Name
   {{ .Values.cloud.environment | lower | required "Required: Application Name << .Values.cloud.environment >>" }}
 {{- end -}}
 
-{{- define "microservice.cloud.platform" -}}
-  {{ .Values.cloud.platform | lower | required "Required: Cloud Platform << .Values.cloud.platform >>" }}
+{{- define "microservice.cloud.provider" -}}
+  {{ .Values.cloud.provider | lower | required "Required: Cloud Provider << .Values.cloud.provider >>" }}
 {{- end -}}
 
 {{/*
@@ -65,9 +67,9 @@ Container Registry URL
 Define container image tag
 */}}
 {{- define "microservice.application.image.tag" -}}
-  {{- $platform := (include "microservice.cloud.platform" .) -}}
+  {{- $provider := (include "microservice.cloud.provider" .) -}}
   {{- $environment := (include "microservice.cloud.environment" .) -}}
-  {{- if or (and (or (eq $environment "uat") (eq $environment "staging-demo")) (eq $platform "aws")) (and (eq $environment "staging-production") (eq $platform "azure")) -}}
+  {{- if or (and (or (eq $environment "uat") (eq $environment "staging-demo")) (eq $provider "aws")) (and (eq $environment "staging-production") (eq $provider "azure")) -}}
     {{- default "latest" .Values.application.image.tag -}}
   {{- end -}}
 {{- end -}}

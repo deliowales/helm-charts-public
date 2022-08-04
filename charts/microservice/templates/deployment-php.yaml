@@ -26,7 +26,7 @@ spec:
         {{- include "microservice.vault.annotations" . | nindent 8 }}
       labels:
         {{- include "microservice.labels" . | nindent 8 }}
-        {{- if and (eq .Values.cloud.platform "Azure") (eq .Values.azure.identity.enabled true) }}
+        {{- if and (eq (include "microservice.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
         aadpodidbinding: {{ .Values.azure.identity.name }}
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -46,10 +46,10 @@ spec:
             readOnlyRootFilesystem: true
           env:
             - name: PLATFORM
-              value: {{ .Values.cloud.platform }}
+              value: {{ include "microservice.cloud.provider" . }}
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}
-            {{- if eq (.Values.cloud.platform|toString) "AWS" }}
+            {{- if eq (include "microservice.cloud.provider" .) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
             {{- end }}
@@ -91,7 +91,7 @@ spec:
         {{- if eq .Values.nginx.enabled true }}
         - name: nginx
           image: {{ include "microservice.nginx.imageURL" . }}
-          imagePullPolicy: {{  .Values.nginx.image.pullPolicy }}
+          imagePullPolicy: IfNotPresent
           securityContext:
             runAsNonRoot: true
             readOnlyRootFilesystem: true
@@ -142,6 +142,7 @@ spec:
 
         - name: logs
           image: {{ include "microservice.logging.imageURL" . }}
+          imagePullPolicy: IfNotPresent
           resources:
             {{- toYaml .Values.logging.resources | nindent 12 }}
           securityContext:
@@ -151,7 +152,7 @@ spec:
             runAsGroup: 1001
           env:
             - name: PLATFORM
-              value: {{ .Values.cloud.platform }}
+              value: {{ include "microservice.cloud.provider" . }}
             - name: DOCKER_IMAGE
               value: {{ include "microservice.project.imageURL" . }}
             - name: ENVIRONMENT

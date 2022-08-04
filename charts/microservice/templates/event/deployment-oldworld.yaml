@@ -24,7 +24,7 @@ spec:
         version: oldworld
         app.kubernetes.io/name: {{ include "microservice.application.name" . }}-oldworld
         app.kubernetes.io/instance: {{ .Release.Name }}-oldworld
-        {{- if eq .Values.cloud.platform "Azure" }}
+        {{- if eq (include "microservice.cloud.provider" .) "Azure" }}
         {{- if eq .Values.azure.identity.enabled true }}
         aadpodidbinding: {{ .Values.azure.identity.name }}
         {{- end }}
@@ -42,10 +42,10 @@ spec:
             readOnlyRootFilesystem: true
           env:
             - name: PLATFORM
-              value: {{ .Values.cloud.platform }}
+              value: {{ include "microservice.cloud.provider" . }}
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}
-            {{- if eq (.Values.cloud.platform|toString) "AWS" }}
+            {{- if eq (include "microservice.cloud.provider" .) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
             {{- end }}
@@ -125,7 +125,7 @@ spec:
             runAsGroup: 1001
           env:
             - name: PLATFORM
-              value: {{ .Values.cloud.platform }}
+              value: {{ include "microservice.cloud.provider" . }}
             - name: DOCKER_IMAGE
               value: {{ include "microservice.project.imageURL" . }}
             - name: ENVIRONMENT
