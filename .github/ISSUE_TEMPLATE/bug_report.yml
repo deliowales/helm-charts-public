@@ -1,13 +1,8 @@
 name: 🐛 Bug report
-description: Create a report to help us improve
+description: Create a bug report to help us improve!
 title: "[BUG]: <title>"
 labels: [bug, triage]
-body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report! Please be cautious with the sensitive information/logs while filing the issue.
-        
+body:        
   - type: checkboxes
     attributes:
       label: Is there an existing issue raised for this?
