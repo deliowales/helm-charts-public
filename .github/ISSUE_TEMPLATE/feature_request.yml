@@ -1,13 +1,8 @@
 name: ✨ Feature request
-description: Suggest an idea for one of the charts
+description: Suggest an feature for one of the charts!
 title: "[FEATURE]: <title>"
 labels: [enhancement]
 body:
-- type: markdown
-  attributes:
-    value: |
-      Thanks for taking the time to suggest improvements!
-      
 - type: checkboxes
   attributes:
     label: Is there an existing feature request raised for this?
@@ -17,7 +12,6 @@ body:
       required: true
 
 - type: textarea
-  id: desc
   attributes:
     label: What limitations is this causing?
     description: Give a clear and concise description of what the problem is.
@@ -26,7 +20,6 @@ body:
     required: true
 
 - type: textarea
-  id: prop-solution
   attributes:
     label: Desired behaviour
     description: A clear and concise description of what you want to happen.
@@ -34,7 +27,6 @@ body:
     required: true
 
 - type: textarea
-  id: alternatives
   attributes:
     label: Describe any possible solutions you've considered.
     description: A clear and concise description of any alternative solutions or features you've considered. If nothing, please enter `NONE`
@@ -42,7 +34,6 @@ body:
     required: true
 
 - type: textarea
-  id: additional-ctxt
   attributes:
     label: Additional context.
     description: Add any other context or screenshots about the feature request here.
