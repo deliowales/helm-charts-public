@@ -1,4 +1,4 @@
-name: Bug report
+name: 🐛 Bug report
 description: Create a report to help us improve
 title: "[BUG]: <title>"
 labels: [bug, triage]
@@ -7,33 +7,45 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report! Please be cautious with the sensitive information/logs while filing the issue.
-
-  - type: textarea
-    id: chart-version
+        
+  - type: checkboxes
     attributes:
-      label: What's the chart version?
-      description: Enter the version of the chart that you encountered this bug.
+      label: Is there an existing issue raised for this?
+      description: Please search to see if an issue already exists for the bug you've encountered.
+      options:
+      - label: I have searched the existing issues
+        required: true
+
+  - type: input
+    attributes:
+      label: Chart version?
+      description: Enter the version of the chart.
+      placeholder: v0.0.15
     validations:
       required: true
 
   - type: textarea
-    id: how-to-reproduce
     attributes:
-      label: How to reproduce it?
-      description: As minimally and precisely as possible. Please include the `helm` command you are running.
+      label: Current behaviour
+      description: A concise description of what you're experiencing.
     validations:
       required: true
 
   - type: textarea
-    id: logs-and-output
     attributes:
-      label: Relevant Logs/Console Output
-      description: As minimally and precisely as possible. Please include the `helm` command you are running.
+      label: Expected behaviour
+      description: A concise description of what you expect to happen.
+    validations:
+      required: true
+      
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: A concise description of the steps needed to reproduce the issue. Please include all `helm` commands you are running.
     validations:
       required: true
 
   - type: textarea
-    id: anything-else
     attributes:
       label: Anything else we need to know?
       placeholder: This is affecting service `foo` on environment `bar`
