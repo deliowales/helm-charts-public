@@ -1,4 +1,4 @@
-name: Feature request
+name: ✨ Feature request
 description: Suggest an idea for one of the charts
 title: "[FEATURE]: <title>"
 labels: [enhancement]
@@ -7,13 +7,21 @@ body:
   attributes:
     value: |
       Thanks for taking the time to suggest improvements!
+      
+- type: checkboxes
+    attributes:
+      label: Is there an existing feature request raised for this?
+      description: Please search to see if feature request already exists for the feature you'd like.
+      options:
+      - label: I have searched the existing feature requests
+        required: true
 
 - type: textarea
   id: desc
   attributes:
     label: What limitations is this causing?
     description: Give a clear and concise description of what the problem is.
-    placeholder:  ex. I'm always frustrated when [...]
+    placeholder:  I'm always frustrated when [...] or It would be nice to have the ability to [...]
   validations:
     required: true
 
