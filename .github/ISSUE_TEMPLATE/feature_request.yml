@@ -9,12 +9,12 @@ body:
       Thanks for taking the time to suggest improvements!
       
 - type: checkboxes
-    attributes:
-      label: Is there an existing feature request raised for this?
-      description: Please search to see if feature request already exists for the feature you'd like.
-      options:
-      - label: I have searched the existing feature requests
-        required: true
+  attributes:
+    label: Is there an existing feature request raised for this?
+    description: Please search to see if feature request already exists for the feature you'd like.
+    options:
+    - label: I have searched the existing feature requests
+      required: true
 
 - type: textarea
   id: desc
