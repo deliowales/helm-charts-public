@@ -1,7 +1,7 @@
 name: 🐛 Bug report
 description: Create a bug report to help us improve!
 title: "[BUG]: <title>"
-labels: [bug, triage]
+labels: [bug, triage/needed]
 body:        
   - type: checkboxes
     attributes:
