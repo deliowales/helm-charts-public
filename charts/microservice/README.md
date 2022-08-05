@@ -95,7 +95,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nginx.service.type | string | `"NodePort"` |  |
 | pdb.enabled | bool | `false` |  |
 | pdb.minAvailable | int | `2` |  |
-| pdb.test | string | `""` |  |
 | peerAuthentication.enabled | bool | `true` |  |
 | phpConfig.maxExecutionTime | string | `""` |  |
 | phpConfig.memoryLimit | string | `""` |  |
@@ -104,7 +103,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
 | service.externalDNS.host | string | `""` |  |
-| service.kong | object | `{"stripPath":""}` | Strip the path defined in Ingress resource and then forward the request to the upstream service. |
+| service.kong | object | `{"stripPath":null}` | Strip the path defined in Ingress resource and then forward the request to the upstream service. |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.enabled | bool | `true` |  |

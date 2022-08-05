@@ -11,7 +11,7 @@ metadata:
     {{- if eq .Values.service.externalDNS.enabled true }}
     external-dns.alpha.kubernetes.io/hostname: {{ .Values.service.externalDNS.host }}
     {{- end }}
-    {{- if eq .Values.service.kong.stripPath "true" }}
+    {{- if eq .Values.service.kong.stripPath true }}
     konghq.com/strip-path: "true"
     {{- end }}
 spec:
