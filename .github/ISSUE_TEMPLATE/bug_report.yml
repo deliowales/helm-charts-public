@@ -1,12 +1,7 @@
----
-name: Bug report
+name: ::bug:: Bug report
 about: Create a report to help us improve
-title: "[BUG]: "
-labels: bug
-assignees: ''
-
----
-
+title: "[BUG]: <title>"
+labels: [bug, triage]
 body:
   - type: markdown
     attributes:
