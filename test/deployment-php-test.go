@@ -24,16 +24,16 @@ func TestdeploymentTemplate(t *testing.T) {
         	},
 
         // Run RenderTemplate to render the template and capture the output.
-        output := helm.RenderTemplate(t, options, helmChartPath, "deployment-node", []string{"templates/deployment-node.yaml"})
+        output := helm.RenderTemplate(t, options, helmChartPath, "deployment-php", []string{"templates/deployment-php.yaml"})
 
         // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
         // ensure the deployment resource is rendered correctly.
-        var deploymentnode corev1.Deployment
-        helm.UnmarshalK8SYaml(t, output, &deploymentnode)
+        var deploymentphp corev1.Deployment
+        helm.UnmarshalK8SYaml(t, output, &deploymentphp)
 
         // Finally, we verify the deployment spec is set to the expected value
         expectedReplicas := "3"
-        Replicas := deploymentnode.Spec.Replicas
+        Replicas := deploymentphp.Spec.Replicas
         if Replicas != expectedContainerImage {
             t.Fatalf("Rendered replica count (%s) is not expected (%s)", Replicas, expectedReplicas)
         }

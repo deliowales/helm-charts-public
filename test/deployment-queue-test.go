@@ -11,11 +11,11 @@ import (
 func TestdeploymentTemplate(t *testing.T) {
         // Path to the helm chart we will test
         helmChartPath := "../charts/microservice"
-        application := "testapp"
+        application := "data-feed"
         // Setup the args. For this test, we will set the following input values:
         options := &helm.Options{
             SetValues: map[string]string{
-        			"application.name": "testapp",
+        			"application.name": "data-feed",
         			"application.env": "uat",
         			"cloud.region": "eu-west-1",
         			"application.resources.limits.memory": "100mi"
@@ -24,16 +24,16 @@ func TestdeploymentTemplate(t *testing.T) {
         	},
 
         // Run RenderTemplate to render the template and capture the output.
-        output := helm.RenderTemplate(t, options, helmChartPath, "deployment-node", []string{"templates/deployment-node.yaml"})
+        output := helm.RenderTemplate(t, options, helmChartPath, "deployment-queue", []string{"templates/data-feed/deployment-queue.yaml"})
 
         // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
         // ensure the deployment resource is rendered correctly.
-        var deploymentnode corev1.Deployment
-        helm.UnmarshalK8SYaml(t, output, &deploymentnode)
+        var deploymentqueue corev1.Deployment
+        helm.UnmarshalK8SYaml(t, output, &deploymentqueue)
 
         // Finally, we verify the deployment spec is set to the expected value
-        expectedReplicas := "3"
-        Replicas := deploymentnode.Spec.Replicas
+        expectedReplicas := "1"
+        Replicas := deploymentqueue.Spec.Replicas
         if Replicas != expectedContainerImage {
             t.Fatalf("Rendered replica count (%s) is not expected (%s)", Replicas, expectedReplicas)
         }

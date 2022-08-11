@@ -16,25 +16,22 @@ func TestdeploymentTemplate(t *testing.T) {
         options := &helm.Options{
             SetValues: map[string]string{
         			"application.name": "testapp",
-        			"application.env": "uat",
-        			"cloud.region": "eu-west-1",
         			"application.resources.limits.memory": "100mi"
         			"application.resources.requests.memory": "100mi"
-
         	},
 
         // Run RenderTemplate to render the template and capture the output.
-        output := helm.RenderTemplate(t, options, helmChartPath, "deployment-node", []string{"templates/deployment-node.yaml"})
+        output := helm.RenderTemplate(t, options, helmChartPath, "hpa", []string{"templates/hpa.yaml"})
 
         // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
         // ensure the deployment resource is rendered correctly.
-        var deploymentnode corev1.Deployment
-        helm.UnmarshalK8SYaml(t, output, &deploymentnode)
+        var hpa corev1.HorizontalPodAutoscaler
+        helm.UnmarshalK8SYaml(t, output, &hpa)
 
-        // Finally, we verify the deployment spec is set to the expected value
-        expectedReplicas := "3"
-        Replicas := deploymentnode.Spec.Replicas
-        if Replicas != expectedContainerImage {
-            t.Fatalf("Rendered replica count (%s) is not expected (%s)", Replicas, expectedReplicas)
+        // Finally, we verify the hpa spec is set to the expected value
+        expectedMinReplicas := "3"
+        MinReplicas := hpa.Spec.MinReplicas
+        if MinReplicas != expectedMinReplicas {
+            t.Fatalf("Rendered replica count (%s) is not expected (%s)", MinReplicas, expectedMinReplicas)
         }
 }
