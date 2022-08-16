@@ -3,6 +3,8 @@ package test
 import (
         "testing"
 
+        "strconv"
+
         appsv1 "k8s.io/api/apps/v1"
 
         "github.com/gruntwork-io/terratest/modules/helm"
@@ -32,7 +34,7 @@ func TestdeploymentTemplate(t *testing.T) {
 
         // Finally, we verify the deployment spec is set to the expected value
         expectedReplicas := "3"
-        Replicas := deploymentnode.Spec.Replicas
+        Replicas := strconv.Itoa(deploymentnode.Spec.Replicas)
         if Replicas != expectedReplicas {
             t.Fatalf("Rendered replica count (%s) is not expected (%s)", Replicas, expectedReplicas)
         }

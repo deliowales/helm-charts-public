@@ -3,7 +3,7 @@ package test
 import (
         "testing"
 
-        corev1 "k8s.io/api/core/v1"
+        autoscalingv1 "k8s.io/api/autoscaling/v1"
 
         "github.com/gruntwork-io/terratest/modules/helm"
 )
@@ -25,7 +25,7 @@ func TestdeploymentTemplate(t *testing.T) {
 
         // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
         // ensure the deployment resource is rendered correctly.
-        var hpa corev1.HorizontalPodAutoscaler
+        var hpa autoscaling.HorizontalPodAutoscaler
         helm.UnmarshalK8SYaml(t, output, &hpa)
 
         // Finally, we verify the hpa spec is set to the expected value

@@ -3,7 +3,7 @@ package test
 import (
         "testing"
 
-        corev1 "k8s.io/api/core/v1"
+        policyv1 "k8s.io/api/policy/v1"
 
         "github.com/gruntwork-io/terratest/modules/helm"
 )
@@ -24,7 +24,7 @@ func TestpdbTemplate(t *testing.T) {
 
         // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
         // ensure the deployment resource is rendered correctly.
-        var pdb corev1.PodDisruptionBudget
+        var pdb networkingv1.PodDisruptionBudget
         helm.UnmarshalK8SYaml(t, output, &pdb)
 
         // Finally, we verify the pdb spec is set to the expected value

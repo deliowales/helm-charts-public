@@ -3,7 +3,7 @@ package test
 import (
         "testing"
 
-        corev1 "k8s.io/api/core/v1"
+        appsv1 "k8s.io/api/apps/v1"
 
         "github.com/gruntwork-io/terratest/modules/helm"
 )
@@ -28,7 +28,7 @@ func TestdeploymentTemplate(t *testing.T) {
 
         // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
         // ensure the deployment resource is rendered correctly.
-        var deploymentcron corev1.Deployment
+        var deploymentcron appsv1.Deployment
         helm.UnmarshalK8SYaml(t, output, &deploymentcron)
 
         // Finally, we verify the deployment spec is set to the expected value
