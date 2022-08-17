@@ -16,9 +16,9 @@ func TestpdbTemplate(t *testing.T) {
         options := &helm.Options{
             SetValues: map[string]string{
         			"application.name": "testapp",
-        			"pdb.enabled": "true"
+        			"pdb.enabled": "true",
         	},
-
+        }
         // Run RenderTemplate to render the template and capture the output.
         output := helm.RenderTemplate(t, options, helmChartPath, "pdb", []string{"templates/pdb.yaml"})
 
@@ -29,8 +29,8 @@ func TestpdbTemplate(t *testing.T) {
 
         // Finally, we verify the pdb spec is set to the expected value
         expectedminAvailable := "2"
-        minAvailable := pdb.Spec.MinAvailable.
-        if minAvailable != expectedminAvailable {
-            t.Fatalf("Rendered minAvailable (%s) is not expected (%s)", minAvailable, expectedminAvailable)
+        minAvailable := pdb.Spec.MinAvailablev
+        if int(*minAvailable) != expectedminAvailable {
+            t.Fatalf("Rendered minAvailable (%v) is not expected (%v)", minAvailable, expectedminAvailable)
         }
 }

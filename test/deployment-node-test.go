@@ -27,6 +27,6 @@ func TestNodeDeploymentTemplate(t *testing.T) {
 	expectedReplicas := 3
 	replicas := deploymentnode.Spec.Replicas
 	if int(*replicas) != expectedReplicas {
-		t.Fatalf("Rendered replica count (%s) is not expected (%s)", replicas, expectedReplicas)
+		t.Fatalf("Rendered replica count (%v) is not expected (%v)", replicas, expectedReplicas)
 	}
 }
