@@ -17,8 +17,8 @@ func TestNodeDeploymentTemplate(t *testing.T) {
 			"cloud.provider":                        "aws",
 			"cloud.containerRegistryURL":            "url",
 			"cloud.environment":                     "uat",
-			"application.resources.limits.memory":   "100mi",
-			"application.resources.requests.memory": "100mi",
+			"application.resources.limits.memory":   "100Mi",
+			"application.resources.requests.memory": "100Mi",
 		},
 	}
 

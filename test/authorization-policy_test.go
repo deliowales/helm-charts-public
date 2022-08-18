@@ -3,7 +3,7 @@ package test
 import (
         "testing"
 
-        corev1 "k8s.io/api/rbac/v1"
+        Istio "istio.io/client-go/pkg/apis/security/v1beta1"
 
         "github.com/gruntwork-io/terratest/modules/helm"
 )
@@ -17,13 +17,14 @@ func TestauthorizationpolicyTemplate(t *testing.T) {
             SetValues: map[string]string{
         			"application.name": "testapp",
         	},
+        }
 
         // Run RenderTemplate to render the template and capture the output.
         output := helm.RenderTemplate(t, options, helmChartPath, "authorization-policy", []string{"templates/authorization-policy.yaml"})
 
         // Now we use kubernetes/client-go library to render the template output into the authorization-policy struct. This will
         // ensure the authorization-policy resource is rendered correctly.
-        var authorizationpolicy corev1.AuthorizationPolicy
+        var authorizationpolicy Istio.AuthorizationPolicy
         helm.UnmarshalK8SYaml(t, output, &authorizationpolicy)
 
         // Finally, we verify the authorization-policy spec is set to the expected value
