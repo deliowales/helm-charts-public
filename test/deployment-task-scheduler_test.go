@@ -14,26 +14,28 @@ func TestdeploymentTemplate(t *testing.T) {
         // Setup the args. For this test, we will set the following input values:
         options := &helm.Options{
             SetValues: map[string]string{
-        			"application.name": "testapp",
-        			"application.env": "uat",
-        			"cloud.region": "eu-west-1",
-        			"application.resources.limits.memory": "100mi",
-        			"application.resources.requests.memory": "100mi",
+        		"application.name":                      "data-feed",
+                "cloud.region":                          "eu-west-1",
+                "cloud.provider":                        "aws",
+                "cloud.containerRegistryURL":            "url",
+                "cloud.environment":                     "uat",
+                "application.resources.limits.memory":   "100mi",
+                "application.resources.requests.memory": "100mi",
         	},
         }
 
         // Run RenderTemplate to render the template and capture the output.
-        output := helm.RenderTemplate(t, options, helmChartPath, "deployment-php", []string{"templates/deployment-php.yaml"})
+        output := helm.RenderTemplate(t, options, helmChartPath, "deployment-task-scheduler", []string{"templates/data-feed/deployment-task-scheduler.yaml"})
 
         // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
         // ensure the deployment resource is rendered correctly.
-        var deploymentphp appsv1.Deployment
-        helm.UnmarshalK8SYaml(t, output, &deploymentphp)
+        var taskscheduler appsv1.Deployment
+        helm.UnmarshalK8SYaml(t, output, &taskscheduler)
 
         // Finally, we verify the deployment spec is set to the expected value
-        expectedReplicas := "3"
-        Replicas := deploymentphp.Spec.Replicas
-        if int(*Replicas) != expectedContainerImage {
+        expectedReplicas := 1
+        Replicas := taskscheduler.Spec.Replicas
+        if int(*Replicas) != expectedReplicas {
             t.Fatalf("Rendered replica count (%v) is not expected (%v)", Replicas, expectedReplicas)
         }
 }

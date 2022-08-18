@@ -12,8 +12,11 @@ func TestNodeDeploymentTemplate(t *testing.T) {
 	options := &helm.Options{
 		SetValues: map[string]string{
 			"application.name":                      "testapp",
-			"application.env":                       "uat",
+			"application.language":                  "node",
 			"cloud.region":                          "eu-west-1",
+			"cloud.provider":                        "aws",
+			"cloud.containerRegistryURL":            "url",
+			"cloud.environment":                     "uat",
 			"application.resources.limits.memory":   "100mi",
 			"application.resources.requests.memory": "100mi",
 		},

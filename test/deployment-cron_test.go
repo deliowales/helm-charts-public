@@ -8,18 +8,23 @@ import (
 
 func TestCronDeploymentTemplate(t *testing.T) {
 	helmChartPath := "../charts/microservice"
+	cron := "true"
 
 	options := &helm.Options{
 		SetValues: map[string]string{
-			"application.name":                      "testapp",
-			"application.env":                       "uat",
-			"cloud.region":                          "eu-west-1",
-			"application.resources.limits.memory":   "100mi",
-			"application.resources.requests.memory": "100mi",
+			"application.name":                      "horizon",
+            			"cloud.region":                          "eu-west-1",
+            			"cloud.provider":                        "aws",
+            			"cloud.containerRegistryURL":            "url",
+            			"application.language":                  "node",
+            			"cloud.environment":                     "uat",
+            			"application.resources.limits.memory":   "100mi",
+            			"application.resources.requests.memory": "100mi",
+            			"application.cron.enabled": cron,
 		},
 	}
     // Run RenderTemplate to render the template and capture the output.
-    output := helm.RenderTemplate(t, options, helmChartPath, "deployment-cron", []string{"templates/horizon/deployment-cron.yaml"})
+    output := helm.RenderTemplate(t, options, helmChartPath, "deployment-cron", []string{"templates/horizon/cron/deployment-cron.yaml"})
 
     // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
     // ensure the deployment resource is rendered correctly.
