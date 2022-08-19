@@ -1,29 +1,26 @@
 package test
 
 import (
-        "testing"
-
-        appsv1 "k8s.io/api/apps/v1"
-
-        "github.com/gruntwork-io/terratest/modules/helm"
+	"github.com/gruntwork-io/terratest/modules/helm"
+	appsv1 "k8s.io/api/apps/v1"
+	"testing"
 )
 
-func TestdeploymentTemplate(t *testing.T) {
-        // Path to the helm chart we will test
-        helmChartPath := "../charts/microservice"
-        // Setup the args. For this test, we will set the following input values:
-        options := &helm.Options{
-            SetValues: map[string]string{
-        		"application.name":                      "testapp",
-                "application.language":                  "php",
-                "cloud.region":                          "eu-west-1",
-                "cloud.provider":                        "aws",
-                "cloud.containerRegistryURL":            "url",
-                "cloud.environment":                     "uat",
-                "application.resources.limits.memory":   "100mi",
-                "application.resources.requests.memory": "100mi",
-        	},
-        }
+func TestphpDeploymentTemplate(t *testing.T) {
+	helmChartPath := "../charts/microservice"
+
+	options := &helm.Options{
+		SetValues: map[string]string{
+			"application.name":                      "testapp",
+			"application.language":                  "php",
+			"cloud.region":                          "eu-west-1",
+			"cloud.provider":                        "aws",
+			"cloud.containerRegistryURL":            "url",
+			"cloud.environment":                     "uat",
+			"application.resources.limits.memory":   "100Mi",
+			"application.resources.requests.memory": "100Mi",
+		},
+	}
 
 	output := helm.RenderTemplate(t, options, helmChartPath, "deployment-php", []string{"templates/deployment-php.yaml"})
 

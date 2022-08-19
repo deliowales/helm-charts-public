@@ -3,7 +3,6 @@ package test
 import (
         "testing"
 
-        Istio "istio.io/client-go/pkg/apis/security/v1beta1"
 
         "github.com/gruntwork-io/terratest/modules/helm"
 )

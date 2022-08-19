@@ -8,19 +8,18 @@ import (
 
 func TestCronDeploymentTemplate(t *testing.T) {
 	helmChartPath := "../charts/microservice"
-	cron := "true"
 
 	options := &helm.Options{
 		SetValues: map[string]string{
 			"application.name":                      "horizon",
-            			"cloud.region":                          "eu-west-1",
-            			"cloud.provider":                        "aws",
-            			"cloud.containerRegistryURL":            "url",
-            			"application.language":                  "node",
-            			"cloud.environment":                     "uat",
-            			"application.resources.limits.memory":   "100mi",
-            			"application.resources.requests.memory": "100mi",
-            			"application.cron.enabled": cron,
+            "cloud.region":                          "eu-west-1",
+            "cloud.provider":                        "aws",
+            "cloud.containerRegistryURL":            "url",
+            "application.language":                  "node",
+            "cloud.environment":                     "uat",
+            "application.resources.limits.memory":   "100mi",
+            "application.resources.requests.memory": "100mi",
+            "application.cron.enabled":              "true",
 		},
 	}
     // Run RenderTemplate to render the template and capture the output.

@@ -17,6 +17,7 @@ func TestdeploymentTemplate(t *testing.T) {
         			"application.name": "testapp",
         			"application.resources.limits.memory": "100mi",
         			"application.resources.requests.memory": "100mi",
+        			"deployment.hpa.enabled":   "true",
         	},
         }
 
