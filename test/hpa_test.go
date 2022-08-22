@@ -22,7 +22,7 @@ func TestdeploymentTemplate(t *testing.T) {
         }
 
         // Run RenderTemplate to render the template and capture the output.
-        output := helm.RenderTemplate(t, options, helmChartPath, "hpa", []string{"templates/hpa.yaml"})
+        output := helm.RenderTemplate(t, options, helmChartPath, "hpav1", []string{"templates/hpav1.yaml"})
 
         // Now we use kubernetes/client-go library to render the template output into the deployment struct. This will
         // ensure the deployment resource is rendered correctly.
