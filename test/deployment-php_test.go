@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestphpDeploymentTemplate(t *testing.T) {
+func TestPhpDeploymentTemplate(t *testing.T) {
 	helmChartPath := "../charts/microservice"
 
 	options := &helm.Options{
@@ -19,6 +19,8 @@ func TestphpDeploymentTemplate(t *testing.T) {
 			"cloud.environment":                     "uat",
 			"application.resources.limits.memory":   "100Mi",
 			"application.resources.requests.memory": "100Mi",
+			"nginx.livenessProbe.path":              "/testpath",
+			"nginx.readinessProbe.path":             "/testpath",
 		},
 	}
 
