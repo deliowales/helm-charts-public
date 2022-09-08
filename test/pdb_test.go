@@ -3,8 +3,6 @@ package test
 import (
         "testing"
 
-        policyv1 "k8s.io/api/policy/v1"
-
         "github.com/gruntwork-io/terratest/modules/helm"
 )
 
@@ -14,10 +12,10 @@ func TestpdbTemplate(t *testing.T) {
         application := "testapp"
         // Setup the args. For this test, we will set the following input values:
         options := &helm.Options{
-            SetValues: map[string]string{
-        			"application.name": "testapp",
-        			"pdb.enabled": "true",
-        	},
+                SetValues: map[string]string{
+                        "application.name": "testapp",
+                        "pdb.enabled":      "true",
+                },
         }
         // Run RenderTemplate to render the template and capture the output.
         output := helm.RenderTemplate(t, options, helmChartPath, "pdb", []string{"templates/pdb.yaml"})
@@ -31,6 +29,6 @@ func TestpdbTemplate(t *testing.T) {
         expectedminAvailable := "2"
         minAvailable := pdb.Spec.MinAvailablev
         if int(*minAvailable) != expectedminAvailable {
-            t.Fatalf("Rendered minAvailable (%v) is not expected (%v)", minAvailable, expectedminAvailable)
+                t.Fatalf("Rendered minAvailable (%v) is not expected (%v)", minAvailable, expectedminAvailable)
         }
 }

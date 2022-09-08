@@ -14,8 +14,14 @@ func TestServiceTemplate(t *testing.T) {
 
 	options := &helm.Options{
 		SetValues: map[string]string{
-			"application.name": "testapp",
-			"service.enabled":  "true",
+			"application.name":           "testapp",
+			"service.enabled":            "true",
+			"application.language":       "php",
+			"cloud.provider":             "aws",
+			"cloud.containerRegistryURL": "url",
+			"cloud.environment":          "uat",
+			"nginx.livenessProbe.path":   "/testpath",
+			"nginx.readinessProbe.path":  "/testpath",
 		},
 	}
 
@@ -24,8 +30,8 @@ func TestServiceTemplate(t *testing.T) {
 	var service corev1.Service
 	helm.UnmarshalK8SYaml(t, output, &service)
 
-	expectedSpec.Typetype := "ClusterIP"
-	servicetype := service.
+	expectedtype := "ClusterIP"
+	servicetype := service.Spec.Type
 	if string(servicetype) != expectedtype {
 		t.Fatalf("Rendered type (%s) is not expected (%s)", servicetype, expectedtype)
 	}
