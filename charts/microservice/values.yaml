@@ -195,7 +195,7 @@ service:
   type: ClusterIP
   # -- Strip the path defined in Ingress resource and then forward the request to the upstream service.
   kong:
-    stripPath:
+    stripPath: ""
 
 serviceAccount:
   enabled: true
