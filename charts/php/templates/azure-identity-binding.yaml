@@ -1,0 +1,15 @@
+{{ if eq (include "php.cloud.provider" .) "Azure" }}
+{{ if eq .Values.azure.identity.enabled true }}
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+  name: "{{ .Values.azure.identity.name}}-binding"
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
+spec:
+  azureIdentity: {{ .Values.azure.identity.name }}
+  selector: {{ .Values.azure.identity.name }}
+{{ end }}
+{{ end }}

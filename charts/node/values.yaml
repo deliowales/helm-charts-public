@@ -6,12 +6,14 @@
 application:
   # -- Name of the application e.g. Deals
   name: ""
-  # -- Application programming language used; `php`, `node` or `go`
-  language: ""
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
   # -- Port that the container is running on. The default port depends on the programming language
   containerPort: ""
+  extraVolumes: []
+  healthcheck:
+    path: ""
+    headers: ""
   livenessProbe:
     # -- Type of liveness healthcheck. `http` or `tcp`
     type: http
@@ -149,7 +151,7 @@ job:
       cpu:
       memory: ""
 
-kongIngress:
+kong:
   enabled: false
 
 # @ignored Configure FluentBit - PHP services only
@@ -176,7 +178,6 @@ newrelic:
   licenseKey: ""
 
 nginx:
-  enabled: true
   image:
     repository: nginx
     tag: 1.21.1-alpine-unprivileged

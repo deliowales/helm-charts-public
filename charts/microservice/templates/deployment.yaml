@@ -1,10 +1,12 @@
-{{- if and (eq (include "microservice.application.language" .)  "node") (eq .Values.deployment.enabled true)}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "microservice.application.name" . }}
   labels:
     {{- include "microservice.labels" . | nindent 4 }}
+    {{- if eq .Values.application.oldWorld.enabled true }}
+    version: newworld
+    {{- end }}
   annotations:
     {{- include "microservice.annotations" . | nindent 4 }}
 spec:
@@ -12,6 +14,10 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "microservice.application.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if eq .Values.application.oldWorld.enabled true }}
+      version: newworld
+      {{- end }}
   template:
     metadata:
       annotations:
@@ -23,24 +29,24 @@ spec:
         aadpodidbinding: {{ .Values.azure.identity.name }}
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if eq .Values.application.oldWorld.enabled true }}
+        version: newworld
+        {{- end }}
     spec:
-      serviceAccountName: {{ .Values.serviceAccount.name | default (include "microservice.application.name" .) }}
+      {{- if .Values.deployment.topologySpreadConstraints.enabled -}}
+      {{- include "microservice.deployment.topologySpreadConstraints" }}
+      {{- end }}
+      serviceAccountName: {{ include "microservice.application.name" . }}
       containers:
         - name: {{ include "microservice.application.name" . }}
           image: {{ include "microservice.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
+          {{- include "microservice.application.securityContext" . | nindent 10 }}
           env:
-            - name: APP_NAME
-              value: {{ .Values.application.name | lower | quote }}
-            - name: DISABLE_INSTANA
-              value: "TRUE"
             - name: PLATFORM
               value: {{ include "microservice.cloud.provider" . }}
+            - name: APP_NAME
+              value: {{ .Values.application.name | lower | quote }}
             {{- if eq (include "microservice.cloud.provider" .) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
@@ -52,53 +58,41 @@ spec:
           ports:
             - name: http
               containerPort: {{ include "microservice.application.containerPort" . }}
-              protocol: TCP
+
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
-          livenessProbe:
-            {{- if eq .Values.application.livenessProbe.type "tcp" }}
-            tcpSocket:
-              port: {{ include "microservice.application.containerPort" . }}
-            {{- else }}
-            httpGet:
-              port: {{ include "microservice.application.containerPort" . }}
-              path: {{ .Values.application.readinessProbe.path }}
-            {{- end }}
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+          # PHP - livenss
+          # Node - liveness
+          live
+          {{- if eq (include "microservice.application.language" .) "node" }}
+            {{ toYaml .Values.node.livenessProbe | indent 4 }}
+          {{- end }}
           readinessProbe:
-            {{- if eq .Values.application.readinessProbe.type "tcp" }}
             tcpSocket:
               port: {{ include "microservice.application.containerPort" . }}
-            {{- else }}
-            httpGet:
-              port: {{ include "microservice.application.containerPort" . }}
-              path: {{ .Values.application.readinessProbe.path }}
-            {{- end }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-            {{- if eq .Values.clamAV.enabled true}}
-            - name: clamd
-              mountPath: /run/clamav
-            - name: clamlogs
-              mountPath: /var/log/clamav
-            - name: clamavtmp
-              mountPath: /var/lib/clamav
-            {{- end }}
+          {{- if eq (include "microservice.application.language" .) "php" }}
+          {{- include "microservice.php.volumeMounts" . | nindent 8 }}
+          {{- else if eq (include "microservice.application.language" .) "node" }}
+          {{- include "microservice.node.volumeMounts" . | nindent 12 }}
+          {{- end }}
+
+        {{- if eq (include "microservice.application.language" .) "php" }}
+          {{ include  "microservice.nginx.container" . | nindent 8 }}
+        {{- end }}
+
+        {{- if eq (include "microservice.application.language" .) "php" }}
+          {{ include  "microservice.logging.container" . | nindent 8 }}
+        {{- end }}
+
       securityContext:
         fsGroup: 1000
+
       volumes:
-        - name: tmp
-          emptyDir: {}
-        {{- if eq .Values.clamAV.enabled true}}
-        - name: clamd
-          emptyDir: {}
-        - name: clamlogs
-          emptyDir: {}
-        - name: clamavtmp
-          emptyDir: {}
-        {{- end }}
-{{- end }}
+      {{- if eq (include "microservice.application.language" .) "php" }}
+        {{- include "microservice.php.volumes" . | nindent 8 }}
+      {{- else if eq (include "microservice.application.language" .) "node" }}
+        {{- include "microservice.node.volumes" . | nindent 8 }}
+      {{- end }}

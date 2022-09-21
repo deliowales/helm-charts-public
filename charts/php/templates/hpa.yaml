@@ -2,18 +2,18 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "microservice.application.name" . }}
+  name: {{ include "php.application.name" . }}
   labels:
-    {{- include "microservice.labels" . | nindent 4 }}
+    {{- include "php.labels" . | nindent 4 }}
   annotations:
-    {{- include "microservice.annotations" . | nindent 4 }}
+    {{- include "php.annotations" . | nindent 4 }}
 spec:
   maxReplicas: {{ .Values.deployment.hpa.maxReplicas }}
   minReplicas: {{ .Values.deployment.hpa.minReplicas }}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "microservice.application.name" . }}
+    name: {{ include "php.application.name" . }}
   metrics:
     - type: Resource
       resource:
@@ -22,5 +22,5 @@ spec:
     - type: Resource
       resource:
         name: memory
-        targetAverageValue: {{ include "microservice.hpa.targetMemory" . }}
+        targetAverageValue: {{ include "php.deployment.hpa.targetMemory" . }}
 {{- end }}

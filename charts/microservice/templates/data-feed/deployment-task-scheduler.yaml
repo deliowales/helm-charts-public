@@ -17,7 +17,7 @@ spec:
     metadata:
       annotations:
         {{- include "microservice.annotations" . | nindent 8 }}
-        {{- include "microservice.vault.annotations" . | nindent 8 }}
+        {{- include "microservice.application.vault.annotations" . | nindent 8 }}
       labels:
         {{- include "microservice.labels" . | nindent 8 }}
         app.kubernetes.io/name: {{ include "microservice.application.name" . }}
@@ -31,7 +31,7 @@ spec:
       serviceAccountName: {{ include "microservice.application.name" . }}
       containers:
         - name: {{ include "microservice.application.name" . }}
-          image: {{ include "microservice.project.imageURL" . }}
+          image: {{ include "microservice.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           args: [ "schedule" ]
           securityContext:
@@ -79,7 +79,7 @@ spec:
             - name: PLATFORM
               value: {{ include "microservice.cloud.provider" . }}
             - name: DOCKER_IMAGE
-              value: {{ include "microservice.project.imageURL" . }}
+              value: {{ include "microservice.application.imageURL" . }}
             - name: ENVIRONMENT
               value: {{ .Values.cloud.environment }}
             - name: NAMESPACE

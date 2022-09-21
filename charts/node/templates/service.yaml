@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "microservice.application.name" . }}
+  name: {{ include "node.application.name" . }}
   labels:
-    {{- include "microservice.labels" . | nindent 4 }}
+    {{- include "node.labels" . | nindent 4 }}
   annotations:
-    {{- include "microservice.annotations" . | nindent 4 }}
+    {{- include "node.annotations" . | nindent 4 }}
     ingress.kubernetes.io/service-upstream: "true"
     {{- if eq .Values.service.externalDNS.enabled true }}
     external-dns.alpha.kubernetes.io/hostname: {{ .Values.service.externalDNS.host }}
@@ -22,5 +22,5 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: http
   selector:
-    app.kubernetes.io/name: {{ include "microservice.application.name" . }}
+    app.kubernetes.io/name: {{ include "node.application.name" . }}
 {{- end }}

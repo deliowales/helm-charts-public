@@ -1,4 +1,4 @@
 apiVersion: v2
 name: microservice
 description: A generic chart to be used for all microervices
-version: "0.0.15"
+version: "0.0.17"

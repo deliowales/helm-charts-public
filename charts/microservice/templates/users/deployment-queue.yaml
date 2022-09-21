@@ -1,18 +1,25 @@
-{{- if eq .Values.application.name "data-feed" }}
+{{- if eq (include "microservice.application.language" .) "php" }}
+{{- if eq (include "microservice.application.name" .) "users" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "microservice.application.name" . }}-queue
   labels:
     {{- include "microservice.labels" . | nindent 4 }}
+    {{- if eq .Values.application.oldWorld.enabled true }}
+    version: newworld
+    {{- end }}
   annotations:
     {{- include "microservice.annotations" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "microservice.application.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if eq .Values.application.oldWorld.enabled true }}
+      version: newworld
+      {{- end }}
   template:
     metadata:
       annotations:
@@ -20,17 +27,17 @@ spec:
         {{- include "microservice.application.vault.annotations" . | nindent 8 }}
       labels:
         {{- include "microservice.labels" . | nindent 8 }}
-        app.kubernetes.io/name: {{ include "microservice.application.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        {{- if eq (include "microservice.cloud.provider" .) "Azure" }}
-        {{- if eq .Values.azure.identity.enabled true }}
+        {{- if and (eq (include "microservice.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
         aadpodidbinding: {{ .Values.azure.identity.name }}
         {{- end }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if eq .Values.application.oldWorld.enabled true }}
+        version: newworld
         {{- end }}
     spec:
       serviceAccountName: {{ include "microservice.application.name" . }}
       containers:
-        - name: {{ include "microservice.application.name" . }}
+        - name: {{ include "microservice.application.name" . }}-queue
           image: {{ include "microservice.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           args: [ "queue" ]
@@ -40,16 +47,21 @@ spec:
             runAsNonRoot: true
             readOnlyRootFilesystem: true
           env:
+            - name: PLATFORM
+              value: {{ include "microservice.cloud.provider" . }}
+            - name: APP_NAME
+              value: {{ .Values.application.name | lower | quote }}
+            {{- if eq (include "microservice.cloud.provider" .) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
-            {{- range .Values.deployment.env }}
-            - name: "{{.name}}"
-              value: "{{.value}}"
-            {{- end}}
+            {{- end }}
+            {{- range .Values.application.env }}
+            - name: "{{ .name }}"
+              value: "{{ .value }}"
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ include "microservice.application.containerPort" . }}
-              protocol: TCP
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
           volumeMounts:
@@ -65,9 +77,17 @@ spec:
               mountPath: /tmp
             - name: newrelic-log
               mountPath: /var/log/newrelic/
+            {{- if eq .Values.supervisor.enabled true }}
+            - name: supervisor-config-volume
+              mountPath: /etc/supervisord-tmp.conf
+              subPath: supervisord-tmp.conf
+            - name: supervisor-logs
+              mountPath: /home/app
+            {{- end }}
 
         - name: logs
           image: {{ include "microservice.logging.imageURL" . }}
+          imagePullPolicy: IfNotPresent
           resources:
             {{- toYaml .Values.logging.resources | nindent 12 }}
           securityContext:
@@ -81,7 +101,7 @@ spec:
             - name: DOCKER_IMAGE
               value: {{ include "microservice.application.imageURL" . }}
             - name: ENVIRONMENT
-              value: {{ .Values.cloud.environment }}
+              value: {{ include "microservice.cloud.environment" . }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
@@ -116,10 +136,21 @@ spec:
         - name: php-config-volume
           configMap:
             name: php-configmap
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-configmap
         - name: shared-files
           emptyDir: {}
         - name: tmp
           emptyDir: {}
         - name: newrelic-log
           emptyDir: {}
+        {{- if eq .Values.supervisor.enabled true }}
+        - name: supervisor-config-volume
+          configMap:
+            name: supervisor-configmap
+        - name: supervisor-logs
+          emptyDir: {}
+        {{- end }}
+{{- end }}
 {{- end }}

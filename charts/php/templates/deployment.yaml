@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "microservice.application.name" . }}
+  name: {{ include "php.application.name" . }}
   labels:
-    {{- include "microservice.labels" . | nindent 4 }}
+    {{- include "php.labels" . | nindent 4 }}
     {{- if eq .Values.application.oldWorld.enabled true }}
     version: newworld
     {{- end }}
   annotations:
-    {{- include "microservice.annotations" . | nindent 4 }}
+    {{- include "php.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "microservice.application.name" . }}
+      app.kubernetes.io/name: {{ include "php.application.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       {{- if eq .Values.application.oldWorld.enabled true }}
       version: newworld
@@ -21,11 +21,11 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "microservice.annotations" . | nindent 8 }}
-        {{- include "microservice.application.vault.annotations" . | nindent 8 }}
+        {{- include "php.annotations" . | nindent 8 }}
+        {{- include "php.application.vault.annotations" . | nindent 8 }}
       labels:
-        {{- include "microservice.labels" . | nindent 8 }}
-        {{- if and (eq (include "microservice.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
+        {{- include "php.labels" . | nindent 8 }}
+        {{- if and (eq (include "php.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
         aadpodidbinding: {{ .Values.azure.identity.name }}
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -33,10 +33,10 @@ spec:
         version: newworld
         {{- end }}
     spec:
-      serviceAccountName: {{ include "microservice.application.name" . }}
+      serviceAccountName: {{ include "php.application.name" . }}
       containers:
-        - name: {{ include "microservice.application.name" . }}
-          image: {{ include "microservice.application.imageURL" . }}
+        - name: {{ include "php.application.name" . }}
+          image: {{ include "php.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           securityContext:
             runAsUser: 1000
@@ -45,10 +45,10 @@ spec:
             readOnlyRootFilesystem: true
           env:
             - name: PLATFORM
-              value: {{ include "microservice.cloud.provider" . }}
+              value: {{ include "php.cloud.provider" . }}
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}
-            {{- if eq (include "microservice.cloud.provider" .) "AWS" }}
+            {{- if eq (include "php.cloud.provider" .) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
             {{- end }}
@@ -58,12 +58,12 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ include "microservice.application.containerPort" . }}
+              containerPort: 9000
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
           readinessProbe:
             tcpSocket:
-              port: {{ include "microservice.application.containerPort" . }}
+              port: 9000
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
@@ -79,17 +79,12 @@ spec:
               mountPath: /tmp
             - name: newrelic-log
               mountPath: /var/log/newrelic/
-            {{- if eq .Values.supervisor.enabled true }}
-            - name: supervisor-config-volume
-              mountPath: /etc/supervisord-tmp.conf
-              subPath: supervisord-tmp.conf
-            - name: supervisor-logs
-              mountPath: /home/app
-            {{- end }}
+              {{- if .Values.application.extraVolumes -}}
+              {{- include "php.application.extraConfigmapMounts" . | nindent 12 }}
+              {{- end }}
 
-        {{- if eq .Values.nginx.enabled true }}
         - name: nginx
-          image: {{ include "microservice.deployment.nginx.imageURL" . }}
+          image: {{ include "php.deployment.nginx.imageURL" . }}
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsNonRoot: true
@@ -105,30 +100,13 @@ spec:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
           livenessProbe:
             httpGet:
-              port: {{ include "microservice.application.containerPort" . }}
-              path: {{ .Values.nginx.livenessProbe.path }}
-              {{- if .Values.nginx.livenessProbe.httpHeaders }}
-              httpHeaders:
-              {{- range .Values.nginx.livenessProbe.httpHeaders }}
-                - name: {{ .name }}
-                  value: {{ .value }}
-              {{- end }}
+              port: 8080
+              path: {{ .Values.application.healthcheck.path }}
+              {{- if (include "php.application.healthcheck.headers" . ) }}
+              {{ include "php.application.healthcheck.headers" . }}
               {{- end }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              port: {{ include "microservice.application.containerPort" . }}
-              path: {{ .Values.nginx.readinessProbe.path }}
-              {{- if .Values.nginx.readinessProbe.httpHeaders }}
-              httpHeaders:
-              {{- range .Values.nginx.readinessProbe.httpHeaders }}
-                - name: {{ .name }}
-                  value: {{ .value }}
-              {{- end }}
-              {{- end }}
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
           volumeMounts:
             - name: nginx-config-volume
               mountPath: /etc/nginx/conf.d/default.conf
@@ -137,10 +115,9 @@ spec:
               mountPath: /code
             - name: tmp
               mountPath: /tmp
-        {{- end }}
 
         - name: logs
-          image: {{ include "microservice.logging.imageURL" . }}
+          image: {{ include "php.logging.imageURL" . }}
           imagePullPolicy: IfNotPresent
           resources:
             {{- toYaml .Values.logging.resources | nindent 12 }}
@@ -151,11 +128,11 @@ spec:
             runAsGroup: 1001
           env:
             - name: PLATFORM
-              value: {{ include "microservice.cloud.provider" . }}
+              value: {{ include "php.cloud.provider" . }}
             - name: DOCKER_IMAGE
-              value: {{ include "microservice.application.imageURL" . }}
+              value: {{ include "php.application.imageURL" . }}
             - name: ENVIRONMENT
-              value: {{ include "microservice.cloud.environment" . }}
+              value: {{ include "php.cloud.environment" . }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
@@ -199,10 +176,6 @@ spec:
           emptyDir: {}
         - name: newrelic-log
           emptyDir: {}
-        {{- if eq .Values.supervisor.enabled true }}
-        - name: supervisor-config-volume
-          configMap:
-            name: supervisor-configmap
-        - name: supervisor-logs
-          emptyDir: {}
+        {{- if .Values.application.extraVolumes }}
+        {{- include "php.application.extraConfigmapVolumes" . | nindent 8 }}
         {{- end }}
