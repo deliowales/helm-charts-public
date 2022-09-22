@@ -4,7 +4,7 @@ on:
     branches-ignore:
       - gh-pages
 jobs:
-  lint-test:
+  helm-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,12 +24,11 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.2.0
 
-      - name: Run helm lint (lint)
+      - name: Helm Lint
         shell: bash
         run:  |
-          search_dir=./charts
           helm repo add delio https://raw.githubusercontent.com/deliowales/helm-charts-public/gh-pages
-          for chart in "$search_dir"/*
+          for chart in charts/*
           do
             /usr/local/bin/helm lint $chart --values=$chart/values.yaml
           done

@@ -1,0 +1,38 @@
+{{- if eq .Values.destinationRule.enabled true }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ include "node.application.name" . }}
+  labels:
+    {{- include "node.labels" . | nindent 4 }}
+  annotations:
+    {{- include "node.annotations" . | nindent 4 }}
+spec:
+  host: {{ include "node.application.name" . }}
+  trafficPolicy:
+    tls:
+      mode: {{ .Values.istio.tls.mode }}
+  {{ if .Values.istio.subsets -}}
+  subsets:
+    {{- range .Values.istio.subsets }}
+    - name: {{ .name }}
+      labels:
+      {{- range .labels }}
+        {{ .name }}: {{ .value }}
+      {{- end }}
+    {{- end }}
+  {{- end -}}
+{{- end -}}
+
+{{- if eq .Values.application.name "virus-scanner" }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: s3-virus-scanner
+spec:
+  host: {{  .Values.application.blobStorageURL }}
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+{{- end }}

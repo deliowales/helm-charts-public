@@ -1,0 +1,44 @@
+{{ if eq .Values.job.enabled true }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.job.name }}
+  annotations:
+    {{- toYaml .Values.job.annotations | nindent 12 }}
+spec:
+  template:
+    metadata:
+      annotations:
+        {{- if eq .Values.job.vault.enabled true }}
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-pre-populate: "true"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-init-first: "true"
+        vault.hashicorp.com/role: {{ .Values.vault.role }}
+        vault.hashicorp.com/agent-inject-secret-env: {{ .Values.vault.env }}
+        vault.hashicorp.com/agent-inject-template-env: |
+            {{`{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
+            {{ range $k, $v := .Data.data -}}
+            export {{ $k }}='{{ $v }}'
+            {{ end -}}
+            {{ end -}}`}}
+        {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}
+    spec:
+      serviceAccountName: {{ include "node.application.name" . }}
+      containers:
+        - name: {{ include "node.application.name" . }}
+          image: {{ include "node.application.imageURL" . }}
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+{{/*          args: [ "schedule" ]*/}}
+          securityContext:
+            runAsUser: 1000 # User "app" within the container
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+          resources:
+            {{- toYaml .Values.job.resources | nindent 12 }}
+      restartPolicy: {{ .Values.job.restartPolicy }}
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  {{- end }}

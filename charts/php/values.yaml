@@ -1,0 +1,243 @@
+#######################################################################
+#                         VALUES FOR PHP CHART
+# THESE ARE DEFAULTS AND CAN BE OVERRIDDEN IN THE SERVICE'S VALUES FILE
+#######################################################################
+
+application:
+  # -- Name of the application e.g. Deals
+  name: "php"
+  # -- Any args that need to be supplied to the `ENTRYPOINT` command.
+  args: []
+  extraVolumes: []
+  healthcheck:
+    path: ""
+    headers: ""
+  livenessProbe:
+    # -- Type of liveness healthcheck. `http` or `tcp`
+    type: http
+    path: /_/system/liveness
+    # -- Custom headers to set in the request. HTTP allows repeated headers.
+    httpHeaders: []
+  readinessProbe:
+    # -- Type of readiness healthcheck. `http` or `tcp`
+    type: http
+    path: /_/system/readiness
+    # -- Custom headers to set in the request. HTTP allows repeated headers.
+    httpHeaders: []
+  # -- Enable CRON. This is only to be used with `Horizon`
+  cron:
+    enabled: false
+  # -- Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt.
+  env: []
+  # Configure container registry details
+  image:
+    # -- Name of the ECR/ACR repository
+    repository: ""
+    # -- Image tag to be pulled
+    tag: ""
+    pullPolicy: Always
+  oldWorld:
+    # -- Configure Old World deployments. Only to be used with `Horizon` or `Event`.
+    enabled: false
+    env: []
+    image:
+      repository: ""
+      tag: ""
+      pullPolicy: Always
+  # @ignored Application container resources. Please ensure that these are fine-tuned when load-testing
+  # has been carried out and a baseline has been defined.
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu: ""
+      memory: ""
+
+authorizationPolicy:
+  enabled: true
+
+# -- IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed.
+aws:
+  iamRole: ""
+
+azure:
+  identity:
+    enabled: false
+    clientName: ""
+    name: ""
+    resourceName: ""
+
+# Configure cloud details
+cloud:
+  # -- **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`.
+  environment: ""
+  # -- **Required**: Cloud Provider. Either `AWS` or `Azure`
+  provider: ""
+  # -- Cloud Region. Only needed for AWS
+  region: ""
+  # -- **Required**: URL for the Container Registry
+  containerRegistryURL: ""
+
+deployment:
+  enabled: true
+  # Horizontal Pod Autoscaler configuration.
+  hpa:
+    enabled: true
+    # -- Maximum number of replica pods
+    maxReplicas: 10
+    # -- Minimum number of replica pods
+    minReplicas: 3
+    # -- Target CPU usage (%)
+    targetCPU: 70
+    # -- Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary.
+    targetMemory: ""
+  # -- Configure Topology Spread Constrains.
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
+  topologySpreadConstraints:
+    enabled: false
+    maxSkew:
+    topologyKey:
+    whenUnsatisfiable:
+
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   whenUnsatisfiable: DoNotSchedule
+  #   labelSelector:
+  #     matchLabels:
+  #       app.kubernetes.io/name: horizon
+
+  # -- Replica count not considering the HPA
+  replicaCount: 3
+
+destinationRule:
+  enabled: true
+
+ingress:
+  enabled: false
+  path: ""
+  pathRouted: ""
+
+istio:
+  tls:
+    mode: ISTIO_MUTUAL
+  mtls:
+    mode: STRICT
+  # List of services **allowed** to make requests to the current service.
+  principals: []
+  # Subsets of endpoints of a service for routing traffic to specific versions of application.
+  subsets: []
+
+job:
+  enabled: false
+  name: ""
+  annotations:
+  vault:
+    enabled: true
+  args: ""
+  restartPolicy: "OnFailure"
+  backoffLimit: 2
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu:
+      memory: ""
+
+kong:
+  enabled: false
+
+# @ignored Configure FluentBit - PHP services only
+logging:
+  enabled: false
+  image:
+    repository: fluent-bit
+    tag: php-1.9.1
+    pullPolicy: Always
+  # -- Path to application log. If framework is `laravel`, you must use `laravel.log` instead of `lumen.log`
+  logPath: /var/www/html/storage/logs/lumen.log
+  multiLine: "On"
+  parserPath: /fluent-bit/etc/php-parser.conf
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "100Mi"
+    requests:
+      cpu: "10m"
+      memory: "10Mi"
+
+# -- The license key for New Relic. Only needed for FluentBit containers which are only used by PHP services.
+newrelic:
+  licenseKey: ""
+
+nginx:
+  image:
+    repository: nginx
+    tag: 1.21.1-alpine-unprivileged
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+    requests:
+      cpu: "10m"
+      memory: "10Mi"
+  service:
+    type: NodePort
+    # -- Port that nginx is listening on
+    internalPort: ""
+
+# Pod Disruption Budget. Leave as false unless instructed otherwise.
+pdb:
+  enabled: false
+  minAvailable: 2
+
+peerAuthentication:
+  enabled: true
+
+# Configuration options for `php.ini`. Leave blank for default values.
+phpConfig:
+  maxExecutionTime: ""
+  memoryLimit: ""
+  uploadMaxFilesize: ""
+  postMaxSize: ""
+
+
+service:
+  enabled: true
+  externalDNS:
+    enabled: false
+    host: ""
+  port: 80
+  type: ClusterIP
+  # -- Strip the path defined in Ingress resource and then forward the request to the upstream service.
+  kong:
+    stripPath: ""
+
+serviceAccount:
+  enabled: true
+  # -- Leave blank to default to the application name
+  name: ""
+
+serviceEntry:
+  enabled: false
+  hosts: []
+  location: ""
+  ports: []
+
+# -- Only needed for Analytics Old-world
+supervisor:
+  enabled: false
+
+# -- Vault configuration
+vault:
+  # -- Environment of the vault. Format: `<< env >>/<< vault name >>
+  env: ""
+  # -- Role name
+  role: ""
+
+virtualService:
+  enabled: true
+  gateways: []
+  hosts: []

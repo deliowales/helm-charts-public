@@ -1,0 +1,26 @@
+{{- if and (eq .Values.deployment.hpa.enabled true) (le .Capabilities.KubeVersion.Minor "21") }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "php.application.name" . }}
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
+spec:
+  maxReplicas: {{ .Values.deployment.hpa.maxReplicas }}
+  minReplicas: {{ .Values.deployment.hpa.minReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "php.application.name" . }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.deployment.hpa.targetCPU }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageValue: {{ include "php.deployment.hpa.targetMemory" . }}
+{{- end }}
