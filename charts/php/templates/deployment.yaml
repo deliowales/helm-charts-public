@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "php.application.name" . }}
+  name: "{{ include "php.application.name" . }}"
   labels:
     {{- include "php.labels" . | nindent 4 }}
     {{- if eq .Values.application.oldWorld.enabled true }}
@@ -13,7 +13,7 @@ spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "php.application.name" . }}
+      app.kubernetes.io/name: "{{ include "php.application.name" . }}"
       app.kubernetes.io/instance: {{ .Release.Name }}
       {{- if eq .Values.application.oldWorld.enabled true }}
       version: newworld
@@ -35,8 +35,8 @@ spec:
     spec:
       serviceAccountName: {{ include "php.application.name" . }}
       containers:
-        - name: {{ include "php.application.name" . }}
-          image: {{ include "php.application.imageURL" . }}
+        - name: "{{ include "php.application.name" . }}"
+          image: "{{ include "php.application.imageURL" . }}"
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           securityContext:
             runAsUser: 1000
@@ -45,7 +45,7 @@ spec:
             readOnlyRootFilesystem: true
           env:
             - name: PLATFORM
-              value: {{ include "php.cloud.provider" . }}
+              value: "{{ include "php.cloud.provider" . }}"
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}
             {{- if eq (include "php.cloud.provider" .) "AWS" }}
@@ -84,7 +84,7 @@ spec:
               {{- end }}
 
         - name: nginx
-          image: {{ include "php.deployment.nginx.imageURL" . }}
+          image: "{{ include "php.deployment.nginx.imageURL" . }}"
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsNonRoot: true
@@ -117,7 +117,7 @@ spec:
               mountPath: /tmp
 
         - name: logs
-          image: {{ include "php.logging.imageURL" . }}
+          image: "{{ include "php.logging.imageURL" . }}"
           imagePullPolicy: IfNotPresent
           resources:
             {{- toYaml .Values.logging.resources | nindent 12 }}
@@ -128,11 +128,11 @@ spec:
             runAsGroup: 1001
           env:
             - name: PLATFORM
-              value: {{ include "php.cloud.provider" . }}
+              value: "{{ include "php.cloud.provider" . }}"
             - name: DOCKER_IMAGE
-              value: {{ include "php.application.imageURL" . }}
+              value: "{{ include "php.application.imageURL" . }}"
             - name: ENVIRONMENT
-              value: {{ include "php.cloud.environment" . }}
+              value: "{{ include "php.cloud.environment" . }}"
             - name: NAMESPACE
               valueFrom:
                 fieldRef:

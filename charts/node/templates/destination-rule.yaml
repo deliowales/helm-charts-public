@@ -1,5 +1,5 @@
-{{- if and (ne .Values.application.name "data-feed") (eq .Values.destinationRule.enabled true) }}
-apiVersion: networking.istio.io/v1alpha3
+{{- if eq .Values.destinationRule.enabled true }}
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: {{ include "node.application.name" . }}
@@ -23,3 +23,16 @@ spec:
     {{- end }}
   {{- end -}}
 {{- end -}}
+
+{{- if eq .Values.application.name "virus-scanner" }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: s3-virus-scanner
+spec:
+  host: {{  .Values.application.blobStorageURL }}
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+{{- end }}

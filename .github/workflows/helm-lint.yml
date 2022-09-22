@@ -36,11 +36,3 @@ jobs:
           do
             /usr/local/bin/helm lint $chart --values=$chart/values.yaml
           done
-
-      - name: Helm Template
-        shell: bash
-        run:  |
-          for chart in charts/*
-          do
-            /usr/local/bin/helm template test $chart --values=$chart/values.yaml
-          done

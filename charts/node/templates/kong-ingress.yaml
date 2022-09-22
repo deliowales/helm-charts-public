@@ -1,4 +1,4 @@
-{{- if eq .Values.kongIngress.enabled true }}
+{{- if eq .Values.kong.enabled true }}
 apiVersion: configuration.konghq.com/v1
 kind: KongIngress
 metadata:

@@ -5,7 +5,7 @@
 
 application:
   # -- Name of the application e.g. Deals
-  name: ""
+  name: "node"
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
   # -- Port that the container is running on. The default port depends on the programming language
