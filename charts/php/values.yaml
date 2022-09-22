@@ -8,8 +8,6 @@ application:
   name: "php"
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
-  # -- Port that the container is running on. The default port depends on the programming language
-  containerPort: ""
   extraVolumes: []
   healthcheck:
     path: ""
@@ -69,10 +67,6 @@ azure:
     clientName: ""
     name: ""
     resourceName: ""
-
-# -- Enable ClamAV. Currently only used by `virus-scanner`.
-clamAV:
-  enabled: false
 
 # Configure cloud details
 cloud:
