@@ -1,8 +1,34 @@
 # node
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square)
-
 A generic chart to be used for all nodeJS microservices
+
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square)
+
+## Adding the Helm repo
+
+Before installing the chart, you need to add the helm repository
+
+```
+$ helm repo add delio https://raw.githubusercontent.com/deliowales/helm-charts-public/gh-pages
+```
+
+## Deploying the Chart
+
+To install the chart with the release name `my-release`:
+helm install [RELEASE] [CHART] [flags]
+
+Example:
+```
+$ helm install horizon . --values uat-values.yaml --namespace horizon
+```
+
+Once its initially installed, from them on you need to run the `upgrade` command:
+helm upgrade [RELEASE] [CHART] [flags]
+
+Example:
+```
+$ helm upgrade horizon . --values uat-values.yaml --namespace horizon
+```
 
 ## Values
 
