@@ -35,6 +35,8 @@ Define container image tag
   {{- $environment := (include "node.cloud.environment" .) -}}
   {{- if or (and (or (eq $environment "uat") (eq $environment "staging-demo")) (eq $provider "aws")) (and (eq $environment "staging-production") (eq $provider "azure")) -}}
     {{- default "latest" .Values.application.image.tag -}}
+  {{- else }}
+    {{- .Values.application.image.tag -}}
   {{- end -}}
 {{- end -}}
 
