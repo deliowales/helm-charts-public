@@ -14,6 +14,9 @@ spec:
         - source:
             principals: [
               "cluster.local/ns/monitoring/sa/prometheus-blackbox-exporter",
+            {{- if .Values.kong.enabled}}
+              "cluster.local/ns/kong/sa/kong-kong",
+            {{- end }}
             {{- if .Values.istio.principals }}
             {{- range .Values.istio.principals }}
               "{{ . }}",
