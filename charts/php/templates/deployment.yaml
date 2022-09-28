@@ -74,7 +74,7 @@ spec:
               mountPath: /usr/local/etc/php/php.ini
               subPath: php.ini
             - name: shared-files
-              mountPath: /code
+              mountPath: /var/www/html
             - name: tmp
               mountPath: /tmp
             - name: newrelic-log
@@ -112,7 +112,7 @@ spec:
               mountPath: /etc/nginx/conf.d/default.conf
               subPath: default.conf
             - name: shared-files
-              mountPath: /code
+              mountPath: /var/www/html
             - name: tmp
               mountPath: /tmp
 
@@ -155,7 +155,7 @@ spec:
               value: {{ .Values.logging.multiLine | quote }}
           volumeMounts:
             - name: shared-files
-              mountPath: /code
+              mountPath: /var/www/html
 
       securityContext:
         fsGroup: 1000
