@@ -10,20 +10,9 @@ application:
   args: []
   extraVolumes: []
   healthcheck:
-    path: ""
+    livenessPath: ""
+    readinessPath: ""
     headers: ""
-  livenessProbe:
-    # -- Type of liveness healthcheck. `http` or `tcp`
-    type: http
-    path: /_/system/liveness
-    # -- Custom headers to set in the request. HTTP allows repeated headers.
-    httpHeaders: []
-  readinessProbe:
-    # -- Type of readiness healthcheck. `http` or `tcp`
-    type: http
-    path: /_/system/readiness
-    # -- Custom headers to set in the request. HTTP allows repeated headers.
-    httpHeaders: []
   # -- Enable CRON. This is only to be used with `Horizon`
   cron:
     enabled: false
@@ -209,7 +198,7 @@ service:
   externalDNS:
     enabled: false
     host: ""
-  port: 80
+  port: 8080
   type: ClusterIP
   # -- Strip the path defined in Ingress resource and then forward the request to the upstream service.
   kong:

@@ -56,9 +56,6 @@ spec:
             - name: "{{ .name }}"
               value: "{{ .value }}"
             {{- end }}
-          ports:
-            - name: http
-              containerPort: 9000
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
           readinessProbe:
@@ -95,13 +92,22 @@ spec:
                 command: ["sh"]
           ports:
             - name: http
-              containerPort: {{ .Values.nginx.service.internalPort }}
+              containerPort: 8080
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
           livenessProbe:
             httpGet:
               port: 8080
-              path: {{ .Values.application.healthcheck.path }}
+              path: {{ .Values.application.healthcheck.livenessPath }}
+              {{- if (include "php.application.healthcheck.headers" . ) }}
+              {{ include "php.application.healthcheck.headers" . }}
+              {{- end }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: {{ .Values.application.healthcheck.readinessPath }}
               {{- if (include "php.application.healthcheck.headers" . ) }}
               {{ include "php.application.healthcheck.headers" . }}
               {{- end }}
