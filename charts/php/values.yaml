@@ -116,6 +116,7 @@ istio:
   principals: []
   # Subsets of endpoints of a service for routing traffic to specific versions of application.
   subsets: []
+  portLevelSettings: []
 
 job:
   enabled: false
