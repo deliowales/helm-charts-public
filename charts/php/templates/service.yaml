@@ -19,8 +19,8 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: {{ .Values.service.port }}
-      targetPort: http
+      port: 80
+      targetPort: 8080
   selector:
     app.kubernetes.io/name: {{ include "php.application.name" . }}
 {{- end }}
