@@ -1,4 +1,4 @@
-{{- if and (ne .Values.application.name "data-feed") (eq .Values.destinationRule.enabled true) }}
+{{- if eq .Values.destinationRule.enabled true }}
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
@@ -12,6 +12,10 @@ spec:
   trafficPolicy:
     tls:
       mode: {{ .Values.istio.tls.mode }}
+    {{ if .Values.istio.portLevelSettings -}}
+    portLevelSettings:
+      {{- toYaml .Values.istio.portLevelSettings | nindent 6 }}
+    {{- end -}}
   {{ if .Values.istio.subsets -}}
   subsets:
     {{- range .Values.istio.subsets }}

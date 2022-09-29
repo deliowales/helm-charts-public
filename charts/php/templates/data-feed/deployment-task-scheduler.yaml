@@ -1,0 +1,122 @@
+{{- if eq .Values.application.name "data-feed" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "php.application.name" . }}-task-scheduler
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "php.application.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        {{- include "php.annotations" . | nindent 8 }}
+        {{- include "php.application.vault.annotations" . | nindent 8 }}
+      labels:
+        {{- include "php.labels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ include "php.application.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if eq (include "php.cloud.provider" .) "Azure" }}
+        {{- if eq .Values.azure.identity.enabled true }}
+        aadpodidbinding: {{ .Values.azure.identity.name }}
+        {{- end }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "php.application.name" . }}
+      containers:
+        - name: "{{ include "php.application.name" . }}"
+          image: "{{ include "php.application.imageURL" . }}"
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+          args: [ "schedule" ]
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+          env:
+            - name: AWS_REGION
+              value: {{ .Values.cloud.region }}
+            {{- range .Values.application.env }}
+            - name: "{{.name}}"
+              value: "{{.value}}"
+            {{- end}}
+          resources:
+            {{- toYaml .Values.application.resources | nindent 12 }}
+          volumeMounts:
+            - name: fpm-pool-config-volume
+              mountPath: /usr/local/etc/php-fpm.d/www.conf
+              subPath: www.conf
+            - name: php-config-volume
+              mountPath: /usr/local/etc/php/php.ini
+              subPath: php.ini
+            - name: shared-files
+              mountPath: /var/www/html
+            - name: tmp
+              mountPath: /tmp
+            - name: newrelic-log
+              mountPath: /var/log/newrelic/
+
+        - name: logs
+          image: "{{ include "php.logging.imageURL" . }}"
+          imagePullPolicy: IfNotPresent
+          resources:
+                  {{- toYaml .Values.logging.resources | nindent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            runAsUser: 1001
+            runAsGroup: 1001
+          env:
+            - name: PLATFORM
+              value: "{{ include "php.cloud.provider" . }}"
+            - name: DOCKER_IMAGE
+              value: "{{ include "php.application.imageURL" . }}"
+            - name: ENVIRONMENT
+              value: "{{ include "php.cloud.environment" . }}"
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NEW_RELIC_LICENSE_KEY
+              value: {{ .Values.newrelic.licenseKey }}
+            - name: FLUENT_BIT_LOG_PATH
+              value: {{ .Values.logging.logPath }}
+            - name: FLUENT_BIT_PARSER_PATH
+              value: {{ .Values.logging.parserPath }}
+            - name: FLUENT_BIT_MULTILINE
+              value: {{ .Values.logging.multiLine | quote }}
+          volumeMounts:
+            - name: shared-files
+              mountPath: /var/www/html
+
+      securityContext:
+        fsGroup: 1000
+
+      volumes:
+        - name: fpm-pool-config-volume
+          configMap:
+            name: fpm-pool-configmap
+        - name: php-config-volume
+          configMap:
+            name: php-configmap
+        - name: shared-files
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+        - name: newrelic-log
+          emptyDir: {}
+{{- end }}
