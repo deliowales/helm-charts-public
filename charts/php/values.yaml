@@ -215,6 +215,8 @@ serviceEntry:
   hosts: []
   location: ""
   ports: []
+  ping:
+    hosts: []
 
 # -- Only needed for Analytics Old-world
 supervisor:

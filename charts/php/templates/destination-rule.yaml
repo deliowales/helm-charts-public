@@ -15,7 +15,7 @@ spec:
     {{ if .Values.istio.portLevelSettings -}}
     portLevelSettings:
       {{- toYaml .Values.istio.portLevelSettings | nindent 6 }}
-    {{- end -}}
+    {{- end }}
   {{ if .Values.istio.subsets -}}
   subsets:
     {{- range .Values.istio.subsets }}
