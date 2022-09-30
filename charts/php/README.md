@@ -119,7 +119,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | serviceEntry.location | string | `""` |  |
 | serviceEntry.ping.hosts | list | `[]` |  |
 | serviceEntry.ports | list | `[]` |  |
-| supervisor | object | `{"enabled":false}` | Only needed for Analytics Old-world |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |

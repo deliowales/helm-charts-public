@@ -74,13 +74,6 @@ spec:
               mountPath: /tmp
             - name: newrelic-log
               mountPath: /var/log/newrelic/
-            {{- if eq .Values.supervisor.enabled true }}
-            - name: supervisor-config-volume
-              mountPath: /etc/supervisord-tmp.conf
-              subPath: supervisord-tmp.conf
-            - name: supervisor-logs
-              mountPath: /home/app
-            {{- end }}
 
         - name: nginx
           image: "{{ include "php.deployment.nginx.imageURL" . }}"
@@ -184,11 +177,4 @@ spec:
           emptyDir: {}
         - name: newrelic-log
           emptyDir: {}
-        {{- if eq .Values.supervisor.enabled true }}
-        - name: supervisor-config-volume
-          configMap:
-            name: supervisor-configmap
-        - name: supervisor-logs
-          emptyDir: {}
-        {{- end }}
 {{- end }}
