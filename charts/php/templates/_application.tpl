@@ -63,11 +63,11 @@ vault.hashicorp.com/agent-inject-template-env: |
 Headers for liveness probe healthcheck
 */}}
 {{- define "php.application.healthcheck.headers" -}}
-  {{- if .Values.application.healthcheck.headers }}
+  {{- if .Values.application.healthcheck.headers -}}
   httpHeaders:
   {{- range .Values.application.healthcheck.headers }}
-    - name: {{ .name }}
-      value: {{ .value }}
+  - name: {{ .name }}
+    value: {{ .value }}
   {{- end }}
   {{- end }}
 {{- end -}}

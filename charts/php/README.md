@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -117,6 +117,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | serviceEntry.enabled | bool | `false` |  |
 | serviceEntry.hosts | list | `[]` |  |
 | serviceEntry.location | string | `""` |  |
+| serviceEntry.ping.hosts | list | `[]` |  |
 | serviceEntry.ports | list | `[]` |  |
 | supervisor | object | `{"enabled":false}` | Only needed for Analytics Old-world |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
