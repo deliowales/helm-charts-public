@@ -1,0 +1,24 @@
+{{- if and (eq .Values.application.name "event") (le .Capabilities.KubeVersion.Minor "21") (eq .Values.application.oldWorld.enabled true) }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "php.application.name" . }}-oldworld
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
+    konghq.com/strip-path: "true"
+    configuration.konghq.com: do-not-preserve-host-oldworld
+spec:
+  rules:
+    - http:
+        paths:
+          - path: {{ .Values.ingress.path }}-oldworld
+            backend:
+              serviceName: {{ include "php.application.name" . }}-oldworld
+              servicePort: {{ .Values.service.port }}
+          - path: {{ .Values.ingress.pathRouted }}-oldworld
+            backend:
+              serviceName: {{ include "php.application.name" . }}-oldworld
+              servicePort: {{ .Values.service.port }}
+{{- end }}
