@@ -175,8 +175,6 @@ nginx:
       memory: "10Mi"
   service:
     type: NodePort
-    # -- Port that nginx is listening on
-    internalPort: ""
 
 # Pod Disruption Budget. Leave as false unless instructed otherwise.
 pdb:

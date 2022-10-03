@@ -97,7 +97,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nginx.resources.limits.memory | string | `"128Mi"` |  |
 | nginx.resources.requests.cpu | string | `"10m"` |  |
 | nginx.resources.requests.memory | string | `"10Mi"` |  |
-| nginx.service.internalPort | string | `""` | Port that nginx is listening on |
 | nginx.service.type | string | `"NodePort"` |  |
 | pdb.enabled | bool | `false` |  |
 | pdb.minAvailable | int | `2` |  |

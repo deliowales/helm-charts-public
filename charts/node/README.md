@@ -38,17 +38,12 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.env | list | `[]` | Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt. |
 | application.extraVolumes | list | `[]` |  |
 | application.healthcheck.headers | string | `""` |  |
-| application.healthcheck.path | string | `""` |  |
+| application.healthcheck.livenessPath | string | `""` |  |
+| application.healthcheck.readinessPath | string | `""` |  |
 | application.image.pullPolicy | string | `"Always"` |  |
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
 | application.image.tag | string | `""` | Image tag to be pulled |
-| application.livenessProbe.httpHeaders | list | `[]` | Custom headers to set in the request. HTTP allows repeated headers. |
-| application.livenessProbe.path | string | `"/_/system/liveness"` |  |
-| application.livenessProbe.type | string | `"http"` | Type of liveness healthcheck. `http` or `tcp` |
 | application.name | string | `"node"` | Name of the application e.g. Deals |
-| application.readinessProbe.httpHeaders | list | `[]` | Custom headers to set in the request. HTTP allows repeated headers. |
-| application.readinessProbe.path | string | `"/_/system/readiness"` |  |
-| application.readinessProbe.type | string | `"http"` | Type of readiness healthcheck. `http` or `tcp` |
 | authorizationPolicy.enabled | bool | `true` |  |
 | aws | object | `{"iamRole":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
