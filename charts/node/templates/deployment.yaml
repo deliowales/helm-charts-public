@@ -51,14 +51,14 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.application.ports.containerPort | default 3000 }}
+              containerPort: {{ .Values.application.ports.containerPort }} 
               protocol: TCP
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
           livenessProbe:
             {{- if eq .Values.application.livenessProbe.type "tcp" }}
             tcpSocket:
-              port: {{ .Values.application.livenessProbe.port | default 3000 }} 
+              port: {{ .Values.application.livenessProbe.port  }} 
             {{- else }}
             httpGet:
               port: 3000
@@ -69,7 +69,7 @@ spec:
           readinessProbe:
             {{- if eq .Values.application.readinessProbe.type "tcp" }}
             tcpSocket:
-              port: {{ .Values.application.readinessProbe.port | default 3000 }} 
+              port: {{ .Values.application.readinessProbe.port  }} 
             {{- else }}
             httpGet:
               port: 3000
