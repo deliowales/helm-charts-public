@@ -10,6 +10,7 @@ metadata:
     konghq.com/strip-path: "true"
     konghq.com/override: do-not-preserve-host
 spec:
+  ingressClassName: kong
   rules:
     - http:
         paths:
