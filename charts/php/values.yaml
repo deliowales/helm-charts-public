@@ -199,7 +199,7 @@ service:
   externalDNS:
     enabled: false
     host: ""
-  port: 8080
+  port: 80
   type: ClusterIP
   # -- Strip the path defined in Ingress resource and then forward the request to the upstream service.
   kong:
