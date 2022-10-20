@@ -1,0 +1,16 @@
+{{- if eq .Values.pdb.enabled true }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "go.application.name" . }}
+  labels:
+    {{- include "go.labels" . | nindent 4 }}
+  annotations:
+    {{- include "go.annotations" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "go.application.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

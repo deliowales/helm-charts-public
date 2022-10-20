@@ -2,7 +2,7 @@
 
 A generic chart to be used for all nodeJS microservices
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -44,10 +44,13 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.image.tag | string | `""` | Image tag to be pulled |
 | application.livenessProbe.httpHeaders | list | `[]` | Custom headers to set in the request. HTTP allows repeated headers. |
 | application.livenessProbe.path | string | `"/_/system/liveness"` |  |
+| application.livenessProbe.port | int | `3000` |  |
 | application.livenessProbe.type | string | `"http"` | Type of liveness healthcheck. `http` or `tcp` |
 | application.name | string | `"node"` | Name of the application e.g. Deals |
+| application.ports.containerPort | int | `3000` |  |
 | application.readinessProbe.httpHeaders | list | `[]` | Custom headers to set in the request. HTTP allows repeated headers. |
 | application.readinessProbe.path | string | `"/_/system/readiness"` |  |
+| application.readinessProbe.port | int | `3000` |  |
 | application.readinessProbe.type | string | `"http"` | Type of readiness healthcheck. `http` or `tcp` |
 | authorizationPolicy.enabled | bool | `true` |  |
 | aws | object | `{"iamRole":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |

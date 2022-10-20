@@ -1,0 +1,14 @@
+{{- if eq .Values.kong.enabled true }}
+apiVersion: configuration.konghq.com/v1
+kind: KongIngress
+metadata:
+  name: do-not-preserve-host
+  labels:
+    {{- include "go.labels" . | nindent 4 }}
+  annotations:
+    {{- include "go.annotations" . | nindent 4 }}
+route:
+  preserve_host: false
+upstream:
+  host_header: {{ include "go.application.name" . }}.{{ .Release.Namespace }}.svc
+{{- end }}

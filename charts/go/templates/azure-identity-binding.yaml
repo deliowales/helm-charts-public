@@ -1,0 +1,15 @@
+{{ if eq (include "go.cloud.provider" .) "Azure" }}
+{{ if eq .Values.azure.identity.enabled true }}
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentityBinding
+metadata:
+  name: "{{ .Values.azure.identity.name}}-binding"
+  labels:
+    {{- include "go.labels" . | nindent 4 }}
+  annotations:
+    {{- include "go.annotations" . | nindent 4 }}
+spec:
+  azureIdentity: {{ .Values.azure.identity.name }}
+  selector: {{ .Values.azure.identity.name }}
+{{ end }}
+{{ end }}

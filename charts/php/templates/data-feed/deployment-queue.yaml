@@ -1,4 +1,4 @@
-{{- if eq .Values.application.name "data-feed" }}
+{{- if eq .Values.application.name "data-feeeeeeed" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
