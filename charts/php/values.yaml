@@ -207,10 +207,10 @@ peerAuthentication:
 
 # Configuration options for `php.ini`. Leave blank for default values.
 phpConfig:
-  maxExecutionTime: ""
-  memoryLimit: ""
-  uploadMaxFilesize: ""
-  postMaxSize: ""
+  maxExecutionTime: 30
+  memoryLimit: 128M
+  uploadMaxFilesize: 2M
+  postMaxSize: 8M
 
 
 service:
