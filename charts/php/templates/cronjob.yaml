@@ -1,0 +1,84 @@
+{{ if eq .Values.cron.enabled true }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ include "php.application.name" . }}-cron"
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.cron.schedule }}"
+  successfulJobsHistoryLimit: {{ .Values.cron.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cron.failedJobsHistoryLimit }}
+  concurrencyPolicy: {{ .Values.cron.concurrencyPolicy }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.cron.backoffLimit }}
+      template:
+        metadata:
+          annotations:
+            {{- if eq .Values.cron.vault.enabled true }}
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/agent-pre-populate: "true"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-init-first: "true"
+            vault.hashicorp.com/role: {{ .Values.vault.role }}
+            vault.hashicorp.com/agent-inject-secret-env: {{ .Values.vault.env }}
+            vault.hashicorp.com/agent-inject-template-env: |
+                {{`{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
+                {{ range $k, $v := .Data.data -}}
+                export {{ $k }}='{{ $v }}'
+                {{ end -}}
+                {{ end -}}`}}
+            {{- end }}
+          labels:
+            app.kubernetes.io/name: {{ .Chart.Name }}
+        spec:
+          serviceAccountName: {{ include "php.application.name" . }}
+          containers:
+            - name: {{ include "php.application.name" . }}
+              image: {{ include "php.application.imageURL" . }}
+              imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+              args: ["{{ .Values.cron.args }}"]
+              securityContext:
+                runAsUser: 1000 # User "app" within the container
+                runAsGroup: 1000
+                runAsNonRoot: true
+                readOnlyRootFilesystem: true
+              resources:
+                {{- toYaml .Values.cron.resources | nindent 16 }}
+              volumeMounts:
+                - name: fpm-pool-config-volume
+                  mountPath: /usr/local/etc/php-fpm.d/www.conf
+                  subPath: www.conf
+                - name: php-config-volume
+                  mountPath: /usr/local/etc/php/php.ini
+                  subPath: php.ini
+                - name: shared-files
+                  mountPath: /var/www/html
+                - name: tmp
+                  mountPath: /tmp
+                - name: newrelic-log
+                  mountPath: /var/log/newrelic/
+                  {{- if .Values.application.extraVolumes -}}
+                  {{- include "php.application.extraConfigmapMounts" . | nindent 12 }}
+                  {{- end }}
+          restartPolicy: {{ .Values.cron.restartPolicy }}
+          volumes:
+            - name: fpm-pool-config-volume
+              configMap:
+                name: fpm-pool-configmap
+            - name: php-config-volume
+              configMap:
+                name: php-configmap
+            - name: shared-files
+              emptyDir: {}
+            - name: tmp
+              emptyDir: {}
+            - name: newrelic-log
+              emptyDir: {}
+            {{- if .Values.application.extraVolumes }}
+            {{- include "php.application.extraConfigmapVolumes" . | nindent 8 }}
+            {{- end }}
+  {{- end }}

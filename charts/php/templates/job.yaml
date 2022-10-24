@@ -31,7 +31,7 @@ spec:
         - name: {{ include "php.application.name" . }}
           image: {{ include "php.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-{{/*          args: [ "schedule" ]*/}}
+          args: ["{{ .Values.cron.args }}"]
           securityContext:
             runAsUser: 1000 # User "app" within the container
             runAsGroup: 1000
