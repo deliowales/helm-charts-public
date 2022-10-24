@@ -68,6 +68,25 @@ cloud:
   # -- **Required**: URL for the Container Registry
   containerRegistryURL: ""
 
+cron:
+  enabled: false
+  args: ""
+  schedule: ""
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: "Forbid"
+  vault:
+    enabled: true
+  restartPolicy: "OnFailure"
+  backoffLimit: 1
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu:
+      memory: ""
+
 deployment:
   enabled: true
   # Horizontal Pod Autoscaler configuration.
