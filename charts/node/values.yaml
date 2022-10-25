@@ -50,7 +50,7 @@ application:
   migrations:
     enabled: false
     args: "migrations"
-    restartPolicy: "OnFailure"
+    restartPolicy: OnFailure
     backoffLimit: 2
 
 authorizationPolicy:

@@ -1,12 +1,12 @@
-{{ if eq .Values.application.migrations true }}
+{{ if eq .Values.application.migrations.enabled true }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: "{{ .Values.application.name }}-migrations"
   labels:
-    {{- include "php.labels" . | nindent 4 }}
+    {{- include "node.labels" . | nindent 4 }}
   annotations:
-    {{- include "php.annotations" . | nindent 4 }}
+    {{- include "node.annotations" . | nindent 4 }}
     "helm.sh/hook": pre-install, pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
@@ -26,7 +26,7 @@ spec:
       containers:
         - name: "{{ include "node.application.name" . }}"
           image: "{{ include "node.application.imageURL" . }}"
-          args: [" {{ .Values.application.migrations.args }}"]
+          args: ["{{.Values.application.migrations.args }}"]
           env:
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}
