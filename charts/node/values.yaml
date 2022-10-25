@@ -53,8 +53,6 @@ application:
     restartPolicy: "OnFailure"
     backoffLimit: 2
 
-
-
 authorizationPolicy:
   enabled: true
 
