@@ -69,7 +69,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.topologySpreadConstraints | object | `{"enabled":false,"maxSkew":null,"topologyKey":null,"whenUnsatisfiable":null}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
 | destinationRule.enabled | bool | `true` |  |
-| exports | string | `nil` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.path | string | `""` |  |
 | ingress.pathRouted | string | `""` |  |

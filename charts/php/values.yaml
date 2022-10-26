@@ -2,8 +2,6 @@
 #                         VALUES FOR PHP CHART
 # THESE ARE DEFAULTS AND CAN BE OVERRIDDEN IN THE SERVICE'S VALUES FILE
 #######################################################################
-exports:
-
 application:
   # -- Name of the application e.g. Deals
   name: "php"
