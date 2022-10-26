@@ -47,6 +47,12 @@ application:
       cpu: ""
       memory: ""
 
+  migrations:
+    enabled: false
+    args: "migrations"
+    restartPolicy: OnFailure
+    backoffLimit: 2
+
 authorizationPolicy:
   enabled: true
 
@@ -158,7 +164,7 @@ service:
   externalDNS:
     enabled: false
     host: ""
-  port: 80
+  port: 8080
   type: ClusterIP
   # -- Strip the path defined in Ingress resource and then forward the request to the upstream service.
   kong:

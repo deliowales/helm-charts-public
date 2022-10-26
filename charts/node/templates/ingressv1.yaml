@@ -8,8 +8,9 @@ metadata:
   annotations:
     {{- include "node.annotations" . | nindent 4 }}
     konghq.com/strip-path: "true"
-    configuration.konghq.com: do-not-preserve-host
+    konghq.com/override: do-not-preserve-host
 spec:
+  ingressClassName: kong
   rules:
     - http:
         paths:
