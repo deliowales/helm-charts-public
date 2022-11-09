@@ -30,6 +30,7 @@ spec:
         version: newworld
         {{- end }}
     spec:
+      {{- include "php.deployment.topologySpreadConstraints" . | nindent 6 }}
       serviceAccountName: {{ include "php.application.name" . }}
       containers:
         - name: "{{ include "php.application.name" . }}"
