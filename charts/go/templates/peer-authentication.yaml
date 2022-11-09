@@ -1,0 +1,13 @@
+{{- if eq .Values.peerAuthentication.enabled true }}
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: {{ include "go.application.name" . }}
+  labels:
+    {{- include "go.labels" . | nindent 4 }}
+  annotations:
+    {{- include "go.annotations" . | nindent 4 }}
+spec:
+  mtls:
+    mode: {{ .Values.istio.mtls.mode }}
+{{- end }}

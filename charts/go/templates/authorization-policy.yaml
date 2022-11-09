@@ -1,0 +1,26 @@
+{{- if eq .Values.authorizationPolicy.enabled true }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "go.application.name" . }}
+  labels:
+    {{- include "go.labels" . | nindent 4 }}
+  annotations:
+    {{- include "go.annotations" . | nindent 4 }}
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [
+              "cluster.local/ns/monitoring/sa/prometheus-blackbox-exporter",
+            {{- if .Values.kong.enabled}}
+              "cluster.local/ns/kong/sa/kong-kong",
+            {{- end }}
+            {{- if .Values.istio.principals }}
+            {{- range .Values.istio.principals }}
+              "{{ . }}",
+            {{- end }}
+            {{- end }}
+            ]
+{{- end }}
