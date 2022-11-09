@@ -2,6 +2,7 @@
 
 A generic chart to be used for all nodeJS microservices
 
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -45,6 +46,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.livenessProbe.path | string | `"/_/system/liveness"` |  |
 | application.livenessProbe.port | int | `3000` |  |
 | application.livenessProbe.type | string | `"http"` | Type of liveness healthcheck. `http` or `tcp` |
+| application.migrations.args | string | `"migrations"` |  |
+| application.migrations.backoffLimit | int | `2` |  |
+| application.migrations.enabled | bool | `false` |  |
+| application.migrations.restartPolicy | string | `"OnFailure"` |  |
 | application.name | string | `"node"` | Name of the application e.g. Deals |
 | application.ports.containerPort | int | `3000` |  |
 | application.readinessProbe.httpHeaders | list | `[]` | Custom headers to set in the request. HTTP allows repeated headers. |
@@ -97,7 +102,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | service.externalDNS.enabled | bool | `false` |  |
 | service.externalDNS.host | string | `""` |  |
 | service.kong | object | `{"stripPath":""}` | Strip the path defined in Ingress resource and then forward the request to the upstream service. |
-| service.port | int | `80` |  |
+| service.port | int | `8080` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.enabled | bool | `true` |  |
 | serviceAccount.name | string | `""` | Leave blank to default to the application name |

@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square)
+![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -60,6 +60,19 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | cloud.environment | string | `""` | **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`. |
 | cloud.provider | string | `""` | **Required**: Cloud Provider. Either `AWS` or `Azure` |
 | cloud.region | string | `""` | Cloud Region. Only needed for AWS |
+| cron.args | string | `""` |  |
+| cron.backoffLimit | int | `1` |  |
+| cron.concurrencyPolicy | string | `"Forbid"` |  |
+| cron.enabled | bool | `false` |  |
+| cron.failedJobsHistoryLimit | int | `3` |  |
+| cron.resources.limits.cpu | string | `nil` |  |
+| cron.resources.limits.memory | string | `""` |  |
+| cron.resources.requests.cpu | string | `nil` |  |
+| cron.resources.requests.memory | string | `""` |  |
+| cron.restartPolicy | string | `"OnFailure"` |  |
+| cron.schedule | string | `""` |  |
+| cron.successfulJobsHistoryLimit | int | `1` |  |
+| cron.vault.enabled | bool | `true` |  |
 | deployment.enabled | bool | `true` |  |
 | deployment.hpa.enabled | bool | `true` |  |
 | deployment.hpa.maxReplicas | int | `10` | Maximum number of replica pods |
@@ -102,15 +115,15 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | pdb.enabled | bool | `false` |  |
 | pdb.minAvailable | int | `2` |  |
 | peerAuthentication.enabled | bool | `true` |  |
-| phpConfig.maxExecutionTime | string | `""` |  |
-| phpConfig.memoryLimit | string | `""` |  |
-| phpConfig.postMaxSize | string | `""` |  |
-| phpConfig.uploadMaxFilesize | string | `""` |  |
+| phpConfig.maxExecutionTime | int | `30` |  |
+| phpConfig.memoryLimit | string | `"128M"` |  |
+| phpConfig.postMaxSize | string | `"8M"` |  |
+| phpConfig.uploadMaxFilesize | string | `"2M"` |  |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
 | service.externalDNS.host | string | `""` |  |
 | service.kong | object | `{"stripPath":""}` | Strip the path defined in Ingress resource and then forward the request to the upstream service. |
-| service.port | int | `8080` |  |
+| service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.enabled | bool | `true` |  |
 | serviceAccount.name | string | `""` | Leave blank to default to the application name |
