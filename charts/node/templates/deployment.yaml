@@ -24,7 +24,7 @@ spec:
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- include "php.deployment.topologySpreadConstraints" . | nindent 6 }}
+      {{- include "node.deployment.topologySpreadConstraints" . | nindent 6 }}
       serviceAccountName: {{ .Values.serviceAccount.name | default (include "node.application.name" .) }}
       containers:
         - name: "{{ include "node.application.name" . }}"

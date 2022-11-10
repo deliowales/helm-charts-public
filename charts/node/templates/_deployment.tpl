@@ -1,4 +1,4 @@
-{{- define "php.deployment.topologySpreadConstraints" -}}
+{{- define "node.deployment.topologySpreadConstraints" -}}
   topologySpreadConstraints:
   - maxSkew: {{ .Values.deployment.topologySpreadConstraints.maxSkew | default "1" }}
     topologyKey: {{ .Values.deployment.topologySpreadConstraints.topologyKey | default "topology.kubernetes.io/zone" }}
