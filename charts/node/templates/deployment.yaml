@@ -24,6 +24,7 @@ spec:
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- include "node.deployment.topologySpreadConstraints" . | nindent 6 }}
       serviceAccountName: {{ .Values.serviceAccount.name | default (include "node.application.name" .) }}
       containers:
         - name: "{{ include "node.application.name" . }}"
@@ -51,14 +52,14 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.application.ports.containerPort }} 
+              containerPort: {{ .Values.application.ports.containerPort }}
               protocol: TCP
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
           livenessProbe:
             {{- if eq .Values.application.livenessProbe.type "tcp" }}
             tcpSocket:
-              port: {{ .Values.application.livenessProbe.port  }} 
+              port: {{ .Values.application.livenessProbe.port  }}
             {{- else }}
             httpGet:
               port: 3000
@@ -69,7 +70,7 @@ spec:
           readinessProbe:
             {{- if eq .Values.application.readinessProbe.type "tcp" }}
             tcpSocket:
-              port: {{ .Values.application.readinessProbe.port  }} 
+              port: {{ .Values.application.readinessProbe.port  }}
             {{- else }}
             httpGet:
               port: 3000
