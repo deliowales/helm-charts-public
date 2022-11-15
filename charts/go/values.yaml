@@ -89,16 +89,9 @@ deployment:
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
   topologySpreadConstraints:
     enabled: false
-    maxSkew:
-    topologyKey:
-    whenUnsatisfiable:
-
-  # - maxSkew: 1
-  #   topologyKey: topology.kubernetes.io/zone
-  #   whenUnsatisfiable: DoNotSchedule
-  #   labelSelector:
-  #     matchLabels:
-  #       app.kubernetes.io/name: horizon
+    maxSkew: 1
+    topologyKey: "kubernetes.io/hostname"
+    whenUnsatisfiable: "ScheduleAnyway"
 
   # -- Replica count not considering the HPA
   replicaCount: 3
