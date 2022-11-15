@@ -103,7 +103,6 @@ deployment:
   # -- Configure Topology Spread Constrains.
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
   topologySpreadConstraints:
-    enabled: false
     maxSkew: 1
     topologyKey: "kubernetes.io/hostname"
     whenUnsatisfiable: "ScheduleAnyway"
