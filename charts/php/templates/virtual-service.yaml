@@ -9,10 +9,9 @@ metadata:
     {{- include "php.annotations" . | nindent 4 }}
 spec:
   hosts:
-    - {{ include "php.application.name" . }}
     {{- if .Values.virtualService.hosts }}
     {{- range .Values.virtualService.hosts }}
-    {{ printf "- %s" .}}
+    - {{ . | quote }}
     {{- end }}
     {{- end }}
   {{- if .Values.virtualService.gateways }}
@@ -22,7 +21,18 @@ spec:
   {{- end }}
   {{- end }}
   http:
+    {{- if .Values.istio.externalIngress.enabled }}
+    - match:
+      - uri:
+          prefix: {{ .Values.istio.externalIngress.path }}
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: {{ include "php.application.name" . }}
+    {{- else }}
     - route:
         - destination:
             host: {{ include "php.application.name" . }}
+    {{- end }}
 {{- end }}
