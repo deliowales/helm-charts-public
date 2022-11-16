@@ -113,11 +113,6 @@ deployment:
 destinationRule:
   enabled: true
 
-ingress:
-  enabled: false
-  path: ""
-  pathRouted: ""
-
 istio:
   tls:
     mode: ISTIO_MUTUAL
@@ -128,6 +123,14 @@ istio:
   # Subsets of endpoints of a service for routing traffic to specific versions of application.
   subsets: []
   portLevelSettings: []
+  externalIngress:
+    enabled: true
+    path: "" # the path to remove e.g. /kong/branding
+  virtualService:
+    enabled: true
+    gateways: []
+    hosts: []
+
 
 job:
   enabled: false
@@ -145,9 +148,6 @@ job:
     requests:
       cpu:
       memory: ""
-
-kong:
-  enabled: false
 
 # @ignored Configure FluentBit - PHP services only
 logging:
@@ -212,9 +212,6 @@ service:
     host: ""
   port: 80
   type: ClusterIP
-  # -- Strip the path defined in Ingress resource and then forward the request to the upstream service.
-  kong:
-    stripPath: ""
 
 serviceAccount:
   enabled: true
@@ -235,8 +232,3 @@ vault:
   env: ""
   # -- Role name
   role: ""
-
-virtualService:
-  enabled: true
-  gateways: []
-  hosts: []
