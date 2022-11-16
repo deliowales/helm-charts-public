@@ -1,8 +1,8 @@
 {{- define "php.deployment.topologySpreadConstraints" -}}
   topologySpreadConstraints:
-  - maxSkew: {{ .Values.deployment.topologySpreadConstraints.maxSkew | default "1" }}
-    topologyKey: {{ .Values.deployment.topologySpreadConstraints.topologyKey | default "topology.kubernetes.io/zone" }}
-    whenUnsatisfiable: {{ .Values.deployment.topologySpreadConstraints.whenUnsatisfiable | default "ScheduleAnyway" }}
+  - maxSkew: {{ .Values.deployment.topologySpreadConstraints.maxSkew }}
+    topologyKey: {{ .Values.deployment.topologySpreadConstraints.topologyKey }}
+    whenUnsatisfiable: {{ .Values.deployment.topologySpreadConstraints.whenUnsatisfiable }}
     labelSelector:
       matchLabels:
         app: {{ .Values.application.name | lower }}

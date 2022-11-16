@@ -1,4 +1,4 @@
 apiVersion: v2
-description: A generic chart to be used for all GoLang microservices
 name: go
-version: 0.1.0
+description: A generic chart to be used for all GoLang microservices
+version: "0.1.1"
