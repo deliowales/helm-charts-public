@@ -24,6 +24,7 @@ spec:
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- include "go.deployment.topologySpreadConstraints" . | nindent 6 }}
       serviceAccountName: {{ .Values.serviceAccount.name | default (include "go.application.name" .) }}
       containers:
         - name: "{{ include "go.application.name" . }}"
