@@ -5,14 +5,21 @@ metadata:
   name: {{ include "php.application.name" . }}
 spec:
   hosts:
-    - {{ include "php.application.name" . }}
-
+  {{- range .Values.istio.virtualService.hosts }}
+    - {{ . | quote }}
+  {{- end }}
+  gateways:
+  {{- range .Values.istio.virtualService.gateways }}
+    {{ printf "- %s" .}}
+  {{- end }}
   http:
     - name: oldworld-header
       match:
         - headers:
             x-world:
               exact: "oldworld"
+          uri:
+            prefix: "/api"
       route:
         - destination:
             host: {{ include "php.application.name" . }}
@@ -25,6 +32,9 @@ spec:
         attempts: 1
         perTryTimeout: 10s
     - name: default-behavior
+      match:
+        - uri:
+            prefix: "/api"
       route:
         - destination:
             host: {{ include "php.application.name" . }}
