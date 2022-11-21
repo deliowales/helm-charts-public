@@ -35,11 +35,8 @@ spec:
         - name: "{{ include "php.application.name" . }}"
           image: hubcregsznpr.azurecr.io/users:cron
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-{{/*          securityContext:*/}}
-{{/*            runAsUser: 1000*/}}
-{{/*            runAsGroup: 1000*/}}
-{{/*            runAsNonRoot: true*/}}
-{{/*            readOnlyRootFilesystem: true*/}}
+          securityContext:
+            readOnlyRootFilesystem: true
           env:
             - name: PLATFORM
               value: "{{ include "php.cloud.provider" . }}"
@@ -69,16 +66,8 @@ spec:
               subPath: php.ini
             - name: shared-files
               mountPath: /var/www/html
-            - name: tmp
-              mountPath: /tmp
             - name: newrelic-log
               mountPath: /var/log/newrelic/
-              {{- if .Values.application.extraVolumes -}}
-              {{- include "php.application.extraConfigmapMounts" . | nindent 12 }}
-              {{- end }}
-
-{{/*      securityContext:*/}}
-{{/*        fsGroup: 1000*/}}
 
       volumes:
         - name: fpm-pool-config-volume
@@ -88,8 +77,6 @@ spec:
           configMap:
             name: php-configmap
         - name: shared-files
-          emptyDir: {}
-        - name: tmp
           emptyDir: {}
         - name: newrelic-log
           emptyDir: {}
