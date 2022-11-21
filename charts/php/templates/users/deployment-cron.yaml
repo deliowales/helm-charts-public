@@ -1,0 +1,86 @@
+{{ if eq .Values.application.name "users" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "php.application.name" . }}-cron"
+  labels:
+    app.kubernetes.io/name: "users-cron"
+    chart: {{ printf "%s-%s" .Chart.Name .Chart.Version }}
+    release: {{ .Release.Name }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ include "php.application.name" . }}-cron"
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        {{- include "php.annotations" . | nindent 8 }}
+        {{- include "php.application.vault.annotations" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/name: "users-cron"
+        chart: {{ printf "%s-%s" .Chart.Name .Chart.Version }}
+        release: {{ .Release.Name }}
+        {{- if and (eq (include "php.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
+        aadpodidbinding: {{ .Values.azure.identity.name }}
+        {{- end }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- include "php.deployment.topologySpreadConstraints" . | nindent 6 }}
+      serviceAccountName: {{ include "php.application.name" . }}
+      containers:
+        - name: "{{ include "php.application.name" . }}"
+          image: hubcregsznpr.azurecr.io/users:cron
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: true
+          env:
+            - name: PLATFORM
+              value: "{{ include "php.cloud.provider" . }}"
+            - name: APP_NAME
+              value: {{ .Values.application.name | lower | quote }}
+            {{- if eq (include "php.cloud.provider" .) "AWS" }}
+            - name: AWS_REGION
+              value: {{ .Values.cloud.region }}
+            {{- end }}
+            {{- range .Values.application.env }}
+            - name: "{{ .name }}"
+              value: "{{ .value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.application.resources | nindent 12 }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - ps | grep "/usr/sbin/crond" | grep -v grep
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: fpm-pool-config-volume
+              mountPath: /usr/local/etc/php-fpm.d/www.conf
+              subPath: www.conf
+            - name: php-config-volume
+              mountPath: /usr/local/etc/php/php.ini
+              subPath: php.ini
+            - name: shared-files
+              mountPath: /var/www/html
+            - name: newrelic-log
+              mountPath: /var/log/newrelic/
+
+      volumes:
+        - name: fpm-pool-config-volume
+          configMap:
+            name: fpm-pool-configmap
+        - name: php-config-volume
+          configMap:
+            name: php-configmap
+        - name: shared-files
+          emptyDir: {}
+        - name: newrelic-log
+          emptyDir: {}
+  {{- end }}
