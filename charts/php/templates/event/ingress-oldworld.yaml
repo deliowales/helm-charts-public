@@ -13,11 +13,11 @@ spec:
   rules:
     - http:
         paths:
-          - path: {{ .Values.ingress.path }}-oldworld
+          - path: {{ .Values.istio.externalIngress.path }}-oldworld
             backend:
               serviceName: {{ include "php.application.name" . }}-oldworld
               servicePort: {{ .Values.service.port }}
-          - path: {{ .Values.ingress.pathRouted }}-oldworld
+          - path: {{ .Values.istio.externalIngress.path }}-oldworld
             backend:
               serviceName: {{ include "php.application.name" . }}-oldworld
               servicePort: {{ .Values.service.port }}
