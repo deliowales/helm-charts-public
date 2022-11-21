@@ -52,9 +52,12 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
-          readinessProbe:
-            tcpSocket:
-              port: 9000
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - ps | grep "/usr/sbin/crond" | grep -v grep
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
