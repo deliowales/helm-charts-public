@@ -41,7 +41,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.healthcheck.path | string | `""` |  |
 | application.image.pullPolicy | string | `"Always"` |  |
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
-| application.image.tag | string | `""` | Image tag to be pulled |
+| application.image.tag | string | `"0.0.0"` | Image tag to be pulled |
 | application.livenessProbe.httpHeaders | list | `[]` | Custom headers to set in the request. HTTP allows repeated headers. |
 | application.livenessProbe.path | string | `"/_/system/liveness"` |  |
 | application.livenessProbe.port | int | `3000` |  |

@@ -13,7 +13,7 @@ Define the container image urls
 {{- end -}}
 
 {{- define "node.application.oldWorldImageURL" -}}
-  {{- printf "%s/%s:%s" (include "node.cloud.containerRegistryURL" .) .Values.application.oldWorld.image.repository (include "node.application.image.tag" . | required "An image tag needs to be defined.") }}
+  {{- printf "%s/%s:%s" (include "node.cloud.containerRegistryURL" .) .Values.application.oldWorld.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
 {{- end -}}
 
 {{/*
@@ -26,19 +26,6 @@ Define container security context
   runAsNonRoot: true
   readOnlyRootFilesystem: true
 {{- end }}
-
-{{/*
-Define container image tag
-*/}}
-{{- define "node.application.image.tag" -}}
-  {{- $provider := (include "node.cloud.provider" .) -}}
-  {{- $environment := (include "node.cloud.environment" .) -}}
-  {{- if or (and (or (eq $environment "uat") (eq $environment "staging-demo")) (eq $provider "aws")) (and (eq $environment "staging-production") (eq $provider "azure")) -}}
-    {{- default "latest" .Values.application.image.tag -}}
-  {{- else }}
-    {{- .Values.application.image.tag -}}
-  {{- end -}}
-{{- end -}}
 
 {{/*
 Vault Agent Annotations
