@@ -9,7 +9,7 @@ Application Name
 Define the container image urls
 */}}
 {{- define "node.application.imageURL" -}}
-  {{- printf "%s/%s:%s" (include "node.cloud.containerRegistryURL" .) .Values.application.image.repository (include "node.application.image.tag" . | required "An image tag needs to be defined.") }}
+  {{- printf "%s/%s:%s" (include "node.cloud.containerRegistryURL" .) .Values.application.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
 {{- end -}}
 
 {{- define "node.application.oldWorldImageURL" -}}

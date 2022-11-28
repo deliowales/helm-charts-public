@@ -28,7 +28,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name | default (include "node.application.name" .) }}
       containers:
         - name: "{{ include "node.application.name" . }}"
-          image: {{ .Values.application.image.tag }}
+          image: "{{ include "node.application.imageURL" . }}"
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           securityContext:
             runAsUser: 1000
