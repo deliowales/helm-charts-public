@@ -43,7 +43,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.healthcheck.readinessPath | string | `""` |  |
 | application.image.pullPolicy | string | `"Always"` |  |
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
-| application.image.tag | string | `""` | Image tag to be pulled |
+| application.image.tag | string | `"0.0.0"` | Image tag to be pulled |
 | application.name | string | `"php"` | Name of the application e.g. Deals |
 | application.oldWorld.enabled | bool | `false` | Configure Old World deployments. Only to be used with `Horizon` or `Event`. |
 | application.oldWorld.env | list | `[]` |  |
