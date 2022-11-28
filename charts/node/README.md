@@ -2,7 +2,7 @@
 
 A generic chart to be used for all nodeJS microservices
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square)
 
 ## Adding the Helm repo
 
