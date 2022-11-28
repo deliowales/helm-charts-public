@@ -9,7 +9,7 @@ Application Name
 Define the container image urls
 */}}
 {{- define "go.application.imageURL" -}}
-  {{- printf "%s/%s:%s" (include "go.cloud.containerRegistryURL" .) .Values.application.image.repository (include "go.application.image.tag" . | required "An image tag needs to be defined.") }}
+  {{- printf "%s/%s:%s" (include "go.cloud.containerRegistryURL" .) .Values.application.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
 {{- end -}}
 
 {{- define "go.application.oldWorldImageURL" -}}
@@ -26,19 +26,6 @@ Define container security context
   runAsNonRoot: true
   readOnlyRootFilesystem: true
 {{- end }}
-
-{{/*
-Define container image tag
-*/}}
-{{- define "go.application.image.tag" -}}
-  {{- $provider := (include "go.cloud.provider" .) -}}
-  {{- $environment := (include "go.cloud.environment" .) -}}
-  {{- if or (and (or (eq $environment "uat") (eq $environment "staging-demo")) (eq $provider "aws")) (and (eq $environment "staging-production") (eq $provider "azure")) -}}
-    {{- default "latest" .Values.application.image.tag -}}
-  {{- else }}
-    {{- .Values.application.image.tag -}}
-  {{- end -}}
-{{- end -}}
 
 {{/*
 Vault Agent Annotations

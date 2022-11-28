@@ -22,7 +22,7 @@ application:
     # -- Name of the ECR/ACR repository
     repository: ""
     # -- Image tag to be pulled
-    tag: ""
+    tag: "0.0.0"
     pullPolicy: Always
   oldWorld:
     # -- Configure Old World deployments. Only to be used with `Horizon` or `Event`.

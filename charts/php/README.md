@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 0.1.13](https://img.shields.io/badge/Version-0.1.13-informational?style=flat-square)
+![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -43,7 +43,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.healthcheck.readinessPath | string | `""` |  |
 | application.image.pullPolicy | string | `"Always"` |  |
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
-| application.image.tag | string | `""` | Image tag to be pulled |
+| application.image.tag | string | `"0.0.0"` | Image tag to be pulled |
 | application.name | string | `"php"` | Name of the application e.g. Deals |
 | application.oldWorld.enabled | bool | `false` | Configure Old World deployments. Only to be used with `Horizon` or `Event`. |
 | application.oldWorld.env | list | `[]` |  |
@@ -82,14 +82,16 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
 | destinationRule.enabled | bool | `true` |  |
-| ingress.enabled | bool | `false` |  |
-| ingress.path | string | `""` |  |
-| ingress.pathRouted | string | `""` |  |
+| istio.externalIngress.enabled | bool | `true` |  |
+| istio.externalIngress.path | string | `""` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
 | istio.portLevelSettings | list | `[]` |  |
 | istio.principals | list | `[]` |  |
 | istio.subsets | list | `[]` |  |
 | istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
+| istio.virtualService.enabled | bool | `true` |  |
+| istio.virtualService.gateways | list | `[]` |  |
+| istio.virtualService.hosts | list | `[]` |  |
 | job.annotations | string | `nil` |  |
 | job.args | string | `""` |  |
 | job.backoffLimit | int | `2` |  |
@@ -101,7 +103,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | job.resources.requests.memory | string | `""` |  |
 | job.restartPolicy | string | `"OnFailure"` |  |
 | job.vault.enabled | bool | `true` |  |
-| kong.enabled | bool | `false` |  |
 | newrelic | object | `{"licenseKey":""}` | The license key for New Relic. Only needed for FluentBit containers which are only used by PHP services. |
 | nginx.image.pullPolicy | string | `"Always"` |  |
 | nginx.image.repository | string | `"nginx"` |  |
@@ -122,7 +123,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
 | service.externalDNS.host | string | `""` |  |
-| service.kong | object | `{"stripPath":""}` | Strip the path defined in Ingress resource and then forward the request to the upstream service. |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.enabled | bool | `true` |  |
@@ -135,6 +135,3 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
-| virtualService.enabled | bool | `true` |  |
-| virtualService.gateways | list | `[]` |  |
-| virtualService.hosts | list | `[]` |  |
