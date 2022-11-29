@@ -56,7 +56,7 @@ spec:
             {{- toYaml .Values.application.resources | nindent 12 }}
           livenessProbe:
             exec:
-              command: ["z", "-addr=:50051"]
+              command: ["/go/bin/grpc_health_probe", "-addr=:50051"]
             initialDelaySeconds: 10
             timeoutSeconds: 5
           readinessProbe:
