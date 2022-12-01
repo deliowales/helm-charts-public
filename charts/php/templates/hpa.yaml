@@ -1,5 +1,5 @@
-{{- if and (eq .Values.deployment.hpa.enabled true) (lt .Capabilities.KubeVersion.Minor "21") }}
-apiVersion: autoscaling/v2beta1
+{{- if eq .Values.deployment.hpa.enabled true }}
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "php.application.name" . }}
@@ -18,9 +18,13 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.deployment.hpa.targetCPU }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.deployment.hpa.targetCPU }}
     - type: Resource
       resource:
         name: memory
-        targetAverageValue: {{ include "php.deployment.hpa.targetMemory" . }}
+        target:
+          type: Value
+          averageValue: {{ include "php.deployment.hpa.targetMemory" . }}
 {{- end }}

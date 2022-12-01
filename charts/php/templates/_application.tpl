@@ -12,10 +12,6 @@ Define the container image urls
   {{- printf "%s/%s:%s" (include "php.cloud.containerRegistryURL" .) .Values.application.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
 {{- end -}}
 
-{{- define "php.application.oldWorldImageURL" -}}
-  {{- printf "%s/%s:%s" (include "php.cloud.containerRegistryURL" .) .Values.application.oldWorld.image.repository .Values.application.oldWorld.image.tag }}
-{{- end -}}
-
 {{/*
 Define container security context
 */}}

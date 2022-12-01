@@ -9,8 +9,8 @@ application:
   args: []
   extraVolumes: []
   healthcheck:
-    livenessPath: ""
-    readinessPath: ""
+    livenessPath: "/_/system/liveness"
+    readinessPath: "/_/system/readiness"
     headers: ""
   # -- Enable CRON. This is only to be used with `Horizon`
   cron:
@@ -24,14 +24,6 @@ application:
     # -- Image tag to be pulled
     tag: "0.0.0"
     pullPolicy: Always
-  oldWorld:
-    # -- Configure Old World deployments. Only to be used with `Horizon` or `Event`.
-    enabled: false
-    env: []
-    image:
-      repository: ""
-      tag: ""
-      pullPolicy: Always
   # @ignored Application container resources. Please ensure that these are fine-tuned when load-testing
   # has been carried out and a baseline has been defined.
   resources:

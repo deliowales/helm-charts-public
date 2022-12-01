@@ -4,9 +4,6 @@ metadata:
   name: "{{ include "php.application.name" . }}"
   labels:
     {{- include "php.labels" . | nindent 4 }}
-    {{- if eq .Values.application.oldWorld.enabled true }}
-    version: newworld
-    {{- end }}
   annotations:
     {{- include "php.annotations" . | nindent 4 }}
 spec:
@@ -26,9 +23,6 @@ spec:
         aadpodidbinding: {{ .Values.azure.identity.name }}
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        {{- if eq .Values.application.oldWorld.enabled true }}
-        version: newworld
-        {{- end }}
     spec:
       {{- include "php.deployment.topologySpreadConstraints" . | nindent 6 }}
       serviceAccountName: {{ include "php.application.name" . }}
