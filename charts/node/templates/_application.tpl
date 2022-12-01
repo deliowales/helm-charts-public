@@ -12,10 +12,6 @@ Define the container image urls
   {{- printf "%s/%s:%s" (include "node.cloud.containerRegistryURL" .) .Values.application.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
 {{- end -}}
 
-{{- define "node.application.oldWorldImageURL" -}}
-  {{- printf "%s/%s:%s" (include "node.cloud.containerRegistryURL" .) .Values.application.oldWorld.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
-{{- end -}}
-
 {{/*
 Define container security context
 */}}

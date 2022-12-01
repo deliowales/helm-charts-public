@@ -12,10 +12,6 @@ Define the container image urls
   {{- printf "%s/%s:%s" (include "go.cloud.containerRegistryURL" .) .Values.application.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
 {{- end -}}
 
-{{- define "go.application.oldWorldImageURL" -}}
-  {{- printf "%s/%s:%s" (include "go.cloud.containerRegistryURL" .) .Values.application.oldWorld.image.repository (include "go.application.image.tag" . | required "An image tag needs to be defined.") }}
-{{- end -}}
-
 {{/*
 Define container security context
 */}}

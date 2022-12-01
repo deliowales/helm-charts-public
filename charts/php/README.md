@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square)
+![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -39,17 +39,12 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.env | list | `[]` | Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt. |
 | application.extraVolumes | list | `[]` |  |
 | application.healthcheck.headers | string | `""` |  |
-| application.healthcheck.livenessPath | string | `""` |  |
-| application.healthcheck.readinessPath | string | `""` |  |
+| application.healthcheck.livenessPath | string | `"/_/system/liveness"` |  |
+| application.healthcheck.readinessPath | string | `"/_/system/readiness"` |  |
 | application.image.pullPolicy | string | `"Always"` |  |
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
 | application.image.tag | string | `"0.0.0"` | Image tag to be pulled |
 | application.name | string | `"php"` | Name of the application e.g. Deals |
-| application.oldWorld.enabled | bool | `false` | Configure Old World deployments. Only to be used with `Horizon` or `Event`. |
-| application.oldWorld.env | list | `[]` |  |
-| application.oldWorld.image.pullPolicy | string | `"Always"` |  |
-| application.oldWorld.image.repository | string | `""` |  |
-| application.oldWorld.image.tag | string | `""` |  |
 | authorizationPolicy.enabled | bool | `true` |  |
 | aws | object | `{"iamRole":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
