@@ -2,7 +2,7 @@
 
 A generic chart to be used for all nodeJS microservices
 
-![Version: 0.2.3](https://img.shields.io/badge/Version-0.2.3-informational?style=flat-square)
+![Version: 0.2.4](https://img.shields.io/badge/Version-0.2.4-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -102,7 +102,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
 | service.externalDNS.host | string | `""` |  |
-| service.port | int | `8080` |  |
+| service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.enabled | bool | `true` |  |
 | serviceAccount.name | string | `""` | Leave blank to default to the application name |
