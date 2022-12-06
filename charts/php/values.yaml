@@ -96,7 +96,7 @@ deployment:
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
   topologySpreadConstraints:
     maxSkew: 1
-    topologyKey: "kubernetes.io/hostname"
+    topologyKey: "topology.kubernetes.io/zone"
     whenUnsatisfiable: "ScheduleAnyway"
 
   # -- Replica count not considering the HPA
