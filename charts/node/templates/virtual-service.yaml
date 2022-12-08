@@ -23,6 +23,10 @@ spec:
   http:
     {{- if .Values.istio.externalIngress.enabled }}
     - match:
+        # Node does not support URL normalisation, so we match with a trailing slash first, to strip it from the URI
+        # if needed. This means both paths like `/kong/app/app_path` and `/kong/app` will work.
+        - uri:
+            prefix: {{ .Values.istio.externalIngress.path }}/
         - uri:
             prefix: {{ .Values.istio.externalIngress.path }}
       rewrite:
