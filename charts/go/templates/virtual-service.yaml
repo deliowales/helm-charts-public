@@ -25,4 +25,7 @@ spec:
     - route:
         - destination:
             host: {{ include "go.application.name" . }}
+        retries:
+          attempts: 2
+          perTryTimeout: 2s
 {{- end }}
