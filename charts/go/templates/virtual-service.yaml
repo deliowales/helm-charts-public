@@ -22,10 +22,10 @@ spec:
   {{- end }}
   {{- end }}
   http:
-  - route:
+    - route:
       - destination:
           host: {{ include "go.application.name" . }}
-      retries:
-        attempts: 2
-        perTryTimeout: 2s
+        retries:
+          attempts: 2
+          perTryTimeout: 2s
 {{- end }}
