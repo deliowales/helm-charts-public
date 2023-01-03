@@ -126,8 +126,8 @@ istio:
     path: "" # the path to remove e.g. /kong/branding
   retries:
     enabled: true
-    attempts: 3
-    perTryTimeout: 3s
+    attempts: 2
+    perTryTimeout: 2s
 
 
 job:

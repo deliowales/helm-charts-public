@@ -112,6 +112,10 @@ istio:
   principals: []
   # Subsets of endpoints of a service for routing traffic to specific versions of application.
   subsets: []
+  retries:
+    enabled: true
+    attempts: 2
+    perTryTimeout: 2s
 
 job:
   enabled: false

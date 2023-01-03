@@ -122,6 +122,10 @@ istio:
     enabled: true
     gateways: []
     hosts: []
+  retries:
+    enabled: true
+    attempts: 2
+    perTryTimeout: 2s
 
 
 job:
