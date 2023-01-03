@@ -15,7 +15,7 @@ spec:
     {{ printf "- %s" .}}
     {{- end }}
     {{- end }}
-  {{- if .Values.virtualService.gateways }}
+  {{- if .Values.istio.virtualService.gateways }}
   gateways:
   {{- range .Values.istio.virtualService.gateways }}
     {{ printf "- %s" .}}
