@@ -34,10 +34,10 @@ spec:
     - route:
         - destination:
             host: {{ include "php.application.name" . }}
-    {{- end }}
-  retries:
-    {{- if .Values.istio.retries.enabled }}
-    attempts: {{ .Values.istio.retries.attempts }}
-    perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
+         retries:
+          {{- if .Values.istio.retries.enabled }}
+          attempts: {{ .Values.istio.retries.attempts }}
+          perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
+          {{- end }}
     {{- end }}
 {{- end }}
