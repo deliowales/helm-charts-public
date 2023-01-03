@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 0.2.7](https://img.shields.io/badge/Version-0.2.7-informational?style=flat-square)
+![Version: 0.2.8](https://img.shields.io/badge/Version-0.2.8-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -82,6 +82,9 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | istio.mtls.mode | string | `"STRICT"` |  |
 | istio.portLevelSettings | list | `[]` |  |
 | istio.principals | list | `[]` |  |
+| istio.retries.attempts | int | `2` |  |
+| istio.retries.enabled | bool | `true` |  |
+| istio.retries.perTryTimeout | string | `"2s"` |  |
 | istio.subsets | list | `[]` |  |
 | istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
 | istio.virtualService.enabled | bool | `true` |  |
