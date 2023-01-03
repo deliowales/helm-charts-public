@@ -79,6 +79,9 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | istio.retries.perTryTimeout | string | `"2s"` |  |
 | istio.subsets | list | `[]` |  |
 | istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
+| istio.virtualService.enabled | bool | `true` |  |
+| istio.virtualService.gateways | list | `[]` |  |
+| istio.virtualService.hosts | list | `[]` |  |
 | job.annotations | string | `nil` |  |
 | job.args | string | `""` |  |
 | job.backoffLimit | int | `2` |  |
@@ -109,6 +112,3 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
-| virtualService.enabled | bool | `true` |  |
-| virtualService.gateways | list | `[]` |  |
-| virtualService.hosts | list | `[]` |  |

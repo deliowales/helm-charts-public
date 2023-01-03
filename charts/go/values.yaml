@@ -112,6 +112,10 @@ istio:
   principals: []
   # Subsets of endpoints of a service for routing traffic to specific versions of application.
   subsets: []
+  virtualService:
+    enabled: true
+    gateways: []
+    hosts: []
   retries:
     enabled: true
     attempts: 2
@@ -173,8 +177,3 @@ vault:
   env: ""
   # -- Role name
   role: ""
-
-virtualService:
-  enabled: true
-  gateways: []
-  hosts: []
