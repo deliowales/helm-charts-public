@@ -43,5 +43,4 @@ spec:
           attempts: {{ .Values.istio.retries.attempts }}
           perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
           {{- end }}
-    {{- end }}
 {{- end }}
