@@ -22,7 +22,7 @@ spec:
   {{- end }}
   {{- end }}
   http:
-   - route:
+    - route:
         - destination:
             host: {{ include "go.application.name" . }}
         retries:
