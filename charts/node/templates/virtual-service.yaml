@@ -34,19 +34,19 @@ spec:
       route:
         - destination:
             host: {{ include "node.application.name" . }}
-          retries:
-            {{- if .Values.istio.retries.enabled }}
-            attempts: {{ .Values.istio.retries.attempts }}
-            perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
+      retries:
+        {{- if .Values.istio.retries.enabled }}
+        attempts: {{ .Values.istio.retries.attempts }}
+        perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
             {{- end }}
     {{- else }}
     - route:
         - destination:
             host: {{ include "node.application.name" . }}
-        retries:
-          {{- if .Values.istio.retries.enabled }}
-          attempts: {{ .Values.istio.retries.attempts }}
-          perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
+    retries:
+      {{- if .Values.istio.retries.enabled }}
+      attempts: {{ .Values.istio.retries.attempts }}
+      perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
           {{- end }}
     {{- end }}
 {{- end }}
