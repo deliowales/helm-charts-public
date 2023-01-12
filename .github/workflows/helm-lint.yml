@@ -32,9 +32,3 @@ jobs:
           do
             /usr/local/bin/helm lint $chart --values=$chart/values.yaml
           done
-
-      - name: charts
-        shell: bash
-        run: |
-          ./get-chart-versions.sh
-          cat README.md
