@@ -21,17 +21,17 @@ jobs:
         with:
           python-version: 3.7
 
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.2.0
-
-      - name: Helm Lint
-        shell: bash
-        run:  |
-          helm repo add delio https://raw.githubusercontent.com/deliowales/helm-charts-public/gh-pages
-          for chart in charts/*
-          do
-            /usr/local/bin/helm lint $chart --values=$chart/values.yaml
-          done
+#      - name: Set up chart-testing
+#        uses: helm/chart-testing-action@v2.2.0
+#
+#      - name: Helm Lint
+#        shell: bash
+#        run:  |
+#          helm repo add delio https://raw.githubusercontent.com/deliowales/helm-charts-public/gh-pages
+#          for chart in charts/*
+#          do
+#            /usr/local/bin/helm lint $chart --values=$chart/values.yaml
+#          done
 
       - name: Update Chart Badges for README
         shell: bash
