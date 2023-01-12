@@ -32,3 +32,8 @@ jobs:
           do
             /usr/local/bin/helm lint $chart --values=$chart/values.yaml
           done
+
+      - name: Update Chart Badges for README
+        shell: bash
+        run: |
+          ./get-chart-versions.sh
