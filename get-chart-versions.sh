@@ -2,7 +2,7 @@
 echo "# Charts" > README.md
 for d in charts/*/ ; do
   echo "Getting chart version for" "$d"
-  version=$(ggrep -oP '(?<=version\:\s)[^ ]*' $d/Chart.yaml | tr -d \'\" )
+  version=$(grep -oP '(?<=version\:\s)[^ ]*' $d/Chart.yaml | tr -d \'\" )
   echo "$version"
   echo $d
   chart=${d#*/}
