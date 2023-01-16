@@ -114,6 +114,10 @@ spec:
             - name: tmp
               mountPath: /tmp
 
+        {{- if eq .Values.deployment.milisearch.enabled true}}
+        {{- include "php.containers.logs" . | nindent 8 }}
+        {{- end }}
+
         - name: logs
           image: "{{ include "php.logging.imageURL" . }}"
           imagePullPolicy: IfNotPresent
