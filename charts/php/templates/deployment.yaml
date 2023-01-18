@@ -71,7 +71,7 @@ spec:
               {{- if .Values.application.extraVolumes -}}
               {{- include "php.application.extraConfigmapMounts" . | nindent 12 }}
               {{- end }}
-          {{- if eq .Values.deployment.nginx.enabled true}}
+          {{- if eq .Values.deployment.nginx.enabled true }}
         - name: nginx
           image: "{{ include "php.deployment.nginx.imageURL" . }}"
           imagePullPolicy: IfNotPresent

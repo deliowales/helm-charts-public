@@ -79,9 +79,6 @@ cron:
       memory: ""
 
 deployment:
-  nginx:
-    enabled: true
-    # Enables the nginx pod to be created with the deployment
   enabled: true
   # Horizontal Pod Autoscaler configuration.
   hpa:
@@ -95,6 +92,13 @@ deployment:
     # -- Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary.
     targetMemory: ""
 
+  # Enables the nginx pod to be created with the deployment
+  nginx:
+    enabled: true
+
+  # -- Replica count not considering the HPA
+  replicaCount: 3
+
   # -- Configure Topology Spread Constrains.
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
   topologySpreadConstraints:
@@ -102,8 +106,6 @@ deployment:
     topologyKey: "topology.kubernetes.io/zone"
     whenUnsatisfiable: "ScheduleAnyway"
 
-  # -- Replica count not considering the HPA
-  replicaCount: 3
 
 destinationRule:
   enabled: true
