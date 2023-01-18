@@ -71,7 +71,7 @@ spec:
               {{- if .Values.application.extraVolumes -}}
               {{- include "php.application.extraConfigmapMounts" . | nindent 12 }}
               {{- end }}
-
+          {{- if eq .Values.deployment.nginx.enabled true}}
         - name: nginx
           image: "{{ include "php.deployment.nginx.imageURL" . }}"
           imagePullPolicy: IfNotPresent
@@ -113,7 +113,7 @@ spec:
               mountPath: /var/www/html
             - name: tmp
               mountPath: /tmp
-
+          {{- end }}
         - name: logs
           image: "{{ include "php.logging.imageURL" . }}"
           imagePullPolicy: IfNotPresent

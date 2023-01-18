@@ -79,6 +79,9 @@ cron:
       memory: ""
 
 deployment:
+  nginx:
+    enabled: true
+    # Enables the nginx pod to be created with the deployment
   enabled: true
   # Horizontal Pod Autoscaler configuration.
   hpa:
