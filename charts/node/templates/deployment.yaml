@@ -39,7 +39,7 @@ spec:
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}
             - name: DISABLE_INSTANA
-              value: "TRUE"
+              value: "true"
             - name: PLATFORM
               value: "{{ include "node.cloud.provider" . }}"
             {{- if eq (include "node.cloud.provider" .) "AWS" }}
