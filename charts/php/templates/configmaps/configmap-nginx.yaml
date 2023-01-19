@@ -12,6 +12,8 @@ data:
   default.conf: |-
     client_header_buffer_size 32k;
     large_client_header_buffers 4 32k;
+    server_tokens off;
+    client_max_body_size {{ .Values.nginx.config.clientMaxBodySize }};
     server {
       listen 8080 default_server;
       listen [::]:8080 default_server;
