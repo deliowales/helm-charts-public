@@ -102,6 +102,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | job.restartPolicy | string | `"OnFailure"` |  |
 | job.vault.enabled | bool | `true` |  |
 | newrelic | object | `{"licenseKey":""}` | The license key for New Relic. Only needed for FluentBit containers which are only used by PHP services. |
+| nginx.config.clientMaxBodySize | string | `"1M"` |  |
 | nginx.image.pullPolicy | string | `"Always"` |  |
 | nginx.image.repository | string | `"nginx"` |  |
 | nginx.image.tag | string | `"1.21.1-alpine-unprivileged"` |  |

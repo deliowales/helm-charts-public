@@ -169,6 +169,9 @@ newrelic:
   licenseKey: ""
 
 nginx:
+  config:
+#    This is nginx default max body size
+    clientMaxBodySize: 1M
   image:
     repository: nginx
     tag: 1.21.1-alpine-unprivileged
