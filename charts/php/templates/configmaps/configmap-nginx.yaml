@@ -20,7 +20,7 @@ data:
       root /var/www/html/public;
       server_name _;
       index index.php;
-      if ($request_method !~ ^(GET|POST|PATCH|DELETE)$ ) {
+      if ($request_method !~ ^(GET|POST|PATCH|DELETE|PUT)$ ) {
           return 405;
       }
       add_header X-Frame-Options "SAMEORIGIN";
