@@ -2,7 +2,7 @@
 
 A generic chart to be used for all GoLang microservices
 
-![Version: 0.1.8](https://img.shields.io/badge/Version-0.1.8-informational?style=flat-square)
+![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -61,6 +61,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | cloud.provider | string | `""` | **Required**: Cloud Provider. Either `AWS` or `Azure` |
 | cloud.region | string | `""` | Cloud Region. Only needed for AWS |
 | deployment.enabled | bool | `true` |  |
+| deployment.grpc | bool | `false` |  |
 | deployment.hpa.enabled | bool | `true` |  |
 | deployment.hpa.maxReplicas | int | `10` | Maximum number of replica pods |
 | deployment.hpa.minReplicas | int | `3` | Minimum number of replica pods |

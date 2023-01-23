@@ -74,6 +74,7 @@ cloud:
 
 deployment:
   enabled: true
+  grpc: false
   # Horizontal Pod Autoscaler configuration.
   hpa:
     enabled: true
