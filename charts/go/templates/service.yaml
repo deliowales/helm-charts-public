@@ -17,10 +17,15 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
+    {{- if .Values.deployment.grpc }}
+    - name: grpc
+      appProtocol: grpc
+    {{- else }}
     - name: http
+    {{- end }}
       protocol: TCP
       port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: 50051
   selector:
     app.kubernetes.io/name: {{ include "go.application.name" . }}
 {{- end }}
