@@ -2,7 +2,7 @@
 
 A generic chart to be used for all GoLang microservices
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -67,6 +67,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.hpa.minReplicas | int | `3` | Minimum number of replica pods |
 | deployment.hpa.targetCPU | int | `70` | Target CPU usage (%) |
 | deployment.hpa.targetMemory | string | `""` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
+| deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
 | destinationRule.enabled | bool | `true` |  |

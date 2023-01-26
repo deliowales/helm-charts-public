@@ -86,6 +86,9 @@ deployment:
     targetCPU: 70
     # -- Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary.
     targetMemory: ""
+  # Specify what type of node you want this app to be deployed on: ["cpu", "memory"]
+  nodeSelector:
+    toleration: ""
   # -- Configure Topology Spread Constrains.
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
   topologySpreadConstraints:
