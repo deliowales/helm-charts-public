@@ -1,5 +1,5 @@
 {{- define "node.deployment.topologySpreadConstraints" -}}
-topologySpreadConstraints:
+  topologySpreadConstraints:
   - maxSkew: {{ .Values.deployment.topologySpreadConstraints.maxSkew }}
     topologyKey: {{ .Values.deployment.topologySpreadConstraints.topologyKey }}
     whenUnsatisfiable: {{ .Values.deployment.topologySpreadConstraints.whenUnsatisfiable }}
