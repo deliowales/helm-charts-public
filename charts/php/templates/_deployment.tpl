@@ -18,3 +18,14 @@ Set the targetMemory to be (request+limit) / 2. Automatically rounded down to ne
 {{- define "php.deployment.nginx.imageURL" -}}
   {{- printf "%s/%s:%s" .Values.cloud.containerRegistryURL .Values.nginx.image.repository .Values.nginx.image.tag }}
 {{- end -}}
+
+{{/*
+Set the nodeSelector toleration
+*/}}
+{{- define "node.deployment.nodeSelector.toleration" -}}
+  {{- if eq .Values.deployment.nodeSelector.toleration "cpu" -}}
+    scheduling.cast.ai/compute-optimized: "true"
+  {{- else -}}
+    scheduling.cast.ai/memory-optimized: "true"
+  {{- end }}
+{{- end -}}
