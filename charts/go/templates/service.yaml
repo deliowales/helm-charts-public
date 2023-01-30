@@ -17,11 +17,11 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    {{- if .Values.deployment.grpc }}
-    - name: grpc
-    {{- else }}
-    - name: http
-    {{- end }}
+    {{ $name := "http" -}}
+    {{ if .Values.deployment.grpc }}
+    {{- $name = "grpc" -}}
+    {{ end -}}
+    - name: {{ $name }}
       protocol: TCP
       port: {{ .Values.service.port }}
       targetPort: 50051
