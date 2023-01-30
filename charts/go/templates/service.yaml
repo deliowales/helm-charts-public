@@ -19,7 +19,6 @@ spec:
   ports:
     {{- if .Values.deployment.grpc }}
     - name: grpc
-      appProtocol: grpc
     {{- else }}
     - name: http
     {{- end }}
