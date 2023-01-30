@@ -23,16 +23,3 @@ spec:
     {{- end }}
   {{- end -}}
 {{- end -}}
-
-{{- if eq .Values.application.name "virus-scanner" }}
----
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: s3-virus-scanner
-spec:
-  host: {{  .Values.application.blobStorageURL }}
-  trafficPolicy:
-    tls:
-      mode: DISABLE
-{{- end }}
