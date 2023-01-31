@@ -21,6 +21,9 @@ spec:
   {{- end }}
   {{- end }}
   http:
+    {{- if .Values.istio.virtualService.rules }}
+      {{- toYaml .Values.istio.virtualService.rules | nindent 4 }}
+    {{- end }}
     {{- if .Values.istio.externalIngress.enabled }}
     - match:
         # Node does not support URL normalisation, so we match with a trailing slash first, to strip it from the URI
