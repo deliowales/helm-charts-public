@@ -2,3 +2,7 @@ apiVersion: v2
 name: node
 description: A generic chart to be used for all nodeJS microservices
 version: '0.2.14'
+#dependencies:
+#  - name: networking
+#    version: 0.0.1
+#    repository: 'file:///Users/adamyaziji/git/delio/helm-charts-public/charts/networking'

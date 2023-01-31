@@ -1,0 +1,26 @@
+destinationRule:
+  enabled: true
+
+istio:
+  tls:
+    mode: ISTIO_MUTUAL
+  mtls:
+    mode: STRICT
+  portLevelSettings: []
+  # List of services **allowed** to make requests to the current service.
+  principals: []
+  # Subsets of endpoints of a service for routing traffic to specific versions of application.
+  subsets: []
+  virtualService:
+    enabled: true
+    gateways: [ ]
+    hosts: [ ]
+  externalIngress:
+    enabled: true
+    path: "" # the path to remove e.g. /kong/branding
+  retries:
+    enabled: true
+    attempts: 2
+    perTryTimeout: 2s
+
+name: testing
