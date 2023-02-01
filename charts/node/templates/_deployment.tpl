@@ -5,7 +5,7 @@
     whenUnsatisfiable: {{ .Values.deployment.topologySpreadConstraints.whenUnsatisfiable }}
     labelSelector:
       matchLabels:
-        app: {{ .Values.application.name | lower }}
+        app: {{ include "node.application.name" . }}
 {{- end }}
 
 {{/*

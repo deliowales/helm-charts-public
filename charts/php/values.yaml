@@ -7,6 +7,8 @@ application:
   name: "php"
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
+  ports:
+    containerPort: 8080
   extraVolumes: []
   healthcheck:
     livenessPath: "/_/system/liveness"
@@ -33,13 +35,6 @@ application:
     requests:
       cpu: ""
       memory: ""
-
-authorizationPolicy:
-  enabled: true
-
-# -- IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed.
-aws:
-  iamRole: ""
 
 azure:
   identity:
@@ -106,33 +101,6 @@ deployment:
     topologyKey: "topology.kubernetes.io/zone"
     whenUnsatisfiable: "ScheduleAnyway"
 
-
-destinationRule:
-  enabled: true
-
-istio:
-  tls:
-    mode: ISTIO_MUTUAL
-  mtls:
-    mode: STRICT
-  # List of services **allowed** to make requests to the current service.
-  principals: []
-  # Subsets of endpoints of a service for routing traffic to specific versions of application.
-  subsets: []
-  portLevelSettings: []
-  externalIngress:
-    enabled: true
-    path: "" # the path to remove e.g. /kong/branding
-  virtualService:
-    enabled: true
-    gateways: []
-    hosts: []
-  retries:
-    enabled: true
-    attempts: 2
-    perTryTimeout: 2s
-
-
 job:
   enabled: false
   name: ""
@@ -169,10 +137,6 @@ logging:
       cpu: "10m"
       memory: "10Mi"
 
-# -- The license key for New Relic. Only needed for FluentBit containers which are only used by PHP services.
-newrelic:
-  licenseKey: ""
-
 nginx:
   config:
 #    This is nginx default max body size
@@ -198,37 +162,12 @@ pdb:
   enabled: false
   minAvailable: 2
 
-peerAuthentication:
-  enabled: true
-
 # Configuration options for `php.ini`. Leave blank for default values.
 phpConfig:
   maxExecutionTime: 30
   memoryLimit: 128M
   uploadMaxFilesize: 2M
   postMaxSize: 8M
-
-
-service:
-  enabled: true
-  externalDNS:
-    enabled: false
-    host: ""
-  port: 80
-  type: ClusterIP
-
-serviceAccount:
-  enabled: true
-  # -- Leave blank to default to the application name
-  name: ""
-
-serviceEntry:
-  enabled: false
-  hosts: []
-  location: ""
-  ports: []
-  ping:
-    hosts: []
 
 # -- Vault configuration
 vault:

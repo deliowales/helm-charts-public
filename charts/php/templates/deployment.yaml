@@ -54,6 +54,10 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.application.ports.containerPort }}
+              protocol: TCP
           readinessProbe:
             tcpSocket:
               port: 9000

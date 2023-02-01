@@ -1,12 +1,12 @@
-{{- if and (eq .Values.istio.virtualService.enabled true) (ne .Values.application.name "horizon") }}
+{{- if and (eq .Values.istio.virtualService.enabled true) (ne (include "networking.application.name" .) "horizon") }}
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ include "node.application.name" . }}
+  name: {{ include "networking.application.name" . }}
   labels:
-    {{- include "node.labels" . | nindent 4 }}
+    {{- include "networking.labels" . | nindent 4 }}
   annotations:
-    {{- include "node.annotations" . | nindent 4 }}
+    {{- include "networking.annotations" . | nindent 4 }}
 spec:
   hosts:
     {{- if .Values.istio.virtualService.hosts }}
@@ -21,32 +21,37 @@ spec:
   {{- end }}
   {{- end }}
   http:
+    {{- if .Values.istio.virtualService.rules }}
+      {{- toYaml .Values.istio.virtualService.rules | nindent 4 }}
+    {{- end }}
     {{- if .Values.istio.externalIngress.enabled }}
     - match:
         # Node does not support URL normalisation, so we match with a trailing slash first, to strip it from the URI
         # if needed. This means both paths like `/kong/app/app_path` and `/kong/app` will work.
-        - uri:
-            prefix: {{ .Values.istio.externalIngress.path }}/
-        - uri:
-            prefix: {{ .Values.istio.externalIngress.path }}
+      {{- if eq .Values.global.application.language "node" }}
+      - uri:
+          prefix: {{ .Values.istio.externalIngress.path }}/
+      {{- end }}
+      - uri:
+          prefix: {{ .Values.istio.externalIngress.path }}
       rewrite:
         uri: "/"
       route:
         - destination:
-            host: {{ include "node.application.name" . }}
+            host: {{ include "networking.application.name" . }}
       retries:
         {{- if .Values.istio.retries.enabled }}
         attempts: {{ .Values.istio.retries.attempts }}
         perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
-            {{- end }}
+        {{- end }}
     {{- else }}
     - route:
         - destination:
-            host: {{ include "node.application.name" . }}
+            host: {{ include "networking.application.name" . }}
     retries:
       {{- if .Values.istio.retries.enabled }}
       attempts: {{ .Values.istio.retries.attempts }}
       perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
-          {{- end }}
+      {{- end }}
     {{- end }}
 {{- end }}

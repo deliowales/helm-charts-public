@@ -45,8 +45,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
 | application.image.tag | string | `"0.0.0"` | Image tag to be pulled |
 | application.name | string | `"php"` | Name of the application e.g. Deals |
-| authorizationPolicy.enabled | bool | `true` |  |
-| aws | object | `{"iamRole":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
+| application.ports.containerPort | int | `8080` |  |
 | azure.identity.clientName | string | `""` |  |
 | azure.identity.enabled | bool | `false` |  |
 | azure.identity.name | string | `""` |  |
@@ -78,20 +77,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
-| destinationRule.enabled | bool | `true` |  |
-| istio.externalIngress.enabled | bool | `true` |  |
-| istio.externalIngress.path | string | `""` |  |
-| istio.mtls.mode | string | `"STRICT"` |  |
-| istio.portLevelSettings | list | `[]` |  |
-| istio.principals | list | `[]` |  |
-| istio.retries.attempts | int | `2` |  |
-| istio.retries.enabled | bool | `true` |  |
-| istio.retries.perTryTimeout | string | `"2s"` |  |
-| istio.subsets | list | `[]` |  |
-| istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
-| istio.virtualService.enabled | bool | `true` |  |
-| istio.virtualService.gateways | list | `[]` |  |
-| istio.virtualService.hosts | list | `[]` |  |
 | job.annotations | string | `nil` |  |
 | job.args | string | `""` |  |
 | job.backoffLimit | int | `2` |  |
@@ -103,7 +88,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | job.resources.requests.memory | string | `""` |  |
 | job.restartPolicy | string | `"OnFailure"` |  |
 | job.vault.enabled | bool | `true` |  |
-| newrelic | object | `{"licenseKey":""}` | The license key for New Relic. Only needed for FluentBit containers which are only used by PHP services. |
 | nginx.config.clientMaxBodySize | string | `"1M"` |  |
 | nginx.image.pullPolicy | string | `"Always"` |  |
 | nginx.image.repository | string | `"nginx"` |  |
@@ -116,23 +100,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nginx.service.type | string | `"NodePort"` |  |
 | pdb.enabled | bool | `false` |  |
 | pdb.minAvailable | int | `2` |  |
-| peerAuthentication.enabled | bool | `true` |  |
 | phpConfig.maxExecutionTime | int | `30` |  |
 | phpConfig.memoryLimit | string | `"128M"` |  |
 | phpConfig.postMaxSize | string | `"8M"` |  |
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
-| service.enabled | bool | `true` |  |
-| service.externalDNS.enabled | bool | `false` |  |
-| service.externalDNS.host | string | `""` |  |
-| service.port | int | `80` |  |
-| service.type | string | `"ClusterIP"` |  |
-| serviceAccount.enabled | bool | `true` |  |
-| serviceAccount.name | string | `""` | Leave blank to default to the application name |
-| serviceEntry.enabled | bool | `false` |  |
-| serviceEntry.hosts | list | `[]` |  |
-| serviceEntry.location | string | `""` |  |
-| serviceEntry.ping.hosts | list | `[]` |  |
-| serviceEntry.ports | list | `[]` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |

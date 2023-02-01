@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Values.application.name }}-migrations"
+  name: "{{ include "node.application.name" . }}-migrations"
   labels:
     {{- include "node.labels" . | nindent 4 }}
   annotations:
@@ -29,7 +29,7 @@ spec:
           args: ["{{.Values.application.migrations.args }}"]
           env:
             - name: APP_NAME
-              value: {{ .Values.application.name | lower | quote }}
+              value: {{ include "node.application.name" . | quote }}
             - name: DISABLE_INSTANA
               value: "TRUE"
             - name: PLATFORM

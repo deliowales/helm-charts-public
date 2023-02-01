@@ -7,7 +7,7 @@
 Global labels. Do not indent, this is done in the manifest.
 */}}
 {{- define "node.labels" -}}
-app.kubernetes.io/name: {{ .Values.application.name | lower }}
+app.kubernetes.io/name: {{ include "node.application.name" . }}
 chart: {{ include "node.chartref" . }}
 release: {{ .Release.Name }}
 {{- end -}}

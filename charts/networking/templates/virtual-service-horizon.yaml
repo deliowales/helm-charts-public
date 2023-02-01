@@ -1,8 +1,8 @@
-{{- if eq .Values.application.name "horizon" }}
+{{- if eq (include "networking.application.name" .) "horizon" }}
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ include "php.application.name" . }}
+  name: {{ include "networking.application.name" . }}
 spec:
   hosts:
   {{- range .Values.istio.virtualService.hosts }}
@@ -19,7 +19,7 @@ spec:
             prefix: "/api"
       route:
         - destination:
-            host: {{ include "php.application.name" . }}
+            host: {{ include "networking.application.name" . }}
           headers:
             request:
               set:

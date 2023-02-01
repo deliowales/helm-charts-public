@@ -53,13 +53,6 @@ application:
     restartPolicy: OnFailure
     backoffLimit: 2
 
-authorizationPolicy:
-  enabled: true
-
-# -- IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed.
-aws:
-  iamRole: ""
-
 azure:
   identity:
     enabled: false
@@ -109,31 +102,6 @@ deployment:
   # -- Replica count not considering the HPA
   replicaCount: 3
 
-destinationRule:
-  enabled: true
-
-istio:
-  tls:
-    mode: ISTIO_MUTUAL
-  mtls:
-    mode: STRICT
-  # List of services **allowed** to make requests to the current service.
-  principals: []
-  # Subsets of endpoints of a service for routing traffic to specific versions of application.
-  subsets: []
-  virtualService:
-    enabled: true
-    gateways: [ ]
-    hosts: [ ]
-  externalIngress:
-    enabled: true
-    path: "" # the path to remove e.g. /kong/branding
-  retries:
-    enabled: true
-    attempts: 2
-    perTryTimeout: 2s
-
-
 job:
   enabled: false
   name: ""
@@ -156,28 +124,6 @@ job:
 pdb:
   enabled: false
   minAvailable: 2
-
-peerAuthentication:
-  enabled: true
-
-service:
-  enabled: true
-  externalDNS:
-    enabled: false
-    host: ""
-  port: 80
-  type: ClusterIP
-
-serviceAccount:
-  enabled: true
-  # -- Leave blank to default to the application name
-  name: ""
-
-serviceEntry:
-  enabled: false
-  hosts: []
-  location: ""
-  ports: []
 
 # -- Vault configuration
 vault:

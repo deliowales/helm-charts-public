@@ -1,3 +1,9 @@
+authorizationPolicy:
+  enabled: true
+
+aws:
+  iamRole: ""
+
 destinationRule:
   enabled: true
 
@@ -13,8 +19,9 @@ istio:
   subsets: []
   virtualService:
     enabled: true
-    gateways: [ ]
-    hosts: [ ]
+    gateways: []
+    hosts: []
+    rules: []
   externalIngress:
     enabled: true
     path: "" # the path to remove e.g. /kong/branding
@@ -23,4 +30,25 @@ istio:
     attempts: 2
     perTryTimeout: 2s
 
-name: testing
+
+peerAuthentication:
+  enabled: true
+
+service:
+  enabled: true
+  externalDNS:
+    enabled: false
+    host: ""
+  port: 80
+  type: ClusterIP
+
+serviceAccount:
+  enabled: true
+  # -- Leave blank to default to the application name
+  name: ""
+
+serviceEntry:
+  enabled: false
+  hosts: []
+  location: ""
+  ports: []

@@ -1,5 +1,5 @@
-{{/*{{- if eq .Values.destinationRule.enabled true }}*/}}
-apiVersion: networking.istio.io/v1alpha3
+{{- if eq .Values.destinationRule.enabled true }}
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: {{ include "networking.application.name" . }}
@@ -26,4 +26,4 @@ spec:
       {{- end }}
     {{- end }}
   {{- end -}}
-{{/*  {{- end -}}*/}}
+  {{- end -}}

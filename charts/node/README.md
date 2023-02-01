@@ -56,8 +56,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.readinessProbe.path | string | `"/_/system/readiness"` |  |
 | application.readinessProbe.port | int | `3000` |  |
 | application.readinessProbe.type | string | `"http"` | Type of readiness healthcheck. `http` or `tcp` |
-| authorizationPolicy.enabled | bool | `true` |  |
-| aws | object | `{"iamRole":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
 | azure.identity.enabled | bool | `false` |  |
 | azure.identity.name | string | `""` |  |
@@ -76,19 +74,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
-| destinationRule.enabled | bool | `true` |  |
-| istio.externalIngress.enabled | bool | `true` |  |
-| istio.externalIngress.path | string | `""` |  |
-| istio.mtls.mode | string | `"STRICT"` |  |
-| istio.principals | list | `[]` |  |
-| istio.retries.attempts | int | `2` |  |
-| istio.retries.enabled | bool | `true` |  |
-| istio.retries.perTryTimeout | string | `"2s"` |  |
-| istio.subsets | list | `[]` |  |
-| istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
-| istio.virtualService.enabled | bool | `true` |  |
-| istio.virtualService.gateways | list | `[]` |  |
-| istio.virtualService.hosts | list | `[]` |  |
 | job.annotations | string | `nil` |  |
 | job.args | string | `""` |  |
 | job.backoffLimit | int | `2` |  |
@@ -102,18 +87,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | job.vault.enabled | bool | `true` |  |
 | pdb.enabled | bool | `false` |  |
 | pdb.minAvailable | int | `2` |  |
-| peerAuthentication.enabled | bool | `true` |  |
-| service.enabled | bool | `true` |  |
-| service.externalDNS.enabled | bool | `false` |  |
-| service.externalDNS.host | string | `""` |  |
-| service.port | int | `80` |  |
-| service.type | string | `"ClusterIP"` |  |
-| serviceAccount.enabled | bool | `true` |  |
-| serviceAccount.name | string | `""` | Leave blank to default to the application name |
-| serviceEntry.enabled | bool | `false` |  |
-| serviceEntry.hosts | list | `[]` |  |
-| serviceEntry.location | string | `""` |  |
-| serviceEntry.ports | list | `[]` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
