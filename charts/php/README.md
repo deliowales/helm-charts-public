@@ -84,9 +84,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | istio.mtls.mode | string | `"STRICT"` |  |
 | istio.portLevelSettings | list | `[]` |  |
 | istio.principals | list | `[]` |  |
-| istio.retries.attempts | int | `2` |  |
-| istio.retries.enabled | bool | `true` |  |
-| istio.retries.perTryTimeout | string | `"2s"` |  |
 | istio.subsets | list | `[]` |  |
 | istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
 | istio.virtualService.enabled | bool | `true` |  |
