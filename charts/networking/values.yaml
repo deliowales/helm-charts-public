@@ -2,7 +2,7 @@ authorizationPolicy:
   enabled: true
 
 aws:
-  iamRole: ""
+  iamRolePrefix: "arn:aws:iam::517936527921:role/iam-role-uat-"
 
 destinationRule:
   enabled: true
