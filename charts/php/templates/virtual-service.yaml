@@ -30,19 +30,9 @@ spec:
       route:
         - destination:
             host: {{ include "php.application.name" . }}
-      retries:
-        {{- if .Values.istio.retries.enabled }}
-        attempts: {{ .Values.istio.retries.attempts }}
-        perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
-            {{- end }}
     {{- else }}
     - route:
         - destination:
             host: {{ include "php.application.name" . }}
-    retries:
-      {{- if .Values.istio.retries.enabled }}
-      attempts: {{ .Values.istio.retries.attempts }}
-      perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
-          {{- end }}
     {{- end }}
 {{- end }}

@@ -2,7 +2,7 @@
 
 A generic chart to be used for all GoLang microservices
 
-![Version: 0.1.11](https://img.shields.io/badge/Version-0.1.11-informational?style=flat-square)
+![Version: 0.1.12](https://img.shields.io/badge/Version-0.1.12-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -76,9 +76,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | ingress.pathRouted | string | `""` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
 | istio.principals | list | `[]` |  |
-| istio.retries.attempts | int | `2` |  |
-| istio.retries.enabled | bool | `true` |  |
-| istio.retries.perTryTimeout | string | `"2s"` |  |
 | istio.subsets | list | `[]` |  |
 | istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
 | job.annotations | string | `nil` |  |
