@@ -49,7 +49,7 @@ spec:
               command:
                 - /bin/bash
                 - '-c'
-                - ps aux | grep "php ./adapt/scheduler/cli/cron.php /var/www/html/adapt/ 2.0.10"
+                - pgrep -a php
           env:
             - name: PLATFORM
               value: {{ include "php.cloud.provider" . }}
@@ -71,9 +71,6 @@ spec:
               cpu: "500m"
               memory: "1Gi"
           volumeMounts:
-{{/*            - name: fpm-pool-config-volume*/}}
-{{/*              mountPath: /usr/local/etc/php-fpm.d/www.conf*/}}
-{{/*              subPath: www.conf*/}}
             - name: php-config-volume
               mountPath: /usr/local/etc/php/php.ini
               subPath: php.ini
@@ -86,9 +83,6 @@ spec:
         fsGroup: 1000
 
       volumes:
-{{/*        - name: fpm-pool-config-volume*/}}
-{{/*          configMap:*/}}
-{{/*            name: fpm-pool-configmap*/}}
         - name: php-config-volume
           configMap:
             name: php-configmap
