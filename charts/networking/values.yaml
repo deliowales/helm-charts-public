@@ -25,10 +25,7 @@ istio:
   externalIngress:
     enabled: true
     path: "" # the path to remove e.g. /kong/branding
-  retries:
-    enabled: true
-    attempts: 2
-    perTryTimeout: 2s
+  timeout: 2s
 
 
 peerAuthentication:
