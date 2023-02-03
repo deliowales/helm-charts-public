@@ -28,30 +28,21 @@ spec:
     - match:
         # Node does not support URL normalisation, so we match with a trailing slash first, to strip it from the URI
         # if needed. This means both paths like `/kong/app/app_path` and `/kong/app` will work.
-      {{- if eq .Values.global.application.language "node" }}
-      - uri:
-          prefix: {{ .Values.istio.externalIngress.path }}/
-      {{- end }}
-      - uri:
-          prefix: {{ .Values.istio.externalIngress.path }}
+        {{- if eq .Values.global.application.language "node" }}
+        - uri:
+            prefix: {{ .Values.istio.externalIngress.path }}/
+        {{- end }}
+        - uri:
+            prefix: {{ .Values.istio.externalIngress.path }}
       rewrite:
         uri: "/"
       route:
         - destination:
             host: {{ include "networking.application.name" . }}
-      retries:
-        {{- if .Values.istio.retries.enabled }}
-        attempts: {{ .Values.istio.retries.attempts }}
-        perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
-        {{- end }}
+      timeout: {{ .Values.istio.timeout }}
     {{- else }}
     - route:
         - destination:
             host: {{ include "networking.application.name" . }}
-    retries:
-      {{- if .Values.istio.retries.enabled }}
-      attempts: {{ .Values.istio.retries.attempts }}
-      perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
-      {{- end }}
     {{- end }}
 {{- end }}
