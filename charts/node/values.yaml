@@ -94,7 +94,7 @@ deployment:
     toleration: ""
   # -- Configure Topology Spread Constrains.
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
-  topologySpreadConstraints:
+  tsc:
     maxSkew: 1
     topologyKey: "topology.kubernetes.io/zone"
     whenUnsatisfiable: "ScheduleAnyway"

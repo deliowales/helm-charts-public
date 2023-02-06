@@ -96,7 +96,7 @@ deployment:
   replicaCount: 3
 
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
-  topologySpreadConstraints:
+  tsc:
     # -- Degree to which Pods may be unevenly distributed.
     maxSkew: 1
     # -- Node label to spread on.

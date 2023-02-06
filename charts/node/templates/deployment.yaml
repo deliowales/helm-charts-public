@@ -24,7 +24,7 @@ spec:
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- include "node.deployment.topologySpreadConstraints" . | nindent 6 }}
+      {{- include "node.deployment.tsc" . | nindent 6 }}
       {{ if .Values.deployment.nodeSelector.toleration -}}
       nodeSelector:
         {{- include "node.deployment.nodeSelector.toleration" . | nindent 8 }}
