@@ -76,7 +76,9 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.nginx.enabled | bool | `true` |  |
 | deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
-| deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
+| deployment.topologySpreadConstraints.maxSkew | int | `1` | Degree to which Pods may be unevenly distributed. |
+| deployment.topologySpreadConstraints.topologyKey | string | `"topology.kubernetes.io/zone"` | Node label to spread on. |
+| deployment.topologySpreadConstraints.whenUnsatisfiable | string | `"ScheduleAnyway"` | What to do if it doesn't satisfy the spread constraint. |
 | job.annotations | string | `nil` |  |
 | job.args | string | `""` |  |
 | job.backoffLimit | int | `2` |  |

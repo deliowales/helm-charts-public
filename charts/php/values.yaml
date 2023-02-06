@@ -94,11 +94,14 @@ deployment:
     enabled: true
   # -- Replica count not considering the HPA
   replicaCount: 3
-  # -- Configure Topology Spread Constrains.
+
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
   topologySpreadConstraints:
+    # -- Degree to which Pods may be unevenly distributed.
     maxSkew: 1
+    # -- Node label to spread on.
     topologyKey: "topology.kubernetes.io/zone"
+    # -- What to do if it doesn't satisfy the spread constraint.
     whenUnsatisfiable: "ScheduleAnyway"
 
 job:
