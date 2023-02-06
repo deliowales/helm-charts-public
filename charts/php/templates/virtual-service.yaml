@@ -1,0 +1,38 @@
+{{- if and (eq .Values.istio.virtualService.enabled true) (ne .Values.application.name "horizon") }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "php.application.name" . }}
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
+spec:
+  hosts:
+    {{- if .Values.istio.virtualService.hosts }}
+    {{- range .Values.istio.virtualService.hosts }}
+    - {{ . | quote }}
+    {{- end }}
+    {{- end }}
+  {{- if .Values.istio.virtualService.gateways }}
+  gateways:
+  {{- range .Values.istio.virtualService.gateways }}
+    {{ printf "- %s" .}}
+  {{- end }}
+  {{- end }}
+  http:
+    {{- if .Values.istio.externalIngress.enabled }}
+    - match:
+      - uri:
+          prefix: {{ .Values.istio.externalIngress.path }}
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: {{ include "php.application.name" . }}
+    {{- else }}
+    - route:
+        - destination:
+            host: {{ include "php.application.name" . }}
+    {{- end }}
+{{- end }}

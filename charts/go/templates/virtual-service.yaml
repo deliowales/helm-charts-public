@@ -25,9 +25,4 @@ spec:
     - route:
         - destination:
             host: {{ include "go.application.name" . }}
-      retries:
-        {{- if .Values.istio.retries.enabled }}
-        attempts: {{ .Values.istio.retries.attempts }}
-        perTryTimeout: {{ .Values.istio.retries.perTryTimeout }}
-              {{- end }}
 {{- end }}
