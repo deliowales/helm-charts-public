@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "node.application.name" . }}
+  name: {{ include "networking.application.name" . }}
   labels:
-    {{- include "node.labels" . | nindent 4 }}
+    {{- include "networking.labels" . | nindent 4 }}
   annotations:
-    {{- include "node.annotations" . | nindent 4 }}
+    {{- include "networking.annotations" . | nindent 4 }}
     {{- if eq .Values.service.externalDNS.enabled true }}
     external-dns.alpha.kubernetes.io/hostname: {{ .Values.service.externalDNS.host }}
     {{- end }}
@@ -18,5 +18,5 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: http
   selector:
-    app.kubernetes.io/name: {{ include "node.application.name" . }}
+    app.kubernetes.io/name: {{ include "networking.application.name" . }}
 {{- end }}

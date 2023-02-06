@@ -2,11 +2,11 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: {{ include "php.application.name" . }}
+  name: {{ include "networking.application.name" . }}
   labels:
-    {{- include "php.labels" . | nindent 4 }}
+    {{- include "networking.labels" . | nindent 4 }}
   annotations:
-    {{- include "php.annotations" . | nindent 4 }}
+    {{- include "networking.annotations" . | nindent 4 }}
 spec:
   hosts:
   {{- if .Values.serviceEntry.hosts -}}

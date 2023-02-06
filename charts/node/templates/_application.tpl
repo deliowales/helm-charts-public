@@ -2,7 +2,7 @@
 Application Name
 */}}
 {{- define "node.application.name" -}}
-  {{ .Values.application.name | required "Required: Application Name << .Values.application.name >>" | lower }}
+  {{ .Values.global.application.name | required "Required: Application Name << .Values.global.application.name >>" | lower }}
 {{- end -}}
 
 {{/*

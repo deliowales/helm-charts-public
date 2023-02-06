@@ -6,7 +6,7 @@ Application Name
 {{- end -}}
 
 {{- define "go.cloud.provider" -}}
-  {{ .Values.cloud.provider | lower | required "Required: Cloud Provider << .Values.cloud.provider >>" }}
+  {{ .Values.cloud.provider | required "Required: Cloud Provider << .Values.cloud.provider >>" }}
 {{- end -}}
 
 {{/*

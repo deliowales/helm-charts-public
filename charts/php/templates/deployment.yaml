@@ -24,7 +24,7 @@ spec:
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- include "php.deployment.topologySpreadConstraints" . | nindent 6 }}
+      {{- include "php.deployment.tsc" . | nindent 6 }}
       {{ if .Values.deployment.nodeSelector.toleration -}}
       nodeSelector:
         {{- include "node.deployment.nodeSelector.toleration" . | nindent 8 }}
@@ -54,6 +54,10 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.application.ports.containerPort }}
+              protocol: TCP
           readinessProbe:
             tcpSocket:
               port: 9000

@@ -1,8 +1,8 @@
-{{- define "go.deployment.topologySpreadConstraints" -}}
+{{- define "go.deployment.tsc" -}}
   topologySpreadConstraints:
-  - maxSkew: {{ .Values.deployment.topologySpreadConstraints.maxSkew }}
-    topologyKey: {{ .Values.deployment.topologySpreadConstraints.topologyKey }}
-    whenUnsatisfiable: {{ .Values.deployment.topologySpreadConstraints.whenUnsatisfiable }}
+  - maxSkew: {{ .Values.deployment.tsc.maxSkew }}
+    topologyKey: {{ .Values.deployment.tsc.topologyKey }}
+    whenUnsatisfiable: {{ .Values.deployment.tsc.whenUnsatisfiable }}
     labelSelector:
       matchLabels:
         app: {{ .Values.application.name | lower }}
