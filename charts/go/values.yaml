@@ -64,13 +64,13 @@ clamAV:
 # Configure cloud details
 cloud:
   # -- **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`.
-  environment: ""
+  environment: "uat"
   # -- **Required**: Cloud Provider. Either `AWS` or `Azure`
-  provider: ""
+  provider: "AWS"
   # -- Cloud Region. Only needed for AWS
-  region: ""
+  region: "eu-west-1"
   # -- **Required**: URL for the Container Registry
-  containerRegistryURL: ""
+  containerRegistryURL: "ecr.eu-west-1.amazonaws.com"
 
 deployment:
   enabled: true

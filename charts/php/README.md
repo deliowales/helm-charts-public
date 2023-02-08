@@ -50,10 +50,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | azure.identity.enabled | bool | `false` |  |
 | azure.identity.name | string | `""` |  |
 | azure.identity.resourceName | string | `""` |  |
-| cloud.containerRegistryURL | string | `""` | **Required**: URL for the Container Registry |
-| cloud.environment | string | `""` | **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`. |
-| cloud.provider | string | `""` | **Required**: Cloud Provider. Either `AWS` or `Azure` |
-| cloud.region | string | `""` | Cloud Region. Only needed for AWS |
+| cloud.containerRegistryURL | string | `"ecr.eu-west-1.amazonaws.com"` | **Required**: URL for the Container Registry |
+| cloud.environment | string | `"uat"` | **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`. |
+| cloud.provider | string | `"AWS"` | **Required**: Cloud Provider. Either `AWS` or `Azure` |
+| cloud.region | string | `"eu-west-1"` | Cloud Region. Only needed for AWS |
 | cron.args | string | `""` |  |
 | cron.backoffLimit | int | `1` |  |
 | cron.concurrencyPolicy | string | `"Forbid"` |  |
