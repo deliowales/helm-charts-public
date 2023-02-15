@@ -331,7 +331,7 @@ data:
     ; Maximum execution time of each script, in seconds
     ; http://php.net/max-execution-time
     ; Note: This directive is hardcoded to 0 for the CLI SAPI
-    max_execution_time = {{ .Values.cron.phpConfig.maxExecutionTime }}
+    max_execution_time = {{ .Values.application.cron.phpConfig.maxExecutionTime }}
     ; Maximum amount of time each script may spend parsing request data. It's a good
     ; idea to limit this time on productions servers in order to eliminate unexpectedly
     ; long running scripts.
@@ -348,7 +348,7 @@ data:
     ;max_input_vars = 1000
     ; Maximum amount of memory a script may consume (128MB)
     ; http://php.net/memory-limit
-    memory_limit = {{ .Values.cron.phpConfig.memoryLimit }}
+    memory_limit = {{ .Values.application.cron.phpConfig.memoryLimit }}
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; Error handling and logging ;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -729,7 +729,7 @@ data:
     ;upload_tmp_dir =
     ; Maximum allowed size for uploaded files.
     ; http://php.net/upload-max-filesize
-    upload_max_filesize = {{ .Values.cron.phpConfig.uploadMaxFilesize }}
+    upload_max_filesize = 2M
     ; Maximum number of files that can be uploaded via a single request
     max_file_uploads = 20
     ;;;;;;;;;;;;;;;;;;
