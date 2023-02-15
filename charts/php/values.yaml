@@ -15,6 +15,9 @@ application:
   # -- Enable CRON. This is only to be used with `Horizon`
   cron:
     enabled: false
+    phpConfig:
+      maxExecutionTime: 30
+      memoryLimit: 128M
   # -- Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt.
   env: []
   # Configure container registry details

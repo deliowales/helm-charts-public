@@ -47,7 +47,7 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /bin/bash
+                - /bin/sh
                 - '-c'
                 - pgrep -a php
           env:
@@ -85,7 +85,7 @@ spec:
       volumes:
         - name: php-config-volume
           configMap:
-            name: php-configmap
+            name: php-configmap-cron
         - name: shared-files
           emptyDir: {}
         - name: tmp
