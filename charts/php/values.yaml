@@ -11,6 +11,8 @@ application:
     containerPort: 8080
   extraVolumes: []
   healthcheck:
+    command: ""
+    directory: ""
     livenessPath: "/_/system/liveness"
     readinessPath: "/_/system/readiness"
     headers: ""
