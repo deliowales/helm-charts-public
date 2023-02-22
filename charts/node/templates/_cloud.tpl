@@ -6,7 +6,7 @@ Application Name
 {{- end -}}
 
 {{- define "node.cloud.provider" -}}
-  {{ .Values.cloud.provider | lower | required "Required: Cloud Provider << .Values.cloud.provider >>" }}
+  {{ .Values.cloud.provider | required "Required: Cloud Provider << .Values.cloud.provider >>" }}
 {{- end -}}
 
 {{/*

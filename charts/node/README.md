@@ -2,7 +2,7 @@
 
 A generic chart to be used for all nodeJS microservices
 
-![Version: 0.2.16](https://img.shields.io/badge/Version-0.2.16-informational?style=flat-square)
+![Version: 0.2.17-alpha](https://img.shields.io/badge/Version-0.2.17--alpha-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -57,7 +57,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.readinessProbe.port | int | `3000` |  |
 | application.readinessProbe.type | string | `"http"` | Type of readiness healthcheck. `http` or `tcp` |
 | authorizationPolicy.enabled | bool | `true` |  |
-| aws | object | `{"iamRole":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
+| aws | object | `{"iamRolePrefix":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
 | azure.identity.enabled | bool | `false` |  |
 | azure.identity.name | string | `""` |  |
