@@ -44,6 +44,7 @@ spec:
             runAsGroup: 1000
             runAsNonRoot: true
             readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           livenessProbe:
             exec:
               command:

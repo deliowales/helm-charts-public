@@ -39,6 +39,7 @@ spec:
             runAsGroup: 1000
             runAsNonRoot: true
             readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           env:
             - name: PLATFORM
               value: "{{ include "php.cloud.provider" . }}"
@@ -82,6 +83,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           lifecycle:
             postStart:
               exec:
@@ -128,6 +130,7 @@ spec:
             readOnlyRootFilesystem: true
             runAsUser: 1001
             runAsGroup: 1001
+            allowPrivilegeEscalation: false
           env:
             - name: PLATFORM
               value: "{{ include "php.cloud.provider" . }}"

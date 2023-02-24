@@ -39,6 +39,7 @@ spec:
             runAsGroup: 1000
             runAsNonRoot: true
             readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           env:
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
