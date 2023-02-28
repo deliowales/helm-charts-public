@@ -58,21 +58,14 @@ spec:
             - name: http
               containerPort: {{ .Values.application.ports.containerPort }}
               protocol: TCP
-          {{- if eq .Values.application.healthcheck.command "" }}
           readinessProbe:
+          {{- if .Values.application.readinessProbe -}}
+            {{- toYaml .Values.application.readinessProbe -}}
+          {{- else -}}
             tcpSocket:
               port: 9000
             initialDelaySeconds: 5
             timeoutSeconds: 1
-          {{- end }}
-          {{- if ne .Values.application.healthcheck.command "" }}
-          livenessProbe:
-            exec:
-              command:
-                - {{ .Values.application.healthcheck.command }}
-                - {{ .Values.application.healthcheck.directory }}
-            initialDelaySeconds: 5
-            periodSeconds: 5
           {{- end }}
           volumeMounts:
             - name: fpm-pool-config-volume
