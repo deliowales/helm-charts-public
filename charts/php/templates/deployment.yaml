@@ -34,7 +34,7 @@ spec:
         - name: "{{ include "php.application.name" . }}"
           image: "{{ include "php.application.imageURL" . }}"
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-          securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           env:
             - name: PLATFORM
               value: "{{ include "php.cloud.provider" . }}"
