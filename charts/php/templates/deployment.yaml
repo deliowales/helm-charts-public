@@ -130,11 +130,11 @@ spec:
           configMap:
             name: nginx-configmap
         - name: shared-files
-          emptyDir: {}
+          emptyDir: { }
         - name: tmp
-          emptyDir: {}
+          emptyDir: { }
         - name: newrelic-log
-          emptyDir: {}
+          emptyDir: { }
         {{- if .Values.application.extraVolumes }}
         {{- include "php.application.extraConfigmapVolumes" . | nindent 8 }}
         {{- end }}
