@@ -2,10 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: php-configmap
-  labels:
-    {{- include "php.labels" . | nindent 4 }}
-  annotations:
-    {{- include "php.annotations" . | nindent 4 }}
+  labels: { { - include "php.labels" . | nindent 4 } }
+  annotations: { { - include "php.annotations" . | nindent 4 } }
 data:
   php.ini: |-
     [PHP]
@@ -1229,7 +1227,7 @@ data:
     ; NOTE: If you are using the subdirectory option for storing session files
     ;       (see session.save_path above), then garbage collection does *not*
     ;       happen automatically.  You will need to do your own garbage
-    ;       collection through a shell script, cron entry, or some other method.
+    ;       collection through a shell script,  entry, or some other method.
     ;       For example, the following script would is the equivalent of
     ;       setting session.gc_maxlifetime to 1440 (1440 seconds = 24 minutes):
     ;          find /path/to/sessions -cmin +24 -type f | xargs rm
