@@ -34,12 +34,7 @@ spec:
         - name: "{{ include "node.application.name" . }}"
           image: "{{ include "node.application.imageURL" . }}"
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
+          securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
           env:
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}

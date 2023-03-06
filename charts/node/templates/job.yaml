@@ -32,11 +32,7 @@ spec:
           image: {{ include "node.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
 {{/*          args: [ "schedule" ]*/}}
-          securityContext:
-            runAsUser: 1000 # User "app" within the container
-            runAsGroup: 1000
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
+          securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
           resources:
             {{- toYaml .Values.job.resources | nindent 12 }}
       restartPolicy: {{ .Values.job.restartPolicy }}
