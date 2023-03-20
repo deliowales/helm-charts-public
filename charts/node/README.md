@@ -2,7 +2,7 @@
 
 A generic chart to be used for all nodeJS microservices
 
-![Version: 0.2.16](https://img.shields.io/badge/Version-0.2.16-informational?style=flat-square)
+![Version: 0.2.17](https://img.shields.io/badge/Version-0.2.17-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -49,6 +49,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.migrations.args | string | `"migrations"` |  |
 | application.migrations.backoffLimit | int | `2` |  |
 | application.migrations.enabled | bool | `false` |  |
+| application.migrations.resources.limits.cpu | string | `nil` |  |
+| application.migrations.resources.limits.memory | string | `"1G"` |  |
+| application.migrations.resources.requests.cpu | string | `""` |  |
+| application.migrations.resources.requests.memory | string | `""` |  |
 | application.migrations.restartPolicy | string | `"OnFailure"` |  |
 | application.name | string | `"node"` | Name of the application e.g. Deals |
 | application.ports.containerPort | int | `3000` |  |
