@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ include "php.application.name" . }}-cron"
+  name: "{{ include "php.application.name" . }}-cron-test"
   labels:
     app.kubernetes.io/name: "users-cron"
     chart: {{ printf "%s-%s" .Chart.Name .Chart.Version }}
@@ -13,7 +13,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: "{{ include "php.application.name" . }}-cron"
+      app.kubernetes.io/name: "{{ include "php.application.name" . }}-cron-test"
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
