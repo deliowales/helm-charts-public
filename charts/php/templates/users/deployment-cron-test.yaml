@@ -19,9 +19,20 @@ spec:
     metadata:
       annotations:
         {{- include "php.annotations" . | nindent 8 }}
-        {{- include "php.application.vault.annotations" . | nindent 8 }}
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-pre-populate: "true"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-init-first: "true"
+        vault.hashicorp.com/role: {{ .Values.vault.role }}
+        vault.hashicorp.com/agent-inject-secret-env: "aks-szn-pr/users-cron-test"
+        vault.hashicorp.com/agent-inject-template-env: |
+          {{ `{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
+          {{ range $k, $v := .Data.data -}}
+          export {{ $k }}='{{ $v }}'
+          {{ end -}}
+          {{ end -}}` }}
       labels:
-        app.kubernetes.io/name: "users-cron"
+        app.kubernetes.io/name: "users-cron-test"
         chart: {{ printf "%s-%s" .Chart.Name .Chart.Version }}
         release: {{ .Release.Name }}
         {{- if and (eq (include "php.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
