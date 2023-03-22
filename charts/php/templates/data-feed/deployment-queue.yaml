@@ -34,7 +34,7 @@ spec:
           image: {{ include "php.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           args: [ "queue" ]
-          securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           env:
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
