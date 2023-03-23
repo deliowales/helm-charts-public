@@ -26,7 +26,7 @@ spec:
         vault.hashicorp.com/role: {{ .Values.vault.role }}
         vault.hashicorp.com/agent-inject-secret-env: "aks-szn-pr/users-cron"
         vault.hashicorp.com/agent-inject-template-env: |
-          {{ `{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
+          {{ `{{ with secret "aks-szn-pr/users-cron"  -}}
           {{ range $k, $v := .Data.data -}}
           export {{ $k }}='{{ $v }}'
           {{ end -}}
