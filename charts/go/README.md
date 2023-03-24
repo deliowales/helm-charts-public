@@ -99,7 +99,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | service.kong | object | `{"stripPath":""}` | Strip the path defined in Ingress resource and then forward the request to the upstream service. |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
-| serviceAccount.enabled | bool | `true` |  |
+| serviceAccount.enabled | bool | `false` |  |
 | serviceAccount.name | string | `""` | Leave blank to default to the application name |
 | serviceEntry.enabled | bool | `false` |  |
 | serviceEntry.hosts | list | `[]` |  |

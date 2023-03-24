@@ -158,7 +158,7 @@ service:
     stripPath: ""
 
 serviceAccount:
-  enabled: true
+  enabled: false
   # -- Leave blank to default to the application name
   name: ""
 

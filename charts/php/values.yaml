@@ -218,7 +218,7 @@ service:
   type: ClusterIP
 
 serviceAccount:
-  enabled: true
+  enabled: false
   # -- Leave blank to default to the application name
   name: ""
 
