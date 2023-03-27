@@ -57,7 +57,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.readinessProbe.port | int | `3000` |  |
 | application.readinessProbe.type | string | `"http"` | Type of readiness healthcheck. `http` or `tcp` |
 | authorizationPolicy.enabled | bool | `true` |  |
-| aws | object | `{"enabled":false,"iamRole":"","iamRolePrefix":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
+| aws | object | `{"iam":{"enabled":false,"role":"","rolePrefix":""}}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
 | azure.identity.enabled | bool | `false` |  |
 | azure.identity.name | string | `""` |  |
