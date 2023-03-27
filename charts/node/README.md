@@ -57,7 +57,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.readinessProbe.port | int | `3000` |  |
 | application.readinessProbe.type | string | `"http"` | Type of readiness healthcheck. `http` or `tcp` |
 | authorizationPolicy.enabled | bool | `true` |  |
-| aws | object | `{"iamRole":"","iamRolePrefix":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
+| aws | object | `{"enabled":false,"iamRole":"","iamRolePrefix":""}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
 | azure.identity.enabled | bool | `false` |  |
 | azure.identity.name | string | `""` |  |
@@ -105,7 +105,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | service.externalDNS.host | string | `""` |  |
 | service.port | int | `80` |  |
 | service.type | string | `"ClusterIP"` |  |
-| serviceAccount.enabled | bool | `false` |  |
+| serviceAccount.enabled | bool | `true` |  |
 | serviceAccount.name | string | `""` | Leave blank to default to the application name |
 | serviceEntry.enabled | bool | `false` |  |
 | serviceEntry.hosts | list | `[]` |  |

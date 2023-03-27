@@ -58,6 +58,7 @@ authorizationPolicy:
 
 # -- IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed.
 aws:
+  enabled: false
   iamRole: ""
   iamRolePrefix: ""
 
@@ -166,7 +167,7 @@ service:
   type: ClusterIP
 
 serviceAccount:
-  enabled: false
+  enabled: true
   # -- Leave blank to default to the application name
   name: ""
 
