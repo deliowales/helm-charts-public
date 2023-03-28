@@ -31,7 +31,6 @@ spec:
         - name: {{ include "node.application.name" . }}
           image: {{ include "node.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-{{/*          args: [ "schedule" ]*/}}
           securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
           resources:
             {{- toYaml .Values.job.resources | nindent 12 }}
