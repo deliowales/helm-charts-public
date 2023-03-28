@@ -41,11 +41,7 @@ spec:
               image: {{ include "php.application.imageURL" . }}
               imagePullPolicy: {{ .Values.application.image.pullPolicy }}
               args: ["{{ .Values.cron.args }}"]
-              securityContext:
-                runAsUser: 1000 # User "app" within the container
-                runAsGroup: 1000
-                runAsNonRoot: true
-                readOnlyRootFilesystem: true
+              securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
               resources:
                 {{- toYaml .Values.cron.resources | nindent 16 }}
               volumeMounts:

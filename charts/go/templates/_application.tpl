@@ -16,11 +16,11 @@ Define the container image urls
 Define container security context
 */}}
 {{- define "go.application.securityContext" -}}
-  securityContext:
-  runAsUser: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  readOnlyRootFilesystem: true
+runAsUser: 1000
+runAsGroup: 1000
+runAsNonRoot: true
+readOnlyRootFilesystem: true
+allowPrivilegeEscalation: false
 {{- end }}
 
 {{/*

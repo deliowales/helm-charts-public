@@ -42,7 +42,10 @@ authorizationPolicy:
 
 # -- IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed.
 aws:
-  iamRole: ""
+  iam:
+    enabled: false
+    role: ""
+    rolePrefix: ""
 
 azure:
   identity:
