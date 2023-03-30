@@ -44,7 +44,7 @@ spec:
              {{- end }}
           securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
           resources:
-            {{- toYaml .Values.application.resources | nindent 12 }}
+            {{- toYaml .Values.application.migrations.resources | nindent 12 }}
       restartPolicy: {{ .Values.application.migrations.restartPolicy }}
   backoffLimit: {{ .Values.application.migrations.backoffLimit }}
   {{- end }}

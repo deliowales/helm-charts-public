@@ -49,6 +49,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.migrations.args | string | `"migrations"` |  |
 | application.migrations.backoffLimit | int | `2` |  |
 | application.migrations.enabled | bool | `false` |  |
+| application.migrations.resources.limits.cpu | string | `nil` |  |
+| application.migrations.resources.limits.memory | string | `"1G"` |  |
+| application.migrations.resources.requests.cpu | string | `""` |  |
+| application.migrations.resources.requests.memory | string | `""` |  |
 | application.migrations.restartPolicy | string | `"OnFailure"` |  |
 | application.name | string | `"node"` | Name of the application e.g. Deals |
 | application.ports.containerPort | int | `3000` |  |

@@ -39,7 +39,7 @@ spec:
           image: "{{ include "php.application.imageURL" . }}"
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           args: [ "true" ]
-          securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           livenessProbe:
             exec:
               command:
