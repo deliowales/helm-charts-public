@@ -57,13 +57,13 @@ azure:
 # Configure cloud details
 cloud:
   # -- **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`.
-  environment: ""
+  environment: "uat"
   # -- **Required**: Cloud Provider. Either `AWS` or `Azure`
-  provider: ""
+  provider: "aws"
   # -- Cloud Region. Only needed for AWS
-  region: ""
+  region: "eu-west-1"
   # -- **Required**: URL for the Container Registry
-  containerRegistryURL: ""
+  containerRegistryURL: "1234.ecr.com"
 
 cron:
   enabled: false
