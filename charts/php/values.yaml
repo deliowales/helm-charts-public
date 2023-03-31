@@ -10,7 +10,8 @@ application:
   ports:
     containerPort: 8080
   extraVolumes: []
-  readinessProbe: ""
+  readinessProbe:
+    enabled: true
   healthcheck:
     livenessPath: "/_/system/liveness"
     readinessPath: "/_/system/readiness"

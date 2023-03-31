@@ -58,15 +58,13 @@ spec:
             - name: http
               containerPort: {{ .Values.application.ports.containerPort }}
               protocol: TCP
+        {{- if eq .Values.application.readinessProbe.enabled true -}}
           readinessProbe:
-          {{- if .Values.application.readinessProbe -}}
-            {{- toYaml .Values.application.readinessProbe -}}
-          {{- else -}}
             tcpSocket:
               port: 9000
             initialDelaySeconds: 5
             timeoutSeconds: 1
-          {{- end }}
+            {{- end }}
           volumeMounts:
             - name: fpm-pool-config-volume
               mountPath: /usr/local/etc/php-fpm.d/www.conf
