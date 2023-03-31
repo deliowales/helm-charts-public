@@ -1,0 +1,61 @@
+{{ if eq .Values.application.name "horizon" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Values.application.name }}-migrations"
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      annotations:
+        {{- include "php.annotations" . | nindent 8 }}
+        {{- include "php.application.vault.annotations" . | nindent 8 }}
+      labels:
+        {{- include "php.labels" . | nindent 8 }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: "{{ include "php.application.name" . }}"
+          image: "{{ include "php.application.imageURL" . }}"
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
+          args: ["migrations"]
+          env:
+            - name: PLATFORM
+              value: "{{ include "php.cloud.provider" . }}"
+            - name: APP_NAME
+              value: {{ .Values.application.name | lower | quote }}
+            {{- if eq (include "php.cloud.provider" .) "AWS" }}
+            - name: AWS_REGION
+              value: {{ .Values.cloud.region }}
+            {{- end }}
+            {{- range .Values.application.env }}
+            - name: "{{ .name }}"
+              value: "{{ .value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.application.resources | nindent 12 }}
+          volumeMounts:
+            - name: php-config-volume
+              mountPath: /usr/local/etc/php/php.ini
+              subPath: php.ini
+            - name: shared-files
+              mountPath: /var/www/html
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: php-config-volume
+          configMap:
+            name: php-configmap
+        - name: shared-files
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+      restartPolicy: OnFailure
+  backoffLimit: 2
+  {{- end }}

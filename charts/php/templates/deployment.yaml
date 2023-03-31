@@ -56,7 +56,7 @@ spec:
               port: 9000
             initialDelaySeconds: 5
             timeoutSeconds: 1
-            {{- end }}
+          {{- end }}
           volumeMounts:
             - name: fpm-pool-config-volume
               mountPath: /usr/local/etc/php-fpm.d/www.conf
