@@ -1,5 +1,5 @@
 {{/* Horizon has its own bespoke nginx configuration. Please refer to horizon repository */}}
-{{ if ne .Values.application.name "horizon" }}
+{{- if and (ne .Values.application.name "horizon") (eq .Values.deployment.nginx.enabled true) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

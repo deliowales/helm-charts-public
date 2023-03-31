@@ -48,7 +48,10 @@ authorizationPolicy:
 
 # -- IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed.
 aws:
-  iamRole: ""
+  iam:
+    enabled: false
+    role: ""
+    rolePrefix: ""
 
 azure:
   identity:
@@ -64,13 +67,13 @@ clamAV:
 # Configure cloud details
 cloud:
   # -- **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`.
-  environment: "uat"
+  environment: ""
   # -- **Required**: Cloud Provider. Either `AWS` or `Azure`
-  provider: "AWS"
+  provider: ""
   # -- Cloud Region. Only needed for AWS
-  region: "eu-west-1"
+  region: ""
   # -- **Required**: URL for the Container Registry
-  containerRegistryURL: "ecr.eu-west-1.amazonaws.com"
+  containerRegistryURL: ""
 
 deployment:
   enabled: true
@@ -91,7 +94,7 @@ deployment:
     toleration: ""
   # -- Configure Topology Spread Constrains.
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
-  tsc:
+  topologySpreadConstraints:
     maxSkew: 1
     topologyKey: "topology.kubernetes.io/zone"
     whenUnsatisfiable: "ScheduleAnyway"

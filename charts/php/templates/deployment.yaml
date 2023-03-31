@@ -24,7 +24,7 @@ spec:
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- include "php.deployment.tsc" . | nindent 6 }}
+      {{- include "php.deployment.topologySpreadConstraints" . | nindent 6 }}
       {{ if .Values.deployment.nodeSelector.toleration -}}
       nodeSelector:
         {{- include "node.deployment.nodeSelector.toleration" . | nindent 8 }}
@@ -34,11 +34,7 @@ spec:
         - name: "{{ include "php.application.name" . }}"
           image: "{{ include "php.application.imageURL" . }}"
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           env:
             - name: PLATFORM
               value: "{{ include "php.cloud.provider" . }}"
@@ -54,11 +50,7 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.application.ports.containerPort }}
-              protocol: TCP
-        {{- if eq .Values.application.readinessProbe.enabled true -}}
+          {{- if eq .Values.application.readinessProbe.enabled true -}}
           readinessProbe:
             tcpSocket:
               port: 9000
@@ -88,6 +80,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           lifecycle:
             postStart:
               exec:
@@ -124,46 +117,6 @@ spec:
             - name: tmp
               mountPath: /tmp
           {{- end }}
-        - name: logs
-          image: "{{ include "php.logging.imageURL" . }}"
-          imagePullPolicy: IfNotPresent
-          resources:
-            {{- toYaml .Values.logging.resources | nindent 12 }}
-          securityContext:
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
-            runAsUser: 1001
-            runAsGroup: 1001
-          env:
-            - name: PLATFORM
-              value: "{{ include "php.cloud.provider" . }}"
-            - name: DOCKER_IMAGE
-              value: "{{ include "php.application.imageURL" . }}"
-            - name: ENVIRONMENT
-              value: "{{ include "php.cloud.environment" . }}"
-            - name: NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: HOST_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: NEW_RELIC_LICENSE_KEY
-              value: {{ .Values.newrelic.licenseKey }}
-            - name: FLUENT_BIT_LOG_PATH
-              value: {{ .Values.logging.logPath }}
-            - name: FLUENT_BIT_PARSER_PATH
-              value: {{ .Values.logging.parserPath }}
-            - name: FLUENT_BIT_MULTILINE
-              value: {{ .Values.logging.multiLine | quote }}
-          volumeMounts:
-            - name: shared-files
-              mountPath: /var/www/html
 
       securityContext:
         fsGroup: 1000
@@ -179,11 +132,11 @@ spec:
           configMap:
             name: nginx-configmap
         - name: shared-files
-          emptyDir: {}
+          emptyDir: { }
         - name: tmp
-          emptyDir: {}
+          emptyDir: { }
         - name: newrelic-log
-          emptyDir: {}
+          emptyDir: { }
         {{- if .Values.application.extraVolumes }}
         {{- include "php.application.extraConfigmapVolumes" . | nindent 8 }}
         {{- end }}

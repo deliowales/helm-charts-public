@@ -2,11 +2,11 @@
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: {{ include "networking.application.name" . }}
+  name: {{ include "node.application.name" . }}
   labels:
-    {{- include "networking.labels" . | nindent 4 }}
+    {{- include "node.labels" . | nindent 4 }}
   annotations:
-    {{- include "networking.annotations" . | nindent 4 }}
+    {{- include "node.annotations" . | nindent 4 }}
 spec:
   mtls:
     mode: {{ .Values.istio.mtls.mode }}

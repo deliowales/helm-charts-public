@@ -1,4 +1,0 @@
-apiVersion: v2
-name: networking
-description: A networking chart to be used for all microservices
-version: '0.1.0'

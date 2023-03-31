@@ -2,7 +2,7 @@
 Application Name
 */}}
 {{- define "node.application.name" -}}
-  {{ .Values.global.application.name | required "Required: Application Name << .Values.global.application.name >>" | lower }}
+  {{ .Values.application.name | required "Required: Application Name << .Values.application.name >>" | lower }}
 {{- end -}}
 
 {{/*
@@ -16,11 +16,11 @@ Define the container image urls
 Define container security context
 */}}
 {{- define "node.application.securityContext" -}}
-  securityContext:
-  runAsUser: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  readOnlyRootFilesystem: true
+runAsUser: 1000
+runAsGroup: 1000
+runAsNonRoot: true
+readOnlyRootFilesystem: true
+allowPrivilegeEscalation: false
 {{- end }}
 
 {{/*

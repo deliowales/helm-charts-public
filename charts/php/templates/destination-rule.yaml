@@ -1,14 +1,14 @@
 {{- if eq .Values.destinationRule.enabled true }}
-apiVersion: networking.istio.io/v1beta1
+apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: {{ include "networking.application.name" . }}
+  name: {{ include "php.application.name" . }}
   labels:
-    {{- include "networking.labels" . | nindent 4 }}
+    {{- include "php.labels" . | nindent 4 }}
   annotations:
-    {{- include "networking.annotations" . | nindent 4 }}
+    {{- include "php.annotations" . | nindent 4 }}
 spec:
-  host: {{ include "networking.application.name" . }}
+  host: {{ include "php.application.name" . }}
   trafficPolicy:
     tls:
       mode: {{ .Values.istio.tls.mode }}
@@ -22,8 +22,8 @@ spec:
     - name: {{ .name }}
       labels:
       {{- range .labels }}
-      {{ .name }}: {{ .value }}
+        {{ .name }}: {{ .value }}
       {{- end }}
     {{- end }}
   {{- end -}}
-  {{- end -}}
+{{- end -}}

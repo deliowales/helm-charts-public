@@ -1,11 +1,11 @@
-{{- define "node.deployment.tsc" -}}
+{{- define "node.deployment.topologySpreadConstraints" -}}
   topologySpreadConstraints:
-  - maxSkew: {{ .Values.deployment.tsc.maxSkew }}
-    topologyKey: {{ .Values.deployment.tsc.topologyKey }}
-    whenUnsatisfiable: {{ .Values.deployment.tsc.whenUnsatisfiable }}
+  - maxSkew: {{ .Values.deployment.topologySpreadConstraints.maxSkew }}
+    topologyKey: {{ .Values.deployment.topologySpreadConstraints.topologyKey }}
+    whenUnsatisfiable: {{ .Values.deployment.topologySpreadConstraints.whenUnsatisfiable }}
     labelSelector:
       matchLabels:
-        app: {{ include "node.application.name" . }}
+        app: {{ .Values.application.name | lower }}
 {{- end }}
 
 {{/*

@@ -1,9 +1,12 @@
+{{- if and (eq .Values.application.name "horizon") (eq .Values.application.cron.enabled true) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: php-configmap
-  labels: {{ include "php.labels" . | nindent 4 }}
-  annotations: {{ include "php.annotations" . | nindent 4 }}
+  name: php-configmap-cron
+  labels:
+    {{- include "php.labels" . | nindent 4 }}
+  annotations:
+    {{- include "php.annotations" . | nindent 4 }}
 data:
   php.ini: |-
     [PHP]
@@ -329,7 +332,7 @@ data:
     ; Maximum execution time of each script, in seconds
     ; http://php.net/max-execution-time
     ; Note: This directive is hardcoded to 0 for the CLI SAPI
-    max_execution_time = {{ .Values.phpConfig.maxExecutionTime }}
+    max_execution_time = {{ .Values.application.cron.phpConfig.maxExecutionTime }}
     ; Maximum amount of time each script may spend parsing request data. It's a good
     ; idea to limit this time on productions servers in order to eliminate unexpectedly
     ; long running scripts.
@@ -346,7 +349,7 @@ data:
     ;max_input_vars = 1000
     ; Maximum amount of memory a script may consume (128MB)
     ; http://php.net/memory-limit
-    memory_limit = {{ .Values.phpConfig.memoryLimit }}
+    memory_limit = {{ .Values.application.cron.phpConfig.memoryLimit }}
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; Error handling and logging ;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -727,7 +730,7 @@ data:
     ;upload_tmp_dir =
     ; Maximum allowed size for uploaded files.
     ; http://php.net/upload-max-filesize
-    upload_max_filesize = {{ .Values.phpConfig.uploadMaxFilesize }}
+    upload_max_filesize = 2M
     ; Maximum number of files that can be uploaded via a single request
     max_file_uploads = 20
     ;;;;;;;;;;;;;;;;;;
@@ -1227,7 +1230,7 @@ data:
     ; NOTE: If you are using the subdirectory option for storing session files
     ;       (see session.save_path above), then garbage collection does *not*
     ;       happen automatically.  You will need to do your own garbage
-    ;       collection through a shell script,  entry, or some other method.
+    ;       collection through a shell script, cron entry, or some other method.
     ;       For example, the following script would is the equivalent of
     ;       setting session.gc_maxlifetime to 1440 (1440 seconds = 24 minutes):
     ;          find /path/to/sessions -cmin +24 -type f | xargs rm
@@ -1622,3 +1625,4 @@ data:
     ; Local Variables:
     ; tab-width: 4
     ; End:
+{{- end -}}

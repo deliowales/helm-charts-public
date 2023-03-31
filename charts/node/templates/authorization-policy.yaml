@@ -2,11 +2,11 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: {{ include "networking.application.name" . }}
+  name: {{ include "node.application.name" . }}
   labels:
-    {{- include "networking.labels" . | nindent 4 }}
+    {{- include "node.labels" . | nindent 4 }}
   annotations:
-    {{- include "networking.annotations" . | nindent 4 }}
+    {{- include "node.annotations" . | nindent 4 }}
 spec:
   action: ALLOW
   rules:
@@ -14,13 +14,13 @@ spec:
         - source:
             principals: [
               "cluster.local/ns/monitoring/sa/prometheus-blackbox-exporter",
-              {{- if .Values.istio.externalIngress.enabled }}
+            {{- if .Values.istio.externalIngress.enabled }}
               "cluster.local/ns/istio-ingress/sa/istio-ingress",
-              {{- end }}
-              {{- if .Values.istio.principals }}
-              {{- range .Values.istio.principals }}
+            {{- end }}
+            {{- if .Values.istio.principals }}
+            {{- range .Values.istio.principals }}
               "{{ . }}",
-              {{- end }}
-              {{- end }}
+            {{- end }}
+            {{- end }}
             ]
 {{- end }}

@@ -2,7 +2,8 @@
 
 A generic chart to be used for all nodeJS microservices
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square)
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)
+
 
 ## Adding the Helm repo
 
@@ -49,6 +50,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.migrations.args | string | `"migrations"` |  |
 | application.migrations.backoffLimit | int | `2` |  |
 | application.migrations.enabled | bool | `false` |  |
+| application.migrations.resources.limits.cpu | string | `nil` |  |
+| application.migrations.resources.limits.memory | string | `"1G"` |  |
+| application.migrations.resources.requests.cpu | string | `""` |  |
+| application.migrations.resources.requests.memory | string | `""` |  |
 | application.migrations.restartPolicy | string | `"OnFailure"` |  |
 | application.name | string | `"node"` | Name of the application e.g. Deals |
 | application.ports.containerPort | int | `3000` |  |
@@ -56,15 +61,17 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.readinessProbe.path | string | `"/_/system/readiness"` |  |
 | application.readinessProbe.port | int | `3000` |  |
 | application.readinessProbe.type | string | `"http"` | Type of readiness healthcheck. `http` or `tcp` |
+| authorizationPolicy.enabled | bool | `true` |  |
+| aws | object | `{"iam":{"enabled":false,"role":"","rolePrefix":""}}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
 | azure.identity.enabled | bool | `false` |  |
 | azure.identity.name | string | `""` |  |
 | azure.identity.resourceName | string | `""` |  |
 | clamAV | object | `{"enabled":false}` | Enable ClamAV. Currently only used by `virus-scanner`. |
-| cloud.containerRegistryURL | string | `"ecr.eu-west-1.amazonaws.com"` | **Required**: URL for the Container Registry |
-| cloud.environment | string | `"uat"` | **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`. |
-| cloud.provider | string | `"AWS"` | **Required**: Cloud Provider. Either `AWS` or `Azure` |
-| cloud.region | string | `"eu-west-1"` | Cloud Region. Only needed for AWS |
+| cloud.containerRegistryURL | string | `""` | **Required**: URL for the Container Registry |
+| cloud.environment | string | `""` | **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`. |
+| cloud.provider | string | `""` | **Required**: Cloud Provider. Either `AWS` or `Azure` |
+| cloud.region | string | `""` | Cloud Region. Only needed for AWS |
 | deployment.enabled | bool | `true` |  |
 | deployment.hpa.enabled | bool | `true` |  |
 | deployment.hpa.maxReplicas | int | `10` | Maximum number of replica pods |
@@ -73,7 +80,17 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.hpa.targetMemory | string | `""` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
 | deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
-| deployment.tsc | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
+| deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
+| destinationRule.enabled | bool | `true` |  |
+| istio.externalIngress.enabled | bool | `true` |  |
+| istio.externalIngress.path | string | `""` |  |
+| istio.mtls.mode | string | `"STRICT"` |  |
+| istio.principals | list | `[]` |  |
+| istio.subsets | list | `[]` |  |
+| istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
+| istio.virtualService.enabled | bool | `true` |  |
+| istio.virtualService.gateways | list | `[]` |  |
+| istio.virtualService.hosts | list | `[]` |  |
 | job.annotations | string | `nil` |  |
 | job.args | string | `""` |  |
 | job.backoffLimit | int | `2` |  |
@@ -87,6 +104,18 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | job.vault.enabled | bool | `true` |  |
 | pdb.enabled | bool | `false` |  |
 | pdb.minAvailable | int | `2` |  |
+| peerAuthentication.enabled | bool | `true` |  |
+| service.enabled | bool | `true` |  |
+| service.externalDNS.enabled | bool | `false` |  |
+| service.externalDNS.host | string | `""` |  |
+| service.port | int | `80` |  |
+| service.type | string | `"ClusterIP"` |  |
+| serviceAccount.enabled | bool | `true` |  |
+| serviceAccount.name | string | `""` | Leave blank to default to the application name |
+| serviceEntry.enabled | bool | `false` |  |
+| serviceEntry.hosts | list | `[]` |  |
+| serviceEntry.location | string | `""` |  |
+| serviceEntry.ports | list | `[]` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
