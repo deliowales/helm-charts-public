@@ -2,8 +2,7 @@
 
 A generic chart to be used for all nodeJS microservices
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)
-
+![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -68,10 +67,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | azure.identity.name | string | `""` |  |
 | azure.identity.resourceName | string | `""` |  |
 | clamAV | object | `{"enabled":false}` | Enable ClamAV. Currently only used by `virus-scanner`. |
-| cloud.containerRegistryURL | string | `""` | **Required**: URL for the Container Registry |
-| cloud.environment | string | `""` | **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`. |
-| cloud.provider | string | `""` | **Required**: Cloud Provider. Either `AWS` or `Azure` |
-| cloud.region | string | `""` | Cloud Region. Only needed for AWS |
+| cloud.containerRegistryURL | string | `"1234.ecr.com"` | **Required**: URL for the Container Registry |
+| cloud.environment | string | `"uat"` | **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`. |
+| cloud.provider | string | `"aws"` | **Required**: Cloud Provider. Either `AWS` or `Azure` |
+| cloud.region | string | `"eu-west-1"` | Cloud Region. Only needed for AWS |
 | deployment.enabled | bool | `true` |  |
 | deployment.hpa.enabled | bool | `true` |  |
 | deployment.hpa.maxReplicas | int | `10` | Maximum number of replica pods |
