@@ -19,6 +19,7 @@ spec:
         {{- include "php.labels" . | nindent 8 }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ include "php.application.name" . }}
       containers:
         - name: "{{ include "php.application.name" . }}"
           image: "{{ include "php.application.imageURL" . }}"
