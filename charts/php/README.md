@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.1.1](https://img.shields.io/badge/Version-1.1.1-informational?style=flat-square)
+![Version: 1.1.2](https://img.shields.io/badge/Version-1.1.2-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -45,6 +45,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
 | application.image.tag | string | `"0.0.0"` | Image tag to be pulled |
 | application.name | string | `"php"` | Name of the application e.g. Deals |
+| application.readinessProbe.enabled | bool | `true` |  |
 | authorizationPolicy.enabled | bool | `true` |  |
 | aws | object | `{"iam":{"enabled":false,"role":"","rolePrefix":""}}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
