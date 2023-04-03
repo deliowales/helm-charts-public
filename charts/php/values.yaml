@@ -8,6 +8,8 @@ application:
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
   extraVolumes: []
+  readinessProbe:
+    enabled: true
   healthcheck:
     livenessPath: "/_/system/liveness"
     readinessPath: "/_/system/readiness"

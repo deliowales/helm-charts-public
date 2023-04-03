@@ -50,11 +50,13 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
+          {{- if .Values.application.readinessProbe.enabled -}}
           readinessProbe:
             tcpSocket:
               port: 9000
             initialDelaySeconds: 5
             timeoutSeconds: 1
+          {{- end }}
           volumeMounts:
             - name: fpm-pool-config-volume
               mountPath: /usr/local/etc/php-fpm.d/www.conf
