@@ -50,7 +50,7 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
-          {{- if .Values.application.readinessProbe.enabled -}}
+          {{- if .Values.application.readinessProbe.enabled }}
           readinessProbe:
             tcpSocket:
               port: 9000
