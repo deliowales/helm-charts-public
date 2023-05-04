@@ -41,7 +41,7 @@ spec:
               image: {{ include "php.application.imageURL" . }}
               imagePullPolicy: {{ .Values.application.image.pullPolicy }}
               args: ["{{ .Values.cron.args }}"]
-              securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
+              securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
               resources:
                 {{- toYaml .Values.cron.resources | nindent 16 }}
               volumeMounts:
