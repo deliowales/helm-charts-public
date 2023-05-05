@@ -42,8 +42,7 @@ spec:
               imagePullPolicy: {{ .Values.application.image.pullPolicy }}
               args: ["{{ .Values.cron.args }}"]
               securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
-              resources:
-                {{- toYaml .Values.cron.resources | nindent 16 }}
+              resources: {{- toYaml .Values.cron.resources | nindent 16 }}
               volumeMounts:
                 - name: fpm-pool-config-volume
                   mountPath: /usr/local/etc/php-fpm.d/www.conf
