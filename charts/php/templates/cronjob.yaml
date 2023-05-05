@@ -37,8 +37,8 @@ spec:
         spec:
           serviceAccountName: {{ include "php.application.name" . }}
           containers:
-            - name: {{ include "php.application.name" . }}
-              image: {{ include "php.application.imageURL" . }}
+            - name: "{{ include "php.application.name" . }}"
+              image: "{{ include "php.application.imageURL" . }}"
               imagePullPolicy: {{ .Values.application.image.pullPolicy }}
               args: ["{{ .Values.cron.args }}"]
               securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
