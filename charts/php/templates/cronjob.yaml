@@ -40,10 +40,10 @@ spec:
             - name: "{{ include "php.application.name" . }}"
               image: "{{ include "php.application.imageURL" . }}"
               imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-              args: ["{{ .Values.cron.args }}"]
-              securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
+              securityContext: {{ include "php.application.securityContext" . | nindent 16 }}
               resources:
                 {{- toYaml .Values.cron.resources | nindent 16 }}
+              args: [{{ .Values.cron.args }}]
               volumeMounts:
                 - name: fpm-pool-config-volume
                   mountPath: /usr/local/etc/php-fpm.d/www.conf
@@ -58,7 +58,7 @@ spec:
                 - name: newrelic-log
                   mountPath: /var/log/newrelic/
                   {{- if .Values.application.extraVolumes -}}
-                  {{- include "php.application.extraConfigmapMounts" . | nindent 12 }}
+                  {{- include "php.application.extraConfigmapMounts" . | nindent 16 }}
                   {{- end }}
           restartPolicy: {{ .Values.cron.restartPolicy }}
           volumes:
@@ -75,6 +75,6 @@ spec:
             - name: newrelic-log
               emptyDir: {}
             {{- if .Values.application.extraVolumes }}
-            {{- include "php.application.extraConfigmapVolumes" . | nindent 8 }}
+            {{- include "php.application.extraConfigmapVolumes" . | nindent 12 }}
             {{- end }}
   {{- end }}
