@@ -349,7 +349,7 @@ data:
     ;max_input_vars = 1000
     ; Maximum amount of memory a script may consume (128MB)
     ; http://php.net/memory-limit
-    memory_limit = {{ .Values.application.cron.phpConfig.memoryLimit }}
+    memory_limit = 1024M
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; Error handling and logging ;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
