@@ -28,6 +28,11 @@ data:
       location / {
           try_files $uri $uri/ /index.php?$query_string;
       }
+      location = /health {
+          access_log off;
+          add_header 'Content-Type' 'application/json';
+          return 200 '{"status":"UP"}';
+      }
       location ~ \.php$ {
         try_files $uri =404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
