@@ -4,6 +4,7 @@ A generic chart to be used for all PHP microservices
 
 ![Version: 1.1.7](https://img.shields.io/badge/Version-1.1.7-informational?style=flat-square)
 
+
 ## Adding the Helm repo
 
 Before installing the chart, you need to add the helm repository
@@ -35,7 +36,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | application.args | list | `[]` | Any args that need to be supplied to the `ENTRYPOINT` command. |
-| application.cron | object | `{"enabled":false,"phpConfig":{"maxExecutionTime":30,"memoryLimit":"128M"}}` | Enable CRON. This is only to be used with `Horizon` |
+| application.cron | object | `{"enabled":false,"phpConfig":{"maxExecutionTime":30}}` | Enable CRON. This is only to be used with `Horizon` |
 | application.env | list | `[]` | Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt. |
 | application.extraVolumes | list | `[]` |  |
 | application.healthcheck.headers | string | `""` |  |
