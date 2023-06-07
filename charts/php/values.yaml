@@ -10,6 +10,8 @@ application:
   extraVolumes: []
   readinessProbe:
     enabled: true
+  livenessProbe:
+    enabled: true
   healthcheck:
     livenessPath: "/_/system/liveness"
     readinessPath: "/_/system/readiness"
