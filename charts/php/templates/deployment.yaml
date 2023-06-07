@@ -90,7 +90,7 @@ spec:
               containerPort: 8080
           resources:
             {{- toYaml .Values.nginx.resources | nindent 12 }}
-          {{ - if .Values.application.livenessProbe.enabled }}
+          {{- if .Values.application.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               port: 8080
@@ -101,7 +101,7 @@ spec:
             initialDelaySeconds: 10
             timeoutSeconds: 5
           {{ end }}
-          {{ - if .Values.application.readinessProbe.enabled }}
+          {{- if .Values.application.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               port: 8080
