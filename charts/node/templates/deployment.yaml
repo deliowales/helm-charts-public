@@ -43,7 +43,7 @@ spec:
             - name: PLATFORM
               value: "{{ include "node.cloud.provider" . }}"
             - name: SENTRY_ENABLED
-              value: true
+              value: "true"
             {{- if eq (include "node.cloud.provider" .) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
