@@ -1,4 +1,4 @@
-{{- if and (eq .Values.deployment.hpa.enabled true) (ge .Capabilities.KubeVersion.Minor "21") }}
+{{- if and (eq .Values.deployment.hpa.enabled true) (ge .Capabilities.KubeVersion.Minor "22") }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
