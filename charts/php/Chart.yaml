@@ -1,4 +1,8 @@
 apiVersion: v2
 name: php
 description: A generic chart to be used for all PHP microservices
+<<<<<<< HEAD
 version: "1.2.3"
+=======
+version: "1.2.2"
+>>>>>>> a3e9596edc0fd7d32d9b80ff5a765311b4dd2f93
