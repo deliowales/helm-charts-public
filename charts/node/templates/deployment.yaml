@@ -44,6 +44,10 @@ spec:
               value: "{{ include "node.cloud.provider" . }}"
             - name: SENTRY_ENABLED
               value: "true"
+            - name: SENTRY_PROFILING_TRACE_SAMPLE_RATE
+              value: "{{ ternary "0.5" "1.0" (any (eq .Values.cloud.environment "demo") (eq .Values.cloud.environment "production")) }}"
+            - name: SENTRY_PROFILING_PROFILES_SAMPLE_RATE
+              value: "1.0"
             {{- if eq (include "node.cloud.provider" .) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
