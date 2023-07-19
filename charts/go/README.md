@@ -2,7 +2,7 @@
 
 A generic chart to be used for all GoLang microservices
 
-![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square)
+![Version: 1.0.2](https://img.shields.io/badge/Version-1.0.2-informational?style=flat-square)
 
 ## Adding the Helm repo
 
