@@ -4,6 +4,7 @@ A generic chart to be used for all PHP microservices
 
 ![Version: 1.2.7](https://img.shields.io/badge/Version-1.2.7-informational?style=flat-square)
 
+
 ## Adding the Helm repo
 
 Before installing the chart, you need to add the helm repository
