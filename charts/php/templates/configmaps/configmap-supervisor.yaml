@@ -1,3 +1,4 @@
+{{ if eq .Values.supervisor.enabled true }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -27,6 +28,8 @@ data:
     stderr_logfile=/dev/stderr
     stderr_logfile_maxbytes=0
 
+    {{ if eq .Values.supervisor.horizon.enabled true }}
+
     [program:horizon]
     command = php artisan horizon
     directory = /var/www/html
@@ -37,3 +40,20 @@ data:
     stdout_logfile_maxbytes=0
     stderr_logfile=/dev/stderr
     stderr_logfile_maxbytes=0
+
+    {{ else }}
+
+    [program:queue-work]
+    command = php artisan queue:work
+    directory = /var/www/html
+    autostart=true
+    autorestart=true
+    priority=2
+    stdout_logfile=/dev/stdout
+    stdout_logfile_maxbytes=0
+    stderr_logfile=/dev/stderr
+    stderr_logfile_maxbytes=0
+
+    {{ end }}
+
+  {{ end }}
