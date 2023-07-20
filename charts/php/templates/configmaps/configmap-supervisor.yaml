@@ -17,16 +17,7 @@ data:
     loglevel = INFO
     environment=USER="www-data"
 
-    [program:php-fpm]
-    command = /usr/local/sbin/php-fpm
-    directory = /var/www/html
-    autostart=true
-    autorestart=true
-    priority=5
-    stdout_logfile=/dev/stdout
-    stdout_logfile_maxbytes=0
-    stderr_logfile=/dev/stderr
-    stderr_logfile_maxbytes=0
+    {{ if eq .Values.supervisor.horizon.enabled true }}
 
     [program:horizon]
     command = php artisan horizon
@@ -38,5 +29,20 @@ data:
     stdout_logfile_maxbytes=0
     stderr_logfile=/dev/stderr
     stderr_logfile_maxbytes=0
+
+    {{ else }}
+
+    [program:queue-work]
+    command = php artisan queue:work
+    directory = /var/www/html
+    autostart=true
+    autorestart=true
+    priority=2
+    stdout_logfile=/dev/stdout
+    stdout_logfile_maxbytes=0
+    stderr_logfile=/dev/stderr
+    stderr_logfile_maxbytes=0
+
+    {{ end }}
 
   {{ end }}
