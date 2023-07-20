@@ -12,7 +12,7 @@
 Set the targetMemory to be (request+limit) / 2. Automatically rounded down to nearest integer.
 */}}
 
-{{- define "node.deployment.hpa.targetMemory" -}}
+{{- define "php.deployment.hpa.targetMemory" -}}
   {{- if and (hasSuffix "Mi" .Values.application.resources.requests.memory) (hasSuffix "Mi" .Values.application.resources.limits.memory)  -}}
   {{ div (add (.Values.application.resources.requests.memory | trimAll "Mi") (.Values.application.resources.limits.memory | trimAll "Mi")) 2 }}Mi
   {{- else if and (hasSuffix "Gi" .Values.application.resources.requests.memory) (hasSuffix "Gi" .Values.application.resources.limits.memory)  -}}
