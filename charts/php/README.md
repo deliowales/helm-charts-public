@@ -133,7 +133,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | serviceEntry.ping.hosts | list | `[]` |  |
 | serviceEntry.ports | list | `[]` |  |
 | supervisor.enabled | bool | `true` |  |
-| supervisor.horizon | bool | `false` |  |
+| supervisor.horizon.enabled | bool | `false` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
