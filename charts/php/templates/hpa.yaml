@@ -25,6 +25,6 @@ spec:
       resource:
         name: memory
         target:
-          type: Value
-          averageValue: {{ include "php.deployment.hpa.targetMemory" . }}
+          type: Utilization
+          averageUtilization: {{ .Values.deployment.hpa.targetMemory }}
 {{- end }}

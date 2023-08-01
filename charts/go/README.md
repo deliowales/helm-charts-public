@@ -2,7 +2,7 @@
 
 A generic chart to be used for all GoLang microservices
 
-![Version: 1.0.3](https://img.shields.io/badge/Version-1.0.3-informational?style=flat-square)
+![Version: 1.0.4](https://img.shields.io/badge/Version-1.0.4-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -66,7 +66,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.hpa.maxReplicas | int | `10` | Maximum number of replica pods |
 | deployment.hpa.minReplicas | int | `3` | Minimum number of replica pods |
 | deployment.hpa.targetCPU | int | `70` | Target CPU usage (%) |
-| deployment.hpa.targetMemory | string | `""` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
+| deployment.hpa.targetMemory | int | `70` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
 | deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
