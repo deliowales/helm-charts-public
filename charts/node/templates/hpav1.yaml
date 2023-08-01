@@ -25,6 +25,6 @@ spec:
       resource:
         name: memory
         target:
-          type: Value
-          averageValue: {{ include "node.deployment.hpa.targetMemory" . }}
+          type: Utilizatn
+          averageUtation: {{ .Values.deployment.hpa.targetMemory }}
 {{- end }}
