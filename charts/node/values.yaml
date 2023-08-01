@@ -104,7 +104,7 @@ deployment:
     # -- Target CPU usage (%)
     targetCPU: 70
     # -- Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary.
-    targetMemory: ""
+    targetMemory: 70
 
   # Specify what type of node you want this app to be deployed on: ["cpu", "memory"]
   nodeSelector:
