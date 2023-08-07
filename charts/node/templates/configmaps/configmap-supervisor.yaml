@@ -1,0 +1,32 @@
+{{ if eq .Values.supervisor.enabled true }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: supervisor-configmap
+  labels:
+    {{- include "node.labels" . | nindent 4 }}
+  annotations:
+    {{- include "node.annotations" . | nindent 4 }}
+data:
+  supervisord.conf: |-
+    [supervisord]
+    nodaemon=true
+    logfile=/dev/stdout
+    logfile_maxbytes=0
+    pidfile=/var/run/supervisord.pid
+    loglevel=INFO
+    environment=HOME="/home/node",USER="node"
+
+    [program:worker]
+    command = node ./dist/cli.js queue:work
+    directory = /service
+    autostart=true
+    autorestart=true
+    priority=5
+    user=node
+    stdout_logfile=/dev/stdout
+    stdout_logfile_maxbytes=0
+    stderr_logfile=/dev/stderr
+    stderr_logfile_maxbytes=0
+
+  {{ end }}
