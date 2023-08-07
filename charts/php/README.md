@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.2.8](https://img.shields.io/badge/Version-1.2.8-informational?style=flat-square)
+![Version: 1.2.9](https://img.shields.io/badge/Version-1.2.9-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -75,7 +75,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.hpa.maxReplicas | int | `10` | Maximum number of replica pods |
 | deployment.hpa.minReplicas | int | `3` | Minimum number of replica pods |
 | deployment.hpa.targetCPU | int | `70` | Target CPU usage (%) |
-| deployment.hpa.targetMemory | string | `""` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
+| deployment.hpa.targetMemory | int | `70` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
 | deployment.nginx.enabled | bool | `true` |  |
 | deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |

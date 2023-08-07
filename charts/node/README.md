@@ -2,7 +2,7 @@
 
 A generic chart to be used for all nodeJS microservices
 
-![Version: 1.0.9](https://img.shields.io/badge/Version-1.0.9-informational?style=flat-square)
+![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -115,6 +115,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | serviceEntry.hosts | list | `[]` |  |
 | serviceEntry.location | string | `""` |  |
 | serviceEntry.ports | list | `[]` |  |
+| supervisor.enabled | bool | `false` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |

@@ -185,6 +185,9 @@ serviceEntry:
   location: ""
   ports: []
 
+supervisor:
+  enabled: false
+
 # -- Vault configuration
 vault:
   # -- Environment of the vault. Format: `<< env >>/<< vault name >>
