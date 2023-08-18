@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.2.9](https://img.shields.io/badge/Version-1.2.9-informational?style=flat-square)
+![Version: 1.2.10](https://img.shields.io/badge/Version-1.2.10-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -45,6 +45,14 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
 | application.image.tag | string | `"0.0.0"` | Image tag to be pulled |
 | application.livenessProbe.enabled | bool | `true` |  |
+| application.migrations.args | string | `"migrations"` |  |
+| application.migrations.backoffLimit | int | `2` |  |
+| application.migrations.enabled | bool | `false` |  |
+| application.migrations.resources.limits.cpu | int | `1` |  |
+| application.migrations.resources.limits.memory | string | `"1G"` |  |
+| application.migrations.resources.requests.cpu | string | `"500m"` |  |
+| application.migrations.resources.requests.memory | string | `"500M"` |  |
+| application.migrations.restartPolicy | string | `"OnFailure"` |  |
 | application.name | string | `"php"` | Name of the application e.g. Deals |
 | application.readinessProbe.enabled | bool | `true` |  |
 | authorizationPolicy.enabled | bool | `true` |  |
@@ -134,6 +142,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | serviceEntry.ports | list | `[]` |  |
 | supervisor.enabled | bool | `true` |  |
 | supervisor.horizon.enabled | bool | `false` |  |
+| supervisor.hpa.enabled | bool | `false` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
