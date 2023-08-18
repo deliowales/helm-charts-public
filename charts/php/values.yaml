@@ -40,6 +40,19 @@ application:
       cpu: ""
       memory: ""
 
+  migrations:
+    enabled: false
+    args: "migrations"
+    restartPolicy: OnFailure
+    backoffLimit: 2
+    resources:
+      limits:
+        cpu: 1
+        memory: 1G
+      requests:
+        cpu: 500m
+        memory: 500M
+
 authorizationPolicy:
   enabled: true
 
@@ -238,6 +251,8 @@ serviceEntry:
 supervisor:
   enabled: true
   horizon:
+    enabled: false
+  hpa:
     enabled: false
 # -- Vault configuration
 vault:
