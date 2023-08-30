@@ -44,6 +44,8 @@ spec:
               value: "{{ include "php.cloud.provider" . }}"
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}
+            - name: LOG_CHANNEL
+              value: "stderr"
             {{- if eq (include "php.cloud.provider" .) "AWS" }}
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
