@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.2.11](https://img.shields.io/badge/Version-1.2.11-informational?style=flat-square)
+![Version: 1.2.12](https://img.shields.io/badge/Version-1.2.12-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -127,6 +127,8 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | phpConfig.maxExecutionTime | int | `30` |  |
 | phpConfig.memoryLimit | string | `"128M"` |  |
 | phpConfig.postMaxSize | string | `"8M"` |  |
+| phpConfig.sessionHandler | string | `""` |  |
+| phpConfig.sessionSavePath | string | `""` |  |
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |

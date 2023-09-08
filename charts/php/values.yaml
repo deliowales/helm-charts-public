@@ -225,6 +225,8 @@ phpConfig:
   memoryLimit: 128M
   uploadMaxFilesize: 2M
   postMaxSize: 8M
+  sessionHandler: ""
+  sessionSavePath: ""
 
 
 service:
