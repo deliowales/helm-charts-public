@@ -226,6 +226,8 @@ phpConfig:
   uploadMaxFilesize: 2M
   postMaxSize: 8M
 
+supervisor:
+  enabled: true
 
 service:
   enabled: true

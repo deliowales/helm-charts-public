@@ -141,6 +141,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | serviceEntry.ping.hosts | list | `[]` |  |
 | serviceEntry.ports | list | `[]` |  |
 | supervisor.enabled | bool | `true` |  |
+| supervisor.enabled | bool | `true` |  |
 | supervisor.horizon.enabled | bool | `false` |  |
 | supervisor.hpa.enabled | bool | `false` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
