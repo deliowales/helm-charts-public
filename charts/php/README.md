@@ -127,6 +127,8 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | phpConfig.maxExecutionTime | int | `30` |  |
 | phpConfig.memoryLimit | string | `"128M"` |  |
 | phpConfig.postMaxSize | string | `"8M"` |  |
+| phpConfig.sessionHandler | string | `""` |  |
+| phpConfig.sessionSavePath | string | `""` |  |
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
