@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.2.12](https://img.shields.io/badge/Version-1.2.12-informational?style=flat-square)
+![Version: 1.2.13](https://img.shields.io/badge/Version-1.2.13-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -145,6 +145,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | supervisor.enabled | bool | `true` |  |
 | supervisor.horizon.enabled | bool | `false` |  |
 | supervisor.hpa.enabled | bool | `false` |  |
+| supervisor.resources.limits.cpu | string | `"500m"` |  |
+| supervisor.resources.limits.memory | string | `"500Mi"` |  |
+| supervisor.resources.requests.cpu | string | `"250m"` |  |
+| supervisor.resources.requests.memory | string | `"250Mi"` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
