@@ -56,11 +56,11 @@ spec:
             {{- end }}
           resources:
             limits:
-              cpu: 500m
-              memory: 500Mi
+              cpu: {{ .Values.supervisor.resources.limits.cpu }}
+              memory: {{ .Values.supervisor.resources.limits.memory }}
             requests:
-              cpu: 250m
-              memory: 250Mi
+              cpu: {{ .Values.supervisor.resources.requests.cpu }}
+              memory: {{ .Values.supervisor.resources.requests.memory }}
           volumeMounts:
             - name: fpm-pool-config-volume
               mountPath: /usr/local/etc/php-fpm.d/www.conf

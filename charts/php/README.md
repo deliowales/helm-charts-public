@@ -4,6 +4,7 @@ A generic chart to be used for all PHP microservices
 
 ![Version: 1.2.14](https://img.shields.io/badge/Version-1.2.14-informational?style=flat-square)
 
+
 ## Adding the Helm repo
 
 Before installing the chart, you need to add the helm repository
@@ -127,6 +128,8 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | phpConfig.maxExecutionTime | int | `30` |  |
 | phpConfig.memoryLimit | string | `"128M"` |  |
 | phpConfig.postMaxSize | string | `"8M"` |  |
+| phpConfig.sessionHandler | string | `""` |  |
+| phpConfig.sessionSavePath | string | `""` |  |
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
@@ -144,6 +147,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | supervisor.enabled | bool | `true` |  |
 | supervisor.horizon.enabled | bool | `false` |  |
 | supervisor.hpa.enabled | bool | `false` |  |
+| supervisor.resources.limits.cpu | string | `"500m"` |  |
+| supervisor.resources.limits.memory | string | `"500Mi"` |  |
+| supervisor.resources.requests.cpu | string | `"250m"` |  |
+| supervisor.resources.requests.memory | string | `"250Mi"` |  |
 | vault | object | `{"env":"","role":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
