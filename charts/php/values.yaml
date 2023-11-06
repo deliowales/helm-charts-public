@@ -228,6 +228,8 @@ phpConfig:
   sessionHandler: ""
   sessionSavePath: ""
 
+scheduler:
+  enabled: false
 
 service:
   enabled: true
