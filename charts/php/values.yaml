@@ -229,7 +229,7 @@ phpConfig:
   sessionSavePath: ""
 
 scheduler:
-  enabled: true
+  enabled: false
 
 service:
   enabled: true

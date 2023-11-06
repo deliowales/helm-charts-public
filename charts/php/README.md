@@ -4,7 +4,6 @@ A generic chart to be used for all PHP microservices
 
 ![Version: 1.2.14](https://img.shields.io/badge/Version-1.2.14-informational?style=flat-square)
 
-
 ## Adding the Helm repo
 
 Before installing the chart, you need to add the helm repository
@@ -131,7 +130,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | phpConfig.sessionHandler | string | `""` |  |
 | phpConfig.sessionSavePath | string | `""` |  |
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
-| scheduler.enabled | bool | `true` |  |
+| scheduler.enabled | bool | `false` |  |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
 | service.externalDNS.host | string | `""` |  |
