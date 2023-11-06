@@ -128,6 +128,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | phpConfig.memoryLimit | string | `"128M"` |  |
 | phpConfig.postMaxSize | string | `"8M"` |  |
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
+| scheduler.enabled | bool | `true` |  |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
 | service.externalDNS.host | string | `""` |  |
@@ -140,7 +141,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | serviceEntry.location | string | `""` |  |
 | serviceEntry.ping.hosts | list | `[]` |  |
 | serviceEntry.ports | list | `[]` |  |
-| supervisor.enabled | bool | `true` |  |
 | supervisor.enabled | bool | `true` |  |
 | supervisor.horizon.enabled | bool | `false` |  |
 | supervisor.hpa.enabled | bool | `false` |  |

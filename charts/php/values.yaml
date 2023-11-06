@@ -226,7 +226,7 @@ phpConfig:
   uploadMaxFilesize: 2M
   postMaxSize: 8M
 
-supervisor:
+scheduler:
   enabled: true
 
 service:
