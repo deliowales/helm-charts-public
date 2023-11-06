@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.2.14](https://img.shields.io/badge/Version-1.2.14-informational?style=flat-square)
+![Version: 1.2.15](https://img.shields.io/badge/Version-1.2.15-informational?style=flat-square)
 
 ## Adding the Helm repo
 
