@@ -1,4 +1,4 @@
 apiVersion: v2
 name: node
 description: A generic chart to be used for all nodeJS microservices
-version: '1.2.0'
+version: '1.2.1'
