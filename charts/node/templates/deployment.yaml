@@ -54,6 +54,8 @@ spec:
             - name: AWS_REGION
               value: {{ .Values.cloud.region }}
             {{- end }}
+            - name: NODE_OPTIONS
+              value: "--max-http-header-size=32768"
             {{- range .Values.application.env }}
             - name: "{{ .name }}"
               value: "{{ .value }}"
