@@ -7,7 +7,6 @@ spec:
   workloadSelector:
     labels:
       {{- include "php.labels" . | nindent 6 }}
-      app.kubernetes.io/name: {{ include "php.application.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   configPatches:
     - applyTo: HTTP_FILTER
