@@ -266,6 +266,11 @@ supervisor:
       cpu: 250m
       memory: 250Mi
 
+# -- DataDog configuration
+  targetsystem: "linux"
+  datadog:
+    apiKey: datadog-secret
+
 # -- Vault configuration
 vault:
   # -- Environment of the vault. Format: `<< env >>/<< vault name >>

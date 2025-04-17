@@ -177,6 +177,12 @@ vault:
   # -- Role name
   role: ""
 
+
+# -- DataDog configuration
+  targetsystem: "linux"
+  datadog:
+    apiKey: datadog-secret
+
 virtualService:
   enabled: true
   gateways: []
