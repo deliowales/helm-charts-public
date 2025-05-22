@@ -6,6 +6,21 @@ metadata:
     {{- include "php.labels" . | nindent 4 }}
   annotations:
     {{- include "php.annotations" . | nindent 4 }}
+{{- if .Values.deployment.datadog.enabled }}
+# datadog:
+#  apiKeyExistingSecret: datadog-secret
+#  site: datadog.eu
+#  tags:
+#       - env:demo
+#  apm:
+#    instrumentation:
+#       enabled: true
+#       targets:
+#         - name: "default-target"
+#           ddTraceVersions:
+#             php: "1"
+# {{- end }}
+
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
@@ -152,3 +167,22 @@ spec:
         {{- if .Values.application.extraVolumes }}
         {{- include "php.application.extraConfigmapVolumes" . | nindent 8 }}
         {{- end }}
+  global:
+  tags:
+    - "env:dev"
+override:
+  clusterAgent:
+    image:
+      tag: "7.64.1"
+features:
+  apm:
+    instrumentation:
+      enabled: true
+      targets:
+        - name: "default-target"
+          namespaceSelector:
+            matchNames:
+              - "portfolio"
+          ddTraceVersions:
+            php: "1"
+
