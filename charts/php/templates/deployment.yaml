@@ -6,20 +6,7 @@ metadata:
     {{- include "php.labels" . | nindent 4 }}
   annotations:
     {{- include "php.annotations" . | nindent 4 }}
-{{- if .Values.deployment.datadog.enabled }}
-# datadog:
-#  apiKeyExistingSecret: datadog-secret
-#  site: datadog.eu
-#  tags:
-#       - env:demo
-#  apm:
-#    instrumentation:
-#       enabled: true
-#       targets:
-#         - name: "default-target"
-#           ddTraceVersions:
-#             php: "1"
-# {{- end }}
+
 
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
