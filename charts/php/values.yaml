@@ -127,7 +127,8 @@ deployment:
     maxSkew: 1
     topologyKey: "kubernetes.io/hostname"
     whenUnsatisfiable: "ScheduleAnyway"
-
+  datadog:
+    enabled: false
 
 destinationRule:
   enabled: true
@@ -187,9 +188,10 @@ logging:
       cpu: "10m"
       memory: "10Mi"
 
-# -- The license key for New Relic. Only needed for FluentBit containers which are only used by PHP services.
 newrelic:
   licenseKey: ""
+  ephemeralPods:
+    enabled: false
 
 nginx:
   config:
@@ -272,3 +274,4 @@ vault:
   env: ""
   # -- Role name
   role: ""
+

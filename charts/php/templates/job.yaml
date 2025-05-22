@@ -35,6 +35,16 @@ spec:
           securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
           resources:
             {{- toYaml .Values.job.resources | nindent 12 }}
+          {{- if .Values.newrelic.ephemeralPods.enabled }}
+          volumeMounts:
+            - name: newrelic-log
+              mountPath: /var/log/newrelic/
+          {{- end }}
       restartPolicy: {{ .Values.job.restartPolicy }}
+      {{- if .Values.newrelic.ephemeralPods.enabled }}
+      volumes:
+        - name: newrelic-log
+          emptyDir: {}
+      {{- end }}
   backoffLimit: {{ .Values.job.backoffLimit }}
   {{- end }}

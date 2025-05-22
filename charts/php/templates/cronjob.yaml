@@ -56,11 +56,13 @@ spec:
                   mountPath: /var/www/html
                 - name: tmp
                   mountPath: /tmp
+                {{- if .Values.newrelic.ephemeralPods.enabled }}
                 - name: newrelic-log
                   mountPath: /var/log/newrelic/
-                  {{- if .Values.application.extraVolumes -}}
-                  {{- include "php.application.extraConfigmapMounts" . | nindent 16 }}
-                  {{- end }}
+                {{- end }}
+                {{- if .Values.application.extraVolumes -}}
+                {{- include "php.application.extraConfigmapMounts" . | nindent 16 }}
+                {{- end }}
           restartPolicy: {{ .Values.cron.restartPolicy }}
           volumes:
             - name: fpm-pool-config-volume
@@ -73,8 +75,10 @@ spec:
               emptyDir: {}
             - name: tmp
               emptyDir: {}
+            {{- if .Values.newrelic.ephemeralPods.enabled }}
             - name: newrelic-log
               emptyDir: {}
+            {{- end }}
             {{- if .Values.application.extraVolumes }}
             {{- include "php.application.extraConfigmapVolumes" . | nindent 12 }}
             {{- end }}
