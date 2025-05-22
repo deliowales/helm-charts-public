@@ -170,6 +170,7 @@ spec:
   global:
   tags:
     - "env:dev"
+{{- if eq .Release.Namespace "portfolio" }}
 override:
   clusterAgent:
     image:
@@ -185,4 +186,5 @@ features:
               - "portfolio"
           ddTraceVersions:
             php: "1"
+{{- end }}
 
