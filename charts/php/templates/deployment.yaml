@@ -154,16 +154,6 @@ spec:
         {{- if .Values.application.extraVolumes }}
         {{- include "php.application.extraConfigmapVolumes" . | nindent 8 }}
         {{- end }}
-  global:
-  tags:
-    - "env:dev"
-{{- if eq .Release.Namespace "portfolio" }}
-override:
-  clusterAgent:
-    image:
-      tag: "7.64.1"
-features:
-  apm:
     instrumentation:
       enabled: true
       targets:
@@ -173,5 +163,4 @@ features:
               - "portfolio"
           ddTraceVersions:
             php: "1"
-{{- end }}
 
