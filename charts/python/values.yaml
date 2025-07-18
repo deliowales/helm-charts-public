@@ -51,11 +51,6 @@ aws:
     role: ""
     rolePrefix: ""
 
-cloud:
-  environment: "uat"
-  provider: "aws"
-  region: "eu-west-1"
-  containerRegistryURL: "1234.ecr.com"
 
 cron:
   enabled: false
