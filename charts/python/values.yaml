@@ -1,15 +1,154 @@
-replicaCount: 1
+#######################################################################
+#                         VALUES FOR PYTHON CHART
+# THESE ARE DEFAULTS AND CAN BE OVERRIDDEN IN THE SERVICE'S VALUES FILE
+#######################################################################
+application:
+  name: "python"
+  args: []
+  extraVolumes: []
+  readinessProbe:
+    enabled: true
+  livenessProbe:
+    enabled: true
+  healthcheck:
+    livenessPath: "/health"
+    readinessPath: "/health"
+    headers: ""
+  cron:
+    enabled: false
+  env: []
+  image:
+    repository: ""
+    tag: "0.0.0"
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu: ""
+      memory: ""
 
-image:
-  repository: ""
-  tag: "latest"
-  pullPolicy: IfNotPresent
+  migrations:
+    enabled: false
+    args: "migrations"
+    restartPolicy: OnFailure
+    backoffLimit: 2
+    resources:
+      limits:
+        cpu: 1
+        memory: 1G
+      requests:
+        cpu: 500m
+        memory: 500M
+
+authorizationPolicy:
+  enabled: true
+
+aws:
+  iam:
+    enabled: false
+    role: ""
+    rolePrefix: ""
+
+cloud:
+  environment: "uat"
+  provider: "aws"
+  region: "eu-west-1"
+  containerRegistryURL: "1234.ecr.com"
+
+cron:
+  enabled: false
+  args: ""
+  schedule: ""
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: "Forbid"
+  vault:
+    enabled: true
+  restartPolicy: "OnFailure"
+  backoffLimit: 1
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu:
+      memory: ""
+
+deployment:
+  enabled: true
+  hpa:
+    enabled: true
+    maxReplicas: 10
+    minReplicas: 3
+    targetCPU: 70
+    targetMemory: 70
+  nodeSelector:
+    toleration: ""
+
+
+destinationRule:
+  enabled: true
+
+istio:
+  tls:
+    mode: ISTIO_MUTUAL
+  mtls:
+    mode: STRICT
+  principals: []
+  subsets: []
+  portLevelSettings: []
+  externalIngress:
+    enabled: true
+    path: ""
+  virtualService:
+    enabled: true
+    gateways: []
+    hosts: []
+
+job:
+  enabled: false
+  name: ""
+  annotations:
+  vault:
+    enabled: true
+  args: ""
+  restartPolicy: "OnFailure"
+  backoffLimit: 2
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu:
+      memory: ""
+
+
+scheduler:
+  enabled: false
 
 service:
+  enabled: true
+  externalDNS:
+    enabled: false
+    host: ""
+  port: 8000
   type: ClusterIP
-  port: 80
 
-env: []
-secrets: []
+serviceAccount:
+  enabled: true
+  name: ""
 
-resources: {}
+serviceEntry:
+  enabled: false
+  hosts: []
+  location: ""
+  ports: []
+  ping:
+    hosts: []
+
+
+vault:
+  env: ""
+  role: ""
