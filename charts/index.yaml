@@ -1,0 +1,12 @@
+apiVersion: v1
+entries:
+  python:
+  - apiVersion: v2
+    created: "2025-07-21T10:09:12.078781+01:00"
+    description: A simple Helm chart for Python microservices
+    digest: 5d83fa9c35916449c107123c8a5dc8f93f137cc57fddc8aa1a9e93f4fa6b3c9e
+    name: python
+    urls:
+    - https://raw.githubusercontent.com/deliowales/helm-charts-public/gh-pages/python-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-07-21T10:09:12.076819+01:00"
