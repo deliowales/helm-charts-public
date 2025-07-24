@@ -1,36 +1,104 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "python.fullname" . }}
+  name: "{{ include "python.application.name" . }}"
   labels:
-    app.kubernetes.io/name: {{ include "python.name" . }}
-    helm.sh/chart: {{ include "python.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "python.labels" . | nindent 4 }}
+  annotations:
+    {{- include "python.annotations" . | nindent 4 }}
+
+
 spec:
-  replicas: 1
+  replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "python.name" . }}
+      app.kubernetes.io/name: "{{ include "python.application.name" . }}"
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      labels:
-        app.kubernetes.io/name: {{ include "python.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
       annotations:
         {{- include "python.annotations" . | nindent 8 }}
         {{- include "python.application.vault.annotations" . | nindent 8 }}
+      labels:
+        {{- include "python.labels" . | nindent 8 }}
+        {{- if and (eq (include "python.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
+        aadpodidbinding: {{ .Values.azure.identity.name }}
+        {{- end }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- include "python.deployment.topologySpreadConstraints" . | nindent 6 }}
+      {{ if .Values.deployment.nodeSelector.toleration -}}
+      nodeSelector:
+        {{- include "node.deployment.nodeSelector.toleration" . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "python.application.name" . }}
       containers:
-        - name: {{ include "python.name" . }}
-          image: "{{ .Values.application.image.repository }}:{{ .Values.application.image.tag }}"
+        - name: "{{ include "python.application.name" . }}"
+          image: "{{ include "python.application.imageURL" . }}"
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+          securityContext: {{ include "python.application.securityContext" . | nindent 12 }}
           ports:
             - name: http
               containerPort: 8000
               protocol: TCP
           env:
-          {{- range .Values.application.env }}
-            - name: {{ .name }}
+            - name: PLATFORM
+              value: "{{ include "python.cloud.provider" . }}"
+            - name: APP_NAME
+              value: {{ .Values.application.name | lower | quote }}
+            - name: SENTRY_ENABLED
+              value: "true"
+            - name: SENTRY_TRACES_SAMPLE_RATE
+              value: "{{ ternary "0.5" "1" (any (eq .Values.cloud.environment "demo") (eq .Values.cloud.environment "production")) }}"
+            - name: SENTRY_PROFILES_SAMPLE_RATE
+              value: "1"
+            - name: LOG_CHANNEL
+              value: "stderr"
+            {{- if eq (include "python.cloud.provider" .) "AWS" }}
+            - name: AWS_REGION
+              value: {{ .Values.cloud.region }}
+            {{- end }}
+            {{- range .Values.application.env }}
+            - name: "{{ .name }}"
               value: "{{ .value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.application.resources | nindent 12 }}
+          {{- if .Values.application.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              port: 8000
+              path: {{ .Values.application.healthcheck.livenessPath }}
+              {{- if (include "python.application.healthcheck.headers" . ) -}}
+              {{ include "python.application.healthcheck.headers" .  | nindent 14 }}
+              {{- end }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          {{ end }}
+          {{- if .Values.application.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              port: 8000
+              path: {{ .Values.application.healthcheck.readinessPath }}
+              {{- if (include "python.application.healthcheck.headers" . ) -}}
+              {{ include "python.application.healthcheck.headers" .  | nindent 14 }}
+              {{- end }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
           {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.application.extraVolumes -}}
+            {{- include "python.application.extraConfigmapMounts" . | nindent 12 }}
+            {{- end }}
+
+      securityContext:
+        fsGroup: 1000
+
+      volumes:
+        - name: tmp
+          emptyDir: { }
+        {{- if .Values.application.extraVolumes }}
+        {{- include "python.application.extraConfigmapVolumes" . | nindent 8 }}
+        {{- end }}
