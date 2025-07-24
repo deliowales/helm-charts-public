@@ -18,6 +18,9 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "python.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        {{- include "python.annotations" . | nindent 8 }}
+        {{- include "python.application.vault.annotations" . | nindent 8 }}
     spec:
       containers:
         - name: {{ include "python.name" . }}
