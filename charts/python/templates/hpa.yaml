@@ -1,0 +1,30 @@
+{{- if eq .Values.deployment.hpa.enabled true }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "python.application.name" . }}
+  labels:
+    {{- include "python.labels" . | nindent 4 }}
+  annotations:
+    {{- include "python.annotations" . | nindent 4 }}
+spec:
+  maxReplicas: {{ .Values.deployment.hpa.maxReplicas }}
+  minReplicas: {{ .Values.deployment.hpa.minReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "python.application.name" . }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.deployment.hpa.targetCPU }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.deployment.hpa.targetMemory }}
+{{- end }}

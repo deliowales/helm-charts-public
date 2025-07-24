@@ -1,0 +1,29 @@
+{{- if eq .Values.destinationRule.enabled true }}
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ include "python.application.name" . }}
+  labels:
+    {{- include "python.labels" . | nindent 4 }}
+  annotations:
+    {{- include "python.annotations" . | nindent 4 }}
+spec:
+  host: {{ include "python.application.name" . }}
+  trafficPolicy:
+    tls:
+      mode: {{ .Values.istio.tls.mode }}
+    {{ if .Values.istio.portLevelSettings -}}
+    portLevelSettings:
+      {{- toYaml .Values.istio.portLevelSettings | nindent 6 }}
+    {{- end }}
+  {{ if .Values.istio.subsets -}}
+  subsets:
+    {{- range .Values.istio.subsets }}
+    - name: {{ .name }}
+      labels:
+      {{- range .labels }}
+        {{ .name }}: {{ .value }}
+      {{- end }}
+    {{- end }}
+  {{- end -}}
+{{- end -}}

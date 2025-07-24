@@ -1,0 +1,26 @@
+{{- if eq .Values.authorizationPolicy.enabled true }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "python.application.name" . }}
+  labels:
+    {{- include "python.labels" . | nindent 4 }}
+  annotations:
+    {{- include "python.annotations" . | nindent 4 }}
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [
+              "cluster.local/ns/monitoring/sa/prometheus-blackbox-exporter",
+              {{- if .Values.istio.externalIngress.enabled }}
+              "cluster.local/ns/istio-ingress/sa/istio-ingress",
+              {{- end }}
+              {{- if .Values.istio.principals }}
+              {{- range .Values.istio.principals }}
+              "{{ . }}",
+              {{- end }}
+              {{- end }}
+            ]
+{{- end }}
