@@ -61,6 +61,9 @@ cloud:
   # -- **Required**: URL for the Container Registry
   containerRegistryURL: "1234.ecr.com"
 
+peerAuthentication:
+  enabled: true
+
 
 cron:
   enabled: false
