@@ -1,4 +1,4 @@
 apiVersion: v2
 name: python
 description: A simple Helm chart for Python microservices
-version: 0.1.5
+version: 0.1.6
