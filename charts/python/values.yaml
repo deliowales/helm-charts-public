@@ -51,6 +51,13 @@ aws:
     role: ""
     rolePrefix: ""
 
+azure:
+  identity:
+    enabled: false
+    clientName: ""
+    name: ""
+    resourceName: ""
+
 cloud:
   # -- **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`.
   environment: "uat"
@@ -63,7 +70,6 @@ cloud:
 
 peerAuthentication:
   enabled: true
-
 
 cron:
   enabled: false
@@ -94,7 +100,16 @@ deployment:
     targetMemory: 70
   nodeSelector:
     toleration: ""
-
+  # -- Replica count not considering the HPA
+  replicaCount: 3
+  # -- Configure Topology Spread Constrains.
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
+  topologySpreadConstraints:
+    maxSkew: 1
+    topologyKey: "kubernetes.io/hostname"
+    whenUnsatisfiable: "ScheduleAnyway"
+  datadog:
+    enabled: false
 
 destinationRule:
   enabled: true
@@ -132,6 +147,15 @@ job:
       cpu:
       memory: ""
 
+newrelic:
+  licenseKey: ""
+  ephemeralPods:
+    enabled: false
+
+# Pod Disruption Budget. Leave as false unless instructed otherwise.
+pdb:
+  enabled: false
+  minAvailable: 2
 
 scheduler:
   enabled: false
@@ -156,7 +180,9 @@ serviceEntry:
   ping:
     hosts: []
 
-
+# -- Vault configuration
 vault:
+  # -- Environment of the vault. Format: `<< env >>/<< vault name >>
   env: ""
+  # -- Role name
   role: ""
