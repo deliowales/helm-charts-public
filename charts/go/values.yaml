@@ -9,6 +9,7 @@ application:
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
   extraVolumes: []
+  readOnly: true
   healthcheck:
     path: ""
     headers: ""
