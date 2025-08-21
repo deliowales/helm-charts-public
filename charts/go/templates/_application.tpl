@@ -19,7 +19,7 @@ Define container security context
 runAsUser: 1000
 runAsGroup: 1000
 runAsNonRoot: true
-readOnlyRootFilesystem: true
+readOnlyRootFilesystem: {{ .Values.application.readOnly }}
 allowPrivilegeEscalation: false
 {{- end }}
 
