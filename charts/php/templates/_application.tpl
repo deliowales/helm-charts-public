@@ -1,21 +1,21 @@
 {{/*
 Application Name
 */}}
-{{- define "python.application.name" -}}
+{{- define "php.application.name" -}}
   {{ .Values.application.name | required "Required: Application Name << .Values.application.name >>" | lower }}
 {{- end -}}
 
 {{/*
 Define the container image urls
 */}}
-{{- define "python.application.imageURL" -}}
-  {{- printf "%s/%s:%s" (include "python.cloud.containerRegistryURL" .) .Values.application.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
+{{- define "php.application.imageURL" -}}
+  {{- printf "%s/%s:%s" (include "php.cloud.containerRegistryURL" .) .Values.application.image.repository (.Values.application.image.tag | required "An image tag needs to be defined.") }}
 {{- end -}}
 
 {{/*
 Define container security context
 */}}
-{{- define "python.application.securityContext" -}}
+{{- define "php.application.securityContext" -}}
 runAsUser: 1000
 runAsGroup: 1000
 runAsNonRoot: true
@@ -26,7 +26,7 @@ allowPrivilegeEscalation: false
 {{/*
 Vault Agent Annotations
 */}}
-{{- define "python.application.vault.annotations" -}}
+{{- define "php.application.vault.annotations" -}}
 vault.hashicorp.com/agent-inject: "true"
 vault.hashicorp.com/agent-pre-populate: "true"
 vault.hashicorp.com/agent-pre-populate-only: "true"
@@ -45,7 +45,7 @@ vault.hashicorp.com/agent-inject-template-env: |
 {{/*
 Headers for liveness probe healthcheck
 */}}
-{{- define "python.application.healthcheck.headers" -}}
+{{- define "php.application.healthcheck.headers" -}}
   {{- if .Values.application.healthcheck.headers -}}
   httpHeaders:
   {{- range .Values.application.healthcheck.headers }}
@@ -58,7 +58,7 @@ Headers for liveness probe healthcheck
 {{/*
 Extra volume mounts
 */}}
-{{- define "python.application.extraConfigmapMounts" -}}
+{{- define "php.application.extraConfigmapMounts" -}}
 {{- range .Values.application.extraVolumes }}
 - name: {{ .name }}
   mountPath: {{ .mountPath }}
@@ -71,7 +71,7 @@ Extra volume mounts
 {{/*
 Extra volumes
 */}}
-{{- define "python.application.extraConfigmapVolumes" -}}
+{{- define "php.application.extraConfigmapVolumes" -}}
 {{- range .Values.application.extraVolumes }}
 - name: {{ .name }}
   {{- if eq .type "configMap" }}

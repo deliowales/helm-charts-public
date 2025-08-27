@@ -12,6 +12,10 @@
   {{- printf "%s/%s:%s" .Values.cloud.containerRegistryURL .Values.nginx.image.repository .Values.nginx.image.tag }}
 {{- end -}}
 
+{{- define "php.deployment.nightwatch.imageURL" -}}
+  {{- printf "%s/%s:%s" .Values.cloud.containerRegistryURL .Values.nightwatch.image.repository .Values.nightwatch.image.tag }}
+{{- end -}}
+
 {{/*
 Set the nodeSelector toleration
 */}}

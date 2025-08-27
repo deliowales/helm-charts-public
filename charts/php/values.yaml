@@ -151,7 +151,6 @@ istio:
     gateways: []
     hosts: []
 
-
 job:
   enabled: false
   name: ""
@@ -195,7 +194,7 @@ newrelic:
 
 nginx:
   config:
-#    This is nginx default max body size
+    #    This is nginx default max body size
     clientMaxBodySize: 1M
   image:
     repository: nginx
@@ -275,3 +274,16 @@ vault:
   # -- Role name
   role: ""
 
+nightwatch:
+  enabled: false
+  image:
+    repository: laravelphp/nightwatch-agent
+    tag: latest
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
