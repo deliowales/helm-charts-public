@@ -136,9 +136,9 @@ spec:
           image: "{{ include "php.deployment.nightwatch.imageURL" . }}"
           imagePullPolicy: {{ .Values.nightwatch.image.pullPolicy }}
           securityContext:
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
+            runAsNonRoot: false
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
           resources:
             {{- toYaml .Values.nightwatch.resources | nindent 12 }}
           volumeMounts:
