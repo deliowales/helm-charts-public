@@ -277,7 +277,7 @@ vault:
 nightwatch:
   enabled: false
   image:
-    repository: laravelphp/nightwatch-agent
+    repository: docker.io/laravelphp/nightwatch-agent
     tag: latest
     pullPolicy: Always
   resources:
