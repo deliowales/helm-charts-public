@@ -13,7 +13,11 @@
 {{- end -}}
 
 {{- define "php.deployment.nightwatch.imageURL" -}}
-  {{- printf "%s/%s:%s" .Values.cloud.containerRegistryURL .Values.nightwatch.image.repository .Values.nightwatch.image.tag }}
+  {{- if contains "/" .Values.nightwatch.image.repository -}}
+    {{- printf "%s:%s" .Values.nightwatch.image.repository .Values.nightwatch.image.tag }}
+  {{- else -}}
+    {{- printf "%s/%s:%s" .Values.cloud.containerRegistryURL .Values.nightwatch.image.repository .Values.nightwatch.image.tag }}
+  {{- end -}}
 {{- end -}}
 
 {{/*
