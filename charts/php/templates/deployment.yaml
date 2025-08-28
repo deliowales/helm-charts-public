@@ -158,11 +158,6 @@ spec:
             - name: shared-files
               mountPath: /var/www/html
               readOnly: true
-            {{- if and .Values.vault.role .Values.vault.env }}
-            - name: vault-secrets
-              mountPath: /vault/secrets
-              readOnly: true
-            {{- end }}
         {{- end }}
 
       securityContext:
