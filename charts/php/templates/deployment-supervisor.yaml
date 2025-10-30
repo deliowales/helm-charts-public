@@ -75,6 +75,34 @@ spec:
               subPath: supervisord.conf
             - name: tmp
               mountPath: /tmp
+        {{- if .Values.nightwatch.enabled }}
+        - name: nightwatch-agent
+          image: "{{ include "php.deployment.nightwatch.imageURL" . }}"
+          imagePullPolicy: {{ .Values.nightwatch.image.pullPolicy }}
+          securityContext:
+            runAsNonRoot: false
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
+          env:
+            - name: PLATFORM
+              value: "{{ include "php.cloud.provider" . }}"
+            - name: APP_NAME
+              value: {{ .Values.application.name | lower | quote }}
+            {{- if eq (include "php.cloud.provider" .) "AWS" }}
+            - name: AWS_REGION
+              value: {{ .Values.cloud.region }}
+            {{- end }}
+            {{- range .Values.nightwatch.env }}
+            - name: "{{ .name }}"
+              value: "{{ .value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.nightwatch.resources | nindent 12 }}
+          volumeMounts:
+            - name: shared-files
+              mountPath: /var/www/html
+              readOnly: true
+        {{- end }}
 
       securityContext:
         fsGroup: 1000
