@@ -55,7 +55,7 @@ spec:
               value: {{ .Values.cloud.region }}
             {{- end }}
             - name: NODE_OPTIONS
-              value: "--max-http-header-size=65536"
+              value: "--max-http-header-size={{ .Values.application.nodeOptions.maxHttpHeaderSize | default 65536 }}{{- if .Values.application.nodeOptions.maxOldSpaceSize }} --max-old-space-size={{ .Values.application.nodeOptions.maxOldSpaceSize }}{{- end }}"
             {{- range .Values.application.env }}
             - name: "{{ .name }}"
               value: "{{ .value }}"
