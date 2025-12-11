@@ -47,6 +47,12 @@ application:
       cpu: ""
       memory: ""
 
+  nodeOptions:
+    # -- Max HTTP header size in bytes (default: 65536)
+    maxHttpHeaderSize: 65536
+    # -- Max old space size in MB for V8 heap (optional, e.g. 1150)
+    maxOldSpaceSize:
+
   migrations:
     enabled: false
     args: "migrations"
