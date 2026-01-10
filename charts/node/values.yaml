@@ -194,6 +194,11 @@ serviceEntry:
 supervisor:
   enabled: false
 
+# -- DataDog configuration
+  targetsystem: "linux"
+  datadog:
+    apiKey: datadog-secret
+
 # -- Vault configuration
 vault:
   # -- Environment of the vault. Format: `<< env >>/<< vault name >>
