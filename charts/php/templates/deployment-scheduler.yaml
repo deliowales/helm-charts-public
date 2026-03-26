@@ -33,13 +33,14 @@ spec:
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           args: ["scheduler"]
           securityContext:
+          securityContext:
             readOnlyRootFilesystem: true
           livenessProbe:
             exec:
               command:
                 - /bin/sh
                 - '-c'
-                - pgrep -a crond
+                - {{ .Values.scheduler.livenessProbe | default "pgrep -a crond" }}
           env:
             - name: PLATFORM
               value: "{{ include "php.cloud.provider" . }}"
