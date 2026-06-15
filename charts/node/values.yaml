@@ -193,6 +193,15 @@ serviceEntry:
 
 supervisor:
   enabled: false
+  # -- Resource requests/limits for the supervisor container.
+  # If unset, defaults to limits 500m/500Mi and requests 250m/250Mi.
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 500Mi
+    # requests:
+    #   cpu: 250m
+    #   memory: 250Mi
 
 # -- Vault configuration
 vault:

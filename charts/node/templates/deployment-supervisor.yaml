@@ -53,12 +53,16 @@ spec:
               value: "{{ .value }}"
             {{- end }}
           resources:
+            {{- if .Values.supervisor.resources }}
+            {{- toYaml .Values.supervisor.resources | nindent 12 }}
+            {{- else }}
             limits:
               cpu: 500m
               memory: 500Mi
             requests:
               cpu: 250m
               memory: 250Mi
+            {{- end }}
           volumeMounts:
             - name: supervisor-config-volume
               mountPath: /etc/supervisord.conf
