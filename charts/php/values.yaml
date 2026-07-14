@@ -273,6 +273,10 @@ vault:
   env: ""
   # -- Role name
   role: ""
+  # -- Optional path to a platform-wide shared secret (e.g. `<< env >>/data/_shared`).
+  # When set, its keys are appended into the same injected `/vault/secrets/env`
+  # file after the service's own secret, giving true single-source shared config.
+  sharedEnv: ""
 
 nightwatch:
   enabled: false

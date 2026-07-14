@@ -39,6 +39,13 @@ vault.hashicorp.com/agent-inject-template-env: |
   export {{ $k }}='{{ $v }}'
   {{ end -}}
   {{ end -}}` }}
+{{- if .Values.vault.sharedEnv }}
+  {{ `{{ with secret "` }}{{ .Values.vault.sharedEnv }}{{`"  -}}
+  {{ range $k, $v := .Data.data -}}
+  export {{ $k }}='{{ $v }}'
+  {{ end -}}
+  {{ end -}}` }}
+{{- end }}
 {{- end -}}
 
 
