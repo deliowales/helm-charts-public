@@ -17,11 +17,6 @@ spec:
         vault.hashicorp.com/role: {{ .Values.vault.role }}
         vault.hashicorp.com/agent-inject-secret-env: {{ .Values.vault.env }}
         vault.hashicorp.com/agent-inject-template-env: |
-            {{`{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
-            {{ range $k, $v := .Data.data -}}
-            export {{ $k }}='{{ $v }}'
-            {{ end -}}
-            {{ end -}}`}}
             {{- if .Values.vault.sharedEnv }}
             {{`{{ with secret "` }}{{ .Values.vault.sharedEnv }}{{`"  -}}
             {{ range $k, $v := .Data.data -}}
@@ -29,6 +24,11 @@ spec:
             {{ end -}}
             {{ end -}}`}}
             {{- end }}
+            {{`{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
+            {{ range $k, $v := .Data.data -}}
+            export {{ $k }}='{{ $v }}'
+            {{ end -}}
+            {{ end -}}`}}
         {{- end }}
       labels:
         app.kubernetes.io/name: {{ .Chart.Name }}
