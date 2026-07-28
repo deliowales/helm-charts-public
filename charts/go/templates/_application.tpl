@@ -34,18 +34,18 @@ vault.hashicorp.com/agent-init-first: "true"
 vault.hashicorp.com/role: {{ .Values.vault.role }}
 vault.hashicorp.com/agent-inject-secret-env: {{ .Values.vault.env }}
 vault.hashicorp.com/agent-inject-template-env: |
-  {{ `{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
-  {{ range $k, $v := .Data.data -}}
-  export {{ $k }}='{{ $v }}'
-  {{ end -}}
-  {{ end -}}` }}
-{{- if .Values.vault.sharedEnv }}
+  {{- if .Values.vault.sharedEnv }}
   {{ `{{ with secret "` }}{{ .Values.vault.sharedEnv }}{{`"  -}}
   {{ range $k, $v := .Data.data -}}
   export {{ $k }}='{{ $v }}'
   {{ end -}}
   {{ end -}}` }}
-{{- end }}
+  {{- end }}
+  {{ `{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
+  {{ range $k, $v := .Data.data -}}
+  export {{ $k }}='{{ $v }}'
+  {{ end -}}
+  {{ end -}}` }}
 {{- end -}}
 
 
