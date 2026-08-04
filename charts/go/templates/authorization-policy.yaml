@@ -23,4 +23,7 @@ spec:
             {{- end }}
             {{- end }}
             ]
+    {{- with .Values.authorizationPolicy.extraRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 {{- end }}

@@ -4,7 +4,7 @@ kind: Job
 metadata:
   name: {{ .Values.job.name }}
   annotations:
-    {{- toYaml .Values.job.annotations | nindent 12 }}
+    {{- toYaml .Values.job.annotations | nindent 4 }}
 spec:
   template:
     metadata:
