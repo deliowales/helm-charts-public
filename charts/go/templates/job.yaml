@@ -38,10 +38,13 @@ spec:
         - name: {{ include "go.application.name" . }}
           image: {{ include "go.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-{{/*          args: [ "schedule" ]*/}}
+          {{- with .Values.job.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
-            runAsUser: 1000 # User "app" within the container
-            runAsGroup: 1000
+            runAsUser: {{ .Values.application.securityContext.runAsUser }}
+            runAsGroup: {{ .Values.application.securityContext.runAsGroup }}
             runAsNonRoot: true
             readOnlyRootFilesystem: true
           resources:
