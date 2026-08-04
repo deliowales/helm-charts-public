@@ -16,11 +16,44 @@ Define the container image urls
 Define container security context
 */}}
 {{- define "go.application.securityContext" -}}
-runAsUser: 1000
-runAsGroup: 1000
+runAsUser: {{ .Values.application.securityContext.runAsUser }}
+runAsGroup: {{ .Values.application.securityContext.runAsGroup }}
 runAsNonRoot: true
 readOnlyRootFilesystem: {{ .Values.application.readOnly }}
 allowPrivilegeEscalation: false
+{{- end }}
+
+{{/*
+Renders a probe. gRPC services (deployment.grpc: true) use the grpc_health_probe
+binary; everything else uses an HTTP GET against the container port. Pass the
+probe config in as "probe" and the root context as "ctx".
+*/}}
+{{- define "go.application.probe" -}}
+{{- $ctx := .ctx -}}
+{{- $probe := .probe -}}
+{{- if $ctx.Values.deployment.grpc -}}
+exec:
+  command: ["/go/bin/grpc_health_probe", "-addr=:{{ $ctx.Values.deployment.containerPort }}"]
+{{- else if eq $probe.type "tcp" -}}
+tcpSocket:
+  port: {{ $ctx.Values.deployment.containerPort }}
+{{- else -}}
+httpGet:
+  port: {{ $ctx.Values.deployment.containerPort }}
+  path: {{ $probe.path }}
+  {{- with $probe.httpHeaders }}
+  httpHeaders:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+initialDelaySeconds: {{ $probe.initialDelaySeconds }}
+timeoutSeconds: {{ $probe.timeoutSeconds }}
+{{- with $probe.periodSeconds }}
+periodSeconds: {{ . }}
+{{- end }}
+{{- with $probe.failureThreshold }}
+failureThreshold: {{ . }}
+{{- end }}
 {{- end }}
 
 {{/*

@@ -35,6 +35,10 @@ spec:
           image: "{{ include "go.application.imageURL" . }}"
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           securityContext: {{ include "go.application.securityContext" . | nindent 12 }}
+          {{- with .Values.application.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             - name: APP_NAME
               value: {{ .Values.application.name | lower | quote }}
@@ -50,20 +54,18 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: 50051
+              containerPort: {{ .Values.deployment.containerPort }}
               protocol: TCP
           resources:
             {{- toYaml .Values.application.resources | nindent 12 }}
+          {{- if .Values.application.startupProbe.enabled }}
+          startupProbe:
+            {{- include "go.application.probe" (dict "ctx" . "probe" .Values.application.startupProbe) | nindent 12 }}
+          {{- end }}
           livenessProbe:
-            exec:
-              command: ["/go/bin/grpc_health_probe", "-addr=:50051"]
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+            {{- include "go.application.probe" (dict "ctx" . "probe" .Values.application.livenessProbe) | nindent 12 }}
           readinessProbe:
-            exec:
-              command: ["/go/bin/grpc_health_probe", "-addr=:50051"]
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            {{- include "go.application.probe" (dict "ctx" . "probe" .Values.application.readinessProbe) | nindent 12 }}
           volumeMounts:
             - name: tmp
               mountPath: /tmp
@@ -71,7 +73,7 @@ spec:
             {{- include "go.application.extraConfigmapMounts" . | nindent 12 }}
             {{- end }}
       securityContext:
-        fsGroup: 1000
+        fsGroup: {{ .Values.application.securityContext.fsGroup }}
       volumes:
         - name: tmp
           emptyDir: {}

@@ -13,18 +13,45 @@ application:
   healthcheck:
     path: ""
     headers: ""
+  # -- Container security context. Defaults suit the standard alpine-based images
+  # (user "app"). Distroless images run as 65532.
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  # -- Optional startup probe, for apps that need longer to warm up than the
+  # liveness probe tolerates. Uses the same shape as the probes below.
+  startupProbe:
+    enabled: false
+    type: http
+    path: /_/system/liveness
+    httpHeaders: []
+    initialDelaySeconds: 0
+    timeoutSeconds: 2
+    periodSeconds: 3
+    failureThreshold: 20
+  # -- Ignored when `deployment.grpc` is true, in which case grpc_health_probe is used.
   livenessProbe:
     # -- Type of liveness healthcheck. `http` or `tcp`
     type: http
     path: /_/system/liveness
     # -- Custom headers to set in the request. HTTP allows repeated headers.
     httpHeaders: []
+    initialDelaySeconds: 10
+    timeoutSeconds: 5
+    periodSeconds: ""
+    failureThreshold: ""
+  # -- Ignored when `deployment.grpc` is true, in which case grpc_health_probe is used.
   readinessProbe:
     # -- Type of readiness healthcheck. `http` or `tcp`
     type: http
     path: /_/system/readiness
     # -- Custom headers to set in the request. HTTP allows repeated headers.
     httpHeaders: []
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
+    periodSeconds: ""
+    failureThreshold: ""
   # -- Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt.
   env: []
   # Configure container registry details
@@ -78,7 +105,12 @@ cloud:
 
 deployment:
   enabled: true
-  grpc: false
+  # -- Use gRPC health probes (`/go/bin/grpc_health_probe`) instead of the HTTP/TCP
+  # probes configured under `application`. Defaults true: every consumer of this
+  # chart predates HTTP support and is a gRPC service.
+  grpc: true
+  # -- Port the application listens on. gRPC services conventionally use 50051.
+  containerPort: 50051
   # Horizontal Pod Autoscaler configuration.
   hpa:
     enabled: true
@@ -127,7 +159,8 @@ job:
   annotations:
   vault:
     enabled: true
-  args: ""
+  # -- Args passed to the job container's entrypoint, e.g. `["migrations"]`.
+  args: []
   restartPolicy: "OnFailure"
   backoffLimit: 2
   resources:
