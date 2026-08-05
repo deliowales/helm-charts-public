@@ -141,3 +141,17 @@ same image gets the same configuration.
   value: "{{ .value }}"
 {{- end }}
 {{- end }}
+
+{{/*
+ServiceAccount the job runs as. Defaults to the application's, or to a dedicated
+one named after the job when job.serviceAccount.create is set.
+*/}}
+{{- define "go.job.serviceAccountName" -}}
+{{- if .Values.job.serviceAccount.name -}}
+{{ .Values.job.serviceAccount.name }}
+{{- else if .Values.job.serviceAccount.create -}}
+{{ .Values.job.name }}
+{{- else -}}
+{{ include "go.application.name" . }}
+{{- end -}}
+{{- end }}

@@ -171,6 +171,17 @@ job:
     enabled: true
   # -- Args passed to the job container's entrypoint, e.g. `["migrations"]`.
   args: []
+  serviceAccount:
+    # -- Create a ServiceAccount dedicated to the job, named after `job.name`,
+    # instead of reusing the application's. Required when the job runs as a
+    # pre-install hook: hooks are applied before normal resources, so the
+    # application's ServiceAccount does not exist yet and the job cannot schedule
+    # a pod on a first install. The dedicated account mirrors the job's own
+    # `helm.sh/hook` phases at weight -5 so it is created first, and is deleted
+    # once the job succeeds so no dangling identity is left behind.
+    create: false
+    # -- Use an existing ServiceAccount by name instead. Overrides `create`.
+    name: ""
   restartPolicy: "OnFailure"
   backoffLimit: 2
   resources:

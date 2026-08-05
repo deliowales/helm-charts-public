@@ -33,7 +33,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ .Chart.Name }}
     spec:
-      serviceAccountName: {{ include "go.application.name" . }}
+      serviceAccountName: {{ include "go.job.serviceAccountName" . }}
       containers:
         - name: {{ include "go.application.name" . }}
           image: {{ include "go.application.imageURL" . }}
