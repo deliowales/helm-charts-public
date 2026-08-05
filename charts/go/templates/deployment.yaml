@@ -46,18 +46,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
-            - name: APP_NAME
-              value: {{ .Values.application.name | lower | quote }}
-            - name: PLATFORM
-              value: "{{ include "go.cloud.provider" . }}"
-            {{- if eq (include "go.cloud.provider" .) "AWS" }}
-            - name: AWS_REGION
-              value: {{ .Values.cloud.region }}
-            {{- end }}
-            {{- range .Values.application.env }}
-            - name: "{{ .name }}"
-              value: "{{ .value }}"
-            {{- end }}
+            {{- include "go.application.env" . | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.deployment.containerPort }}
