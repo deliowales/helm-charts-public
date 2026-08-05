@@ -167,6 +167,10 @@ job:
   enabled: false
   name: ""
   annotations:
+  # -- Annotations on the job's **pod** template, e.g.
+  # `sidecar.istio.io/inject: "false"` — injection is decided from the pod, not
+  # the Job.
+  podAnnotations: {}
   vault:
     enabled: true
   # -- Args passed to the job container's entrypoint, e.g. `["migrations"]`.
