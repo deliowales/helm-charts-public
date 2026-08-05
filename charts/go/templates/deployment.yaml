@@ -9,6 +9,12 @@ metadata:
     {{- include "go.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
+  {{- with .Values.deployment.strategy }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ include "go.application.name" . }}"
@@ -66,6 +72,12 @@ spec:
             {{- include "go.application.probe" (dict "ctx" . "probe" .Values.application.livenessProbe) | nindent 12 }}
           readinessProbe:
             {{- include "go.application.probe" (dict "ctx" . "probe" .Values.application.readinessProbe) | nindent 12 }}
+          {{- with .Values.deployment.preStopSleepSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sleep", "{{ . }}"]
+          {{- end }}
           volumeMounts:
             - name: tmp
               mountPath: /tmp

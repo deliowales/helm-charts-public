@@ -73,6 +73,10 @@ application:
 
 authorizationPolicy:
   enabled: true
+  # -- Additional Istio AuthorizationPolicy rules, appended after the default
+  # allow-rule above. Use this to grant narrower access than the blanket rule —
+  # e.g. read-only principals on specific paths plus a separate admin rule.
+  extraRules: []
 
 # -- IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed.
 aws:
@@ -134,6 +138,12 @@ deployment:
 
   # -- Replica count not considering the HPA
   replicaCount: 3
+  # -- RollingUpdate parameters, e.g. `{maxSurge: 1, maxUnavailable: 0}` for
+  # zero-downtime rollouts. Omitted entirely when unset.
+  strategy: {}
+  # -- Seconds to sleep in a preStop hook, letting in-flight requests drain
+  # before the container is signalled. Omitted entirely when unset.
+  preStopSleepSeconds: ""
 
 destinationRule:
   enabled: true
@@ -219,3 +229,7 @@ virtualService:
   enabled: true
   gateways: []
   hosts: []
+  # -- Per-route request timeout, e.g. `2s`. Omitted entirely when unset.
+  timeout: ""
+  # -- Retry policy, e.g. `{attempts: 2, perTryTimeout: 2s}`. Omitted when unset.
+  retries: {}
