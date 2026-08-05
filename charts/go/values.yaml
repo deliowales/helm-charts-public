@@ -124,8 +124,14 @@ deployment:
     minReplicas: 3
     # -- Target CPU usage (%)
     targetCPU: 70
-    # -- Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary.
+    # -- Target Memory. Interpreted per `targetMemoryType`: a percentage of the
+    # memory *request* for `Utilization`, or an absolute quantity like `350Mi` for
+    # `AverageValue`.
     targetMemory: 70
+    # -- How `targetMemory` is interpreted: `Utilization` (percentage) or
+    # `AverageValue` (absolute quantity). `averageUtilization` takes an integer, so
+    # a value like `350Mi` requires `AverageValue`.
+    targetMemoryType: Utilization
   # Specify what type of node you want this app to be deployed on: ["cpu", "memory"]
   nodeSelector:
     toleration: ""

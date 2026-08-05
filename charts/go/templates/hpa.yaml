@@ -25,6 +25,10 @@ spec:
       resource:
         name: memory
         target:
-          type: Utilization
+          type: {{ .Values.deployment.hpa.targetMemoryType }}
+          {{- if eq .Values.deployment.hpa.targetMemoryType "AverageValue" }}
+          averageValue: {{ .Values.deployment.hpa.targetMemory }}
+          {{- else }}
           averageUtilization: {{ .Values.deployment.hpa.targetMemory }}
+          {{- end }}
 {{- end }}
