@@ -42,6 +42,8 @@ spec:
           args:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          env:
+            {{- include "go.application.env" . | nindent 12 }}
           securityContext:
             runAsUser: {{ .Values.application.securityContext.runAsUser }}
             runAsGroup: {{ .Values.application.securityContext.runAsGroup }}

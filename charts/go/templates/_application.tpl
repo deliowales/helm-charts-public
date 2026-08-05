@@ -122,3 +122,22 @@ Extra volumes
   {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Container environment. Shared by the deployment and the job so a job running the
+same image gets the same configuration.
+*/}}
+{{- define "go.application.env" -}}
+- name: APP_NAME
+  value: {{ .Values.application.name | lower | quote }}
+- name: PLATFORM
+  value: "{{ include "go.cloud.provider" . }}"
+{{- if eq (include "go.cloud.provider" .) "AWS" }}
+- name: AWS_REGION
+  value: {{ .Values.cloud.region }}
+{{- end }}
+{{- range .Values.application.env }}
+- name: "{{ .name }}"
+  value: "{{ .value }}"
+{{- end }}
+{{- end }}
