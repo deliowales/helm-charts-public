@@ -20,7 +20,7 @@ spec:
     - name: {{ ternary "grpc" "http" .Values.deployment.grpc }}
       protocol: TCP
       port: {{ .Values.service.port }}
-      targetPort: 50051
+      targetPort: {{ .Values.deployment.containerPort }}
   selector:
     app.kubernetes.io/name: {{ include "go.application.name" . }}
 {{- end }}
