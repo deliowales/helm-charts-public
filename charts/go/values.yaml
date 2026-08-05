@@ -166,7 +166,15 @@ istio:
 job:
   enabled: false
   name: ""
+  # -- Annotations on the Job object itself, e.g. `helm.sh/hook`.
   annotations:
+  # -- Annotations on the job's **pod** template. Needed for anything the pod
+  # rather than the Job is evaluated for — most commonly
+  # `sidecar.istio.io/inject: "false"`, since a job pod's container can start
+  # before the Envoy sidecar is listening and outbound connections are then
+  # refused, and the sidecar would otherwise keep running and stop the pod ever
+  # reaching Completed.
+  podAnnotations: {}
   vault:
     enabled: true
   # -- Args passed to the job container's entrypoint, e.g. `["migrations"]`.

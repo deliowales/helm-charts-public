@@ -9,6 +9,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- with .Values.job.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- if eq .Values.job.vault.enabled true }}
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/agent-pre-populate: "true"
