@@ -27,10 +27,13 @@ spec:
             "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
             inlineCode: |
               function envoy_on_request(request_handle)
-                headers = request_handle:headers()
-                request_handle:logWarn("envoy_on_request")
-                host = headers:get("x-forwarded-host")
-                request_handle:logWarn("envoy_on_request: " .. host)
-                headers:replace("host", host)
+                local headers = request_handle:headers()
+                local host = headers:get("x-forwarded-host")
+                -- Health checks and in-mesh callers arrive without the header.
+                -- Concatenating a nil host raised, faulting the filter for those
+                -- requests rather than passing them through untouched.
+                if host ~= nil and host ~= "" then
+                  headers:replace("host", host)
+                end
               end
 {{- end }}
