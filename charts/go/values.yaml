@@ -144,6 +144,15 @@ deployment:
   # -- Seconds to sleep in a preStop hook, letting in-flight requests drain
   # before the container is signalled. Omitted entirely when unset.
   preStopSleepSeconds: ""
+  # -- Label drained pods with the castai pod-node-lifecycle opt-out. Every
+  # published version of that webhook (<= v0.31.0) predates Kubernetes 1.29,
+  # strips the native sleep handler from pods at admission, and the API server
+  # then rejects them with "must specify a handler type" — a configured drain
+  # is undeployable wherever the webhook runs. Only applied when
+  # preStopSleepSeconds is set. Trade-off while labelled: CAST AI stops
+  # steering those pods between spot and on-demand. Set false once CAST AI
+  # ships a fixed webhook.
+  castaiPodNodeLifecycleOptOut: true
 
 destinationRule:
   enabled: true
