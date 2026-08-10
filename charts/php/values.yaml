@@ -250,8 +250,6 @@ serviceEntry:
   hosts: []
   location: ""
   ports: []
-  ping:
-    hosts: []
 
 supervisor:
   enabled: true

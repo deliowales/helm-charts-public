@@ -141,7 +141,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | serviceEntry.enabled | bool | `false` |  |
 | serviceEntry.hosts | list | `[]` |  |
 | serviceEntry.location | string | `""` |  |
-| serviceEntry.ping.hosts | list | `[]` |  |
 | serviceEntry.ports | list | `[]` |  |
 | supervisor.enabled | bool | `true` |  |
 | supervisor.horizon.enabled | bool | `false` |  |
