@@ -64,11 +64,19 @@ spec:
           {{- with .Values.deployment.preStopSleepSeconds }}
           lifecycle:
             preStop:
-              # Native sleep action, not exec: these images are distroless and have
-              # no /bin/sleep, so the exec form failed on every termination and the
-              # drain never happened. Needs Kubernetes 1.29+.
+              {{- if $.Values.deployment.preStopNativeSleep }}
+              # Native sleep action: the only form that works on distroless images
+              # (no /bin/sleep), but the cluster must accept PodLifecycleSleepAction —
+              # our EKS 1.32 clusters currently strip the field in admission and then
+              # reject every pod with "must specify a handler type".
               sleep:
                 seconds: {{ . }}
+              {{- else }}
+              # exec form: deploys on every cluster, but on distroless images the
+              # hook errors at termination and no drain happens.
+              exec:
+                command: ["/bin/sleep", "{{ . }}"]
+              {{- end }}
           {{- end }}
           volumeMounts:
             - name: tmp

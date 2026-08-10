@@ -144,6 +144,12 @@ deployment:
   # -- Seconds to sleep in a preStop hook, letting in-flight requests drain
   # before the container is signalled. Omitted entirely when unset.
   preStopSleepSeconds: ""
+  # -- Render the preStop sleep as Kubernetes' native sleep lifecycle handler
+  # instead of exec'ing /bin/sleep. The native form is the only one that works
+  # on distroless images, but the cluster must accept PodLifecycleSleepAction;
+  # our EKS 1.32 clusters currently strip it in admission and reject every pod,
+  # so it stays opt-in until they support it.
+  preStopNativeSleep: false
 
 destinationRule:
   enabled: true
