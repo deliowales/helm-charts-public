@@ -5,7 +5,7 @@
     whenUnsatisfiable: {{ .Values.deployment.topologySpreadConstraints.whenUnsatisfiable }}
     labelSelector:
       matchLabels:
-        app: {{ .Values.application.name | lower }}
+        app.kubernetes.io/name: {{ .Values.application.name | lower }}
 {{- end }}
 
 {{- define "php.deployment.nginx.imageURL" -}}
