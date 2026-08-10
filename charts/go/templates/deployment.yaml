@@ -64,8 +64,11 @@ spec:
           {{- with .Values.deployment.preStopSleepSeconds }}
           lifecycle:
             preStop:
-              exec:
-                command: ["/bin/sleep", "{{ . }}"]
+              # Native sleep action, not exec: these images are distroless and have
+              # no /bin/sleep, so the exec form failed on every termination and the
+              # drain never happened. Needs Kubernetes 1.29+.
+              sleep:
+                seconds: {{ . }}
           {{- end }}
           volumeMounts:
             - name: tmp
