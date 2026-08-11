@@ -2,15 +2,15 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "php.application.name" . }}
+  name: {{ include "python.application.name" . }}
   labels:
-    {{- include "php.labels" . | nindent 4 }}
+    {{- include "python.labels" . | nindent 4 }}
   annotations:
-    {{- include "php.annotations" . | nindent 4 }}
+    {{- include "python.annotations" . | nindent 4 }}
 spec:
   minAvailable: {{ .Values.pdb.minAvailable }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "php.application.name" . }}
+      app.kubernetes.io/name: {{ include "python.application.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
