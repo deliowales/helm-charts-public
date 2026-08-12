@@ -54,7 +54,7 @@ spec:
             runAsNonRoot: true
             readOnlyRootFilesystem: true
           resources:
-            {{- toYaml .Values.job.resources | nindent 12 }}
+            {{- include "go.resources" .Values.job.resources | nindent 12 }}
       restartPolicy: {{ .Values.job.restartPolicy }}
   backoffLimit: {{ .Values.job.backoffLimit }}
   {{- end }}

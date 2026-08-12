@@ -66,7 +66,7 @@ spec:
               containerPort: {{ .Values.application.ports.containerPort }}
               protocol: TCP
           resources:
-            {{- toYaml .Values.application.resources | nindent 12 }}
+            {{- include "node.resources" .Values.application.resources | nindent 12 }}
           livenessProbe:
             {{- if eq .Values.application.livenessProbe.type "tcp" }}
             tcpSocket:

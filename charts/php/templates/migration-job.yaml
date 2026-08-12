@@ -62,7 +62,7 @@ spec:
               {{- end }}
           securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           resources:
-            {{- toYaml .Values.application.migrations.resources | nindent 12 }}
+            {{- include "php.resources" .Values.application.migrations.resources | nindent 12 }}
       restartPolicy: {{ .Values.application.migrations.restartPolicy }}
       volumes:
         - name: fpm-pool-config-volume
