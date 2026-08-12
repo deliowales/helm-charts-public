@@ -18,6 +18,7 @@ spec:
       template:
         metadata:
           annotations:
+            {{- include "php.istio.proxy.annotations" . | nindent 12 }}
             {{- if eq .Values.cron.vault.enabled true }}
             vault.hashicorp.com/agent-inject: "true"
             vault.hashicorp.com/agent-pre-populate: "true"

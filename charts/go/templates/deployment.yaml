@@ -23,6 +23,7 @@ spec:
       annotations:
         {{- include "go.annotations" . | nindent 8 }}
         {{- include "go.application.vault.annotations" . | nindent 8 }}
+        {{- include "go.istio.proxy.annotations" . | nindent 8 }}
       labels:
         {{- include "go.labels" . | nindent 8 }}
         {{- if and (eq (include "go.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}

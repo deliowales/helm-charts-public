@@ -9,6 +9,7 @@ spec:
   template:
     metadata:
       annotations:
+        {{- include "go.istio.proxy.annotations" . | nindent 8 }}
         {{- with .Values.job.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
