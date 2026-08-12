@@ -36,3 +36,15 @@ sidecar.istio.io/proxyCPULimit: {{ $proxy.cpuLimit | default "2000m" | quote }}
 sidecar.istio.io/proxyMemoryLimit: {{ $proxy.memoryLimit | default "1024Mi" | quote }}
 {{- end }}
 {{- end -}}
+
+{{- define "php.resources" -}}
+{{- $out := dict -}}
+{{- range $section, $values := . -}}
+  {{- $kept := dict -}}
+  {{- range $key, $value := $values -}}
+    {{- if $value }}{{- $_ := set $kept $key $value -}}{{- end -}}
+  {{- end -}}
+  {{- if $kept }}{{- $_ := set $out $section $kept -}}{{- end -}}
+{{- end -}}
+{{- toYaml $out -}}
+{{- end -}}

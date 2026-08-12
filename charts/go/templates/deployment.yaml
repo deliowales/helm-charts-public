@@ -59,7 +59,7 @@ spec:
               containerPort: {{ .Values.deployment.containerPort }}
               protocol: TCP
           resources:
-            {{- toYaml .Values.application.resources | nindent 12 }}
+            {{- include "go.resources" .Values.application.resources | nindent 12 }}
           {{- if .Values.application.startupProbe.enabled }}
           startupProbe:
             {{- include "go.application.probe" (dict "ctx" . "probe" .Values.application.startupProbe) | nindent 12 }}

@@ -41,7 +41,7 @@ spec:
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
           resources:
-            {{- toYaml .Values.job.resources | nindent 12 }}
+            {{- include "node.resources" .Values.job.resources | nindent 12 }}
       restartPolicy: {{ .Values.job.restartPolicy }}
   backoffLimit: {{ .Values.job.backoffLimit }}
   {{- end }}

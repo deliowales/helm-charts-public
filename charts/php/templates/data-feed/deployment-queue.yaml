@@ -44,7 +44,7 @@ spec:
               value: "{{.value}}"
             {{- end}}
           resources:
-            {{- toYaml .Values.application.resources | nindent 12 }}
+            {{- include "php.resources" .Values.application.resources | nindent 12 }}
           volumeMounts:
             - name: fpm-pool-config-volume
               mountPath: /usr/local/etc/php-fpm.d/www.conf

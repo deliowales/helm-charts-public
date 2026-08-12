@@ -13,7 +13,7 @@ Logging container for php services
   image: {{ include "php.logging.imageURL" . }}
   imagePullPolicy: IfNotPresent
   resources:
-  {{- toYaml .Values.logging.resources | nindent 4 }}
+  {{- include "php.resources" .Values.logging.resources | nindent 4 }}
   securityContext:
     runAsNonRoot: true
     readOnlyRootFilesystem: true
