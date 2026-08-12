@@ -114,7 +114,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nginx.config.clientMaxBodySize | string | `"1M"` |  |
 | nginx.image.pullPolicy | string | `"Always"` |  |
 | nginx.image.repository | string | `"nginx"` |  |
-| nginx.image.tag | string | `"1.21.1-alpine-unprivileged"` |  |
+| nginx.image.tag | string | `"1.30.4-alpine-unprivileged"` |  |
 | nginx.resources.limits.cpu | string | `"100m"` |  |
 | nginx.resources.limits.memory | string | `"128Mi"` |  |
 | nginx.resources.requests.cpu | string | `"10m"` |  |
