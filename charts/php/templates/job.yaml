@@ -39,8 +39,8 @@ spec:
         - name: {{ include "php.application.name" . }}
           image: {{ include "php.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
-          args: ["{{ .Values.cron.args }}"]
-          securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
+          args: [{{ .Values.job.args }}]
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           resources:
             {{- toYaml .Values.job.resources | nindent 12 }}
           {{- if .Values.newrelic.ephemeralPods.enabled }}
