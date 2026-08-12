@@ -198,7 +198,7 @@ nginx:
     clientMaxBodySize: 1M
   image:
     repository: nginx
-    tag: 1.21.1-alpine-unprivileged
+    tag: 1.30.4-alpine-unprivileged
     pullPolicy: Always
   resources:
     limits:
