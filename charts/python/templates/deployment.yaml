@@ -19,6 +19,7 @@ spec:
       annotations:
         {{- include "python.annotations" . | nindent 8 }}
         {{- include "python.application.vault.annotations" . | nindent 8 }}
+        {{- include "python.istio.proxy.annotations" . | nindent 8 }}
       labels:
         {{- include "python.labels" . | nindent 8 }}
         {{- if and (eq (include "python.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}

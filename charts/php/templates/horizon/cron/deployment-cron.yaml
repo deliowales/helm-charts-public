@@ -22,6 +22,7 @@ spec:
       annotations:
         {{- include "php.annotations" . | nindent 8 }}
         {{- include "php.application.vault.annotations" . | nindent 8 }}
+        {{- include "php.istio.proxy.annotations" . | nindent 8 }}
       labels:
         {{- include "php.labels" . | nindent 8 }}
         app.kubernetes.io/name: {{ include "php.application.name" . }}

@@ -150,6 +150,16 @@ istio:
     enabled: true
     gateways: []
     hosts: []
+  # Per-deployment sidecar sizing. Unset, the pod inherits the mesh defaults set
+  # in the bootstrap. Setting any one of these switches the pod to annotation
+  # sizing, which replaces the mesh values outright rather than merging, so all
+  # four are emitted together and the unset ones fall back to the mesh figures.
+  # istio-init reads the same annotations — it cannot be sized separately.
+  proxy:
+    cpu: ""
+    memory: ""
+    cpuLimit: ""
+    memoryLimit: ""
 
 job:
   enabled: false
