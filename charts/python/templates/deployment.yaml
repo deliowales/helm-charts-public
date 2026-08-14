@@ -43,26 +43,17 @@ spec:
               containerPort: 8000
               protocol: TCP
           env:
-            - name: PLATFORM
-              value: "{{ include "python.cloud.provider" . }}"
-            - name: APP_NAME
-              value: {{ .Values.application.name | lower | quote }}
-            - name: SENTRY_ENABLED
-              value: "true"
-            - name: SENTRY_TRACES_SAMPLE_RATE
-              value: "{{ ternary "0.5" "1" (any (eq .Values.cloud.environment "demo") (eq .Values.cloud.environment "production")) }}"
-            - name: SENTRY_PROFILES_SAMPLE_RATE
-              value: "1"
-            - name: LOG_CHANNEL
-              value: "stderr"
+            {{- $defaults := list
+                (dict "name" "PLATFORM" "value" (include "python.cloud.provider" .))
+                (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
+                (dict "name" "SENTRY_ENABLED" "value" "true")
+                (dict "name" "SENTRY_TRACES_SAMPLE_RATE" "value" (ternary "0.5" "1" (any (eq .Values.cloud.environment "demo") (eq .Values.cloud.environment "production"))))
+                (dict "name" "SENTRY_PROFILES_SAMPLE_RATE" "value" "1")
+                (dict "name" "LOG_CHANNEL" "value" "stderr") }}
             {{- if eq (include "python.cloud.provider" .) "AWS" }}
-            - name: AWS_REGION
-              value: {{ .Values.cloud.region }}
+            {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
             {{- end }}
-            {{- range .Values.application.env }}
-            - name: "{{ .name }}"
-              value: "{{ .value }}"
-            {{- end }}
+            {{- include "python.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           resources:
             {{- include "python.resources" .Values.application.resources | nindent 12 }}
           {{- if .Values.application.livenessProbe.enabled }}

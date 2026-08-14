@@ -126,15 +126,25 @@ Extra volumes
 {{/*
 Container environment. Shared by the deployment and the job so a job running the
 same image gets the same configuration.
+
+A default the service also sets is dropped rather than emitted twice — the API
+server rejects a container with two env entries of the same name, so without
+this a service could only avoid the collision by not setting the variable.
 */}}
 {{- define "go.application.env" -}}
-- name: APP_NAME
-  value: {{ .Values.application.name | lower | quote }}
-- name: PLATFORM
-  value: "{{ include "go.cloud.provider" . }}"
+{{- $overridden := dict -}}
+{{- range .Values.application.env }}{{- $_ := set $overridden .name true -}}{{- end }}
+{{- $defaults := list
+    (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
+    (dict "name" "PLATFORM" "value" (include "go.cloud.provider" .)) }}
 {{- if eq (include "go.cloud.provider" .) "AWS" }}
-- name: AWS_REGION
-  value: {{ .Values.cloud.region }}
+{{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
+{{- end }}
+{{- range $default := $defaults }}
+{{- if not (hasKey $overridden $default.name) }}
+- name: {{ $default.name }}
+  value: {{ $default.value | quote }}
+{{- end }}
 {{- end }}
 {{- range .Values.application.env }}
 - name: "{{ .name }}"

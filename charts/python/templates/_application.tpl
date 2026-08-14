@@ -89,3 +89,27 @@ Extra volumes
   {{- end }}
 {{- end }}
 {{- end -}}
+
+
+{{/*
+Environment for a container: the chart's defaults, then the service's own.
+
+A default the service also sets is dropped rather than emitted twice — the API
+server rejects a container with two env entries of the same name, so without
+this a service could only avoid the collision by not setting the variable at
+all.
+*/}}
+{{- define "python.application.env" -}}
+{{- $overridden := dict -}}
+{{- range .env }}{{- $_ := set $overridden .name true -}}{{- end }}
+{{- range $default := .defaults }}
+{{- if not (hasKey $overridden $default.name) }}
+- name: {{ $default.name }}
+  value: {{ $default.value | quote }}
+{{- end }}
+{{- end }}
+{{- range .env }}
+- name: "{{ .name }}"
+  value: "{{ .value }}"
+{{- end }}
+{{- end -}}
