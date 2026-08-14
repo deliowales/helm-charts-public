@@ -41,18 +41,13 @@ spec:
                 - '-c'
                 - pgrep -a supervisord
           env:
-            - name: PLATFORM
-              value: "{{ include "node.cloud.provider" . }}"
-            - name: APP_NAME
-              value: {{ .Values.application.name | lower | quote }}
+            {{- $defaults := list
+                (dict "name" "PLATFORM" "value" (include "node.cloud.provider" .))
+                (dict "name" "APP_NAME" "value" (.Values.application.name | lower)) }}
             {{- if eq (include "node.cloud.provider" .) "AWS" }}
-            - name: AWS_REGION
-              value: {{ .Values.cloud.region }}
+            {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
             {{- end }}
-            {{- range .Values.application.env }}
-            - name: "{{ .name }}"
-              value: "{{ .value }}"
-            {{- end }}
+            {{- include "node.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           resources:
             {{- if .Values.supervisor.resources }}
             {{- include "node.resources" .Values.supervisor.resources | nindent 12 }}

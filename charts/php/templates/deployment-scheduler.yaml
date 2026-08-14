@@ -43,20 +43,14 @@ spec:
                 - '-c'
                 - {{ .Values.scheduler.livenessProbe | default "pgrep -a crond" }}
           env:
-            - name: PLATFORM
-              value: "{{ include "php.cloud.provider" . }}"
-            - name: APP_NAME
-              value: {{ .Values.application.name | lower | quote }}
-            - name: LOG_CHANNEL
-              value: "stderr"
+            {{- $defaults := list
+                (dict "name" "PLATFORM" "value" (include "php.cloud.provider" .))
+                (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
+                (dict "name" "LOG_CHANNEL" "value" "stderr") }}
             {{- if eq (include "php.cloud.provider" .) "AWS" }}
-            - name: AWS_REGION
-              value: {{ .Values.cloud.region }}
+            {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
             {{- end }}
-            {{- range .Values.application.env }}
-            - name: "{{ .name }}"
-              value: "{{ .value }}"
-            {{- end }}
+            {{- include "php.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           resources:
             limits:
               cpu: 500m

@@ -30,20 +30,14 @@ spec:
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           args: ["{{.Values.application.migrations.args }}"]
           env:
-            - name: APP_NAME
-              value: {{ .Values.application.name | lower | quote }}
-            - name: DISABLE_INSTANA
-              value: "TRUE"
-            - name: PLATFORM
-              value: "{{ include "php.cloud.provider" . }}"
-             {{- if eq (include "php.cloud.provider" .) "AWS" }}
-            - name: AWS_REGION
-              value: {{ .Values.cloud.region }}
-             {{- end }}
-             {{- range .Values.application.env }}
-            - name: "{{ .name }}"
-              value: "{{ .value }}"
-             {{- end }}
+            {{- $defaults := list
+                (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
+                (dict "name" "DISABLE_INSTANA" "value" "TRUE")
+                (dict "name" "PLATFORM" "value" (include "php.cloud.provider" .)) }}
+            {{- if eq (include "php.cloud.provider" .) "AWS" }}
+            {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
+            {{- end }}
+            {{- include "php.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           volumeMounts:
             - name: fpm-pool-config-volume
               mountPath: /usr/local/etc/php-fpm.d/www.conf

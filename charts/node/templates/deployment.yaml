@@ -37,30 +37,19 @@ spec:
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
           env:
-            - name: APP_NAME
-              value: {{ .Values.application.name | lower | quote }}
-            - name: DISABLE_INSTANA
-              value: "true"
-            - name: PLATFORM
-              value: "{{ include "node.cloud.provider" . }}"
-            - name: SENTRY_ENABLED
-              value: "true"
-            - name: SENTRY_ENVIRONMENT
-              value: {{ .Values.cloud.environment }}
-            - name: SENTRY_PROFILING_TRACE_SAMPLE_RATE
-              value: "{{ ternary "0.5" "1" (any (eq .Values.cloud.environment "demo") (eq .Values.cloud.environment "production")) }}"
-            - name: SENTRY_PROFILING_PROFILES_SAMPLE_RATE
-              value: "1"
+            {{- $defaults := list
+                (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
+                (dict "name" "DISABLE_INSTANA" "value" "true")
+                (dict "name" "PLATFORM" "value" (include "node.cloud.provider" .))
+                (dict "name" "SENTRY_ENABLED" "value" "true")
+                (dict "name" "SENTRY_ENVIRONMENT" "value" .Values.cloud.environment)
+                (dict "name" "SENTRY_PROFILING_TRACE_SAMPLE_RATE" "value" (ternary "0.5" "1" (any (eq .Values.cloud.environment "demo") (eq .Values.cloud.environment "production"))))
+                (dict "name" "SENTRY_PROFILING_PROFILES_SAMPLE_RATE" "value" "1") }}
             {{- if eq (include "node.cloud.provider" .) "AWS" }}
-            - name: AWS_REGION
-              value: {{ .Values.cloud.region }}
+            {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
             {{- end }}
-            - name: NODE_OPTIONS
-              value: "--max-http-header-size={{ .Values.application.nodeOptions.maxHttpHeaderSize | default 65536 }}{{- if .Values.application.nodeOptions.maxOldSpaceSize }} --max-old-space-size={{ .Values.application.nodeOptions.maxOldSpaceSize }}{{- end }}"
-            {{- range .Values.application.env }}
-            - name: "{{ .name }}"
-              value: "{{ .value }}"
-            {{- end }}
+            {{- $defaults = append $defaults (dict "name" "NODE_OPTIONS" "value" (printf "--max-http-header-size=%v%s" (.Values.application.nodeOptions.maxHttpHeaderSize | default 65536) (ternary (printf " --max-old-space-size=%v" .Values.application.nodeOptions.maxOldSpaceSize) "" (not (empty .Values.application.nodeOptions.maxOldSpaceSize))))) }}
+            {{- include "node.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.application.ports.containerPort }}

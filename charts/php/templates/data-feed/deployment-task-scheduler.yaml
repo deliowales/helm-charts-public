@@ -37,12 +37,9 @@ spec:
           args: [ "schedule" ]
           securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           env:
-            - name: AWS_REGION
-              value: {{ .Values.cloud.region }}
-            {{- range .Values.application.env }}
-            - name: "{{.name}}"
-              value: "{{.value}}"
-            {{- end}}
+            {{- $defaults := list
+                (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
+            {{- include "php.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           resources:
             {{- include "php.resources" .Values.application.resources | nindent 12 }}
           volumeMounts:
