@@ -40,6 +40,20 @@ spec:
           image: {{ include "node.application.imageURL" . }}
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           securityContext: {{ include "node.application.securityContext" . | nindent 12 }}
+          env:
+            {{- $defaults := list
+                (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
+                (dict "name" "DISABLE_INSTANA" "value" "true")
+                (dict "name" "PLATFORM" "value" (include "node.cloud.provider" .))
+                (dict "name" "SENTRY_ENABLED" "value" "true")
+                (dict "name" "SENTRY_ENVIRONMENT" "value" .Values.cloud.environment)
+                (dict "name" "SENTRY_PROFILING_TRACE_SAMPLE_RATE" "value" (ternary "0.5" "1" (any (eq .Values.cloud.environment "demo") (eq .Values.cloud.environment "production"))))
+                (dict "name" "SENTRY_PROFILING_PROFILES_SAMPLE_RATE" "value" "1") }}
+            {{- if eq (include "node.cloud.provider" .) "AWS" }}
+            {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
+            {{- end }}
+            {{- $defaults = append $defaults (dict "name" "NODE_OPTIONS" "value" (printf "--max-http-header-size=%v%s" (.Values.application.nodeOptions.maxHttpHeaderSize | default 65536) (ternary (printf " --max-old-space-size=%v" .Values.application.nodeOptions.maxOldSpaceSize) "" (not (empty .Values.application.nodeOptions.maxOldSpaceSize))))) }}
+            {{- include "node.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           resources:
             {{- include "node.resources" .Values.job.resources | nindent 12 }}
       restartPolicy: {{ .Values.job.restartPolicy }}

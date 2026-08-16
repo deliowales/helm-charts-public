@@ -41,6 +41,18 @@ spec:
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           args: [{{ .Values.job.args }}]
           securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
+          env:
+            {{- $defaults := list
+                (dict "name" "PLATFORM" "value" (include "php.cloud.provider" .))
+                (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
+                (dict "name" "SENTRY_ENABLED" "value" "true")
+                (dict "name" "SENTRY_TRACES_SAMPLE_RATE" "value" (ternary "0.5" "1" (any (eq .Values.cloud.environment "demo") (eq .Values.cloud.environment "production"))))
+                (dict "name" "SENTRY_PROFILES_SAMPLE_RATE" "value" "1")
+                (dict "name" "LOG_CHANNEL" "value" "stderr") }}
+            {{- if eq (include "php.cloud.provider" .) "AWS" }}
+            {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
+            {{- end }}
+            {{- include "php.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           resources:
             {{- include "php.resources" .Values.job.resources | nindent 12 }}
           {{- if .Values.newrelic.ephemeralPods.enabled }}
