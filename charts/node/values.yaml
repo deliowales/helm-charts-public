@@ -203,6 +203,8 @@ serviceEntry:
 
 supervisor:
   enabled: false
+  cron:
+    enabled: true
   # -- Resource requests/limits for the supervisor container.
   # If unset, defaults to limits 500m/500Mi and requests 250m/250Mi.
   resources: {}

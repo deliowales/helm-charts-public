@@ -1,4 +1,4 @@
-{{ if eq .Values.supervisor.enabled true }}
+{{- if .Values.supervisor.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -28,6 +28,7 @@ data:
     stdout_logfile_maxbytes=0
     stderr_logfile=/dev/stderr
     stderr_logfile_maxbytes=0
+    {{- if .Values.supervisor.cron.enabled }}
 
     [program:cron]
     command = node ./dist/cli.js cron:start
@@ -40,5 +41,5 @@ data:
     stdout_logfile_maxbytes=0
     stderr_logfile=/dev/stderr
     stderr_logfile_maxbytes=0
-
-  {{ end }}
+    {{- end }}
+{{- end }}
