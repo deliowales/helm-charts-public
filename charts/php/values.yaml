@@ -285,7 +285,10 @@ serviceEntry:
   ports: []
 
 supervisor:
-  enabled: true
+  # -- Run a `supervisord` deployment alongside the application. The image's
+  # entrypoint must handle the `supervisor` argument, otherwise the liveness
+  # probe (`pgrep -a supervisord`) can never pass.
+  enabled: false
   horizon:
     enabled: false
   hpa:
