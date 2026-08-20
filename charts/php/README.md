@@ -89,6 +89,13 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
 | destinationRule.enabled | bool | `true` |  |
+| fpm.maxChildren | int | `5` | Maximum number of worker processes, i.e. the pod's request concurrency. |
+| fpm.maxRequests | int | `0` | Requests a worker serves before it is respawned. `0` is unlimited; set it to recycle workers around a memory leak. |
+| fpm.maxSpareServers | int | `3` | Idle workers above which the pool is trimmed back. `dynamic` only. |
+| fpm.minSpareServers | int | `1` | Idle workers kept available to absorb a burst. `dynamic` only. |
+| fpm.pm | string | `"dynamic"` | Process manager. `dynamic`, `static` or `ondemand`. |
+| fpm.processIdleTimeout | string | `"10s"` | How long an idle worker survives. `ondemand` only. |
+| fpm.startServers | int | `2` | Workers forked on startup. Must sit between `minSpareServers` and `maxSpareServers`. `dynamic` only. |
 | istio.externalIngress.enabled | bool | `true` |  |
 | istio.externalIngress.path | string | `""` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
