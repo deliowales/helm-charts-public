@@ -133,6 +133,29 @@ deployment:
 destinationRule:
   enabled: true
 
+# Configuration options for the php-fpm `www` pool. `maxChildren` is the ceiling
+# on requests this pod serves at once; anything past it queues in the listen
+# backlog. Size it from the php container's memory limit:
+#   maxChildren = (memory limit - 60Mi for the fpm master and opcache) / worker RSS
+# where worker RSS is ~25Mi for a typical Lumen/Laravel service. The default suits
+# the 200Mi limit most services run with — raise it in step with the limit, and
+# remember `phpConfig.memoryLimit` is the worst case a single worker can reach.
+fpm:
+  # -- Process manager. `dynamic`, `static` or `ondemand`.
+  pm: "dynamic"
+  # -- Maximum number of worker processes, i.e. the pod's request concurrency.
+  maxChildren: 5
+  # -- Workers forked on startup. Must sit between `minSpareServers` and `maxSpareServers`. `dynamic` only.
+  startServers: 2
+  # -- Idle workers kept available to absorb a burst. `dynamic` only.
+  minSpareServers: 1
+  # -- Idle workers above which the pool is trimmed back. `dynamic` only.
+  maxSpareServers: 3
+  # -- How long an idle worker survives. `ondemand` only.
+  processIdleTimeout: "10s"
+  # -- Requests a worker serves before it is respawned. `0` is unlimited; set it to recycle workers around a memory leak.
+  maxRequests: 0
+
 istio:
   tls:
     mode: ISTIO_MUTUAL
