@@ -43,6 +43,10 @@ spec:
           labels:
             app.kubernetes.io/name: {{ .Chart.Name }}
         spec:
+          {{- with .Values.cron.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           serviceAccountName: {{ include "php.application.name" . }}
           containers:
             - name: "{{ include "php.application.name" . }}"

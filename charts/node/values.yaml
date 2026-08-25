@@ -58,6 +58,10 @@ application:
     args: "migrations"
     restartPolicy: OnFailure
     backoffLimit: 2
+    # -- Node labels the migration pod must match. A kill mid-DDL is the one
+    # failure that needs a human, so pin this to stable capacity even though the
+    # job runs for seconds.
+    nodeSelector: {}
     resources:
       limits:
         cpu: 1
@@ -115,6 +119,15 @@ deployment:
   # Specify what type of node you want this app to be deployed on: ["cpu", "memory"]
   nodeSelector:
     toleration: ""
+    # -- Node labels the pod must match, merged with the toleration label above.
+    # `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot
+    # capacity on an EKS managed node group.
+    labels: {}
+  # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A spot
+  # interruption notice is 120 seconds, so a workload that must finish its
+  # current unit of work needs a value comfortably inside that. Omitted
+  # entirely when unset, which leaves Kubernetes' own default of 30.
+  terminationGracePeriodSeconds: ""
   # -- Configure Topology Spread Constrains.
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
   topologySpreadConstraints:
@@ -159,6 +172,9 @@ istio:
 job:
   enabled: false
   name: ""
+  # -- Node labels the job pod must match. A job that cannot be safely retried
+  # belongs on stable capacity however briefly it runs.
+  nodeSelector: {}
   annotations:
   vault:
     enabled: true
@@ -177,7 +193,14 @@ job:
 # Pod Disruption Budget. Leave as false unless instructed otherwise.
 pdb:
   enabled: false
-  minAvailable: 2
+  # -- Pods that must stay available during a voluntary disruption. Defaults to
+  # 2 when neither this nor `maxUnavailable` is set. Mutually exclusive with it.
+  minAvailable: ""
+  # -- Pods that may be unavailable at once. Prefer this over `minAvailable` on
+  # an autoscaled service: `minAvailable: 1` against three replicas permits
+  # losing two, where `maxUnavailable: 1` bounds the loss whatever the replica
+  # count moves to. Mutually exclusive with `minAvailable`.
+  maxUnavailable: ""
 
 peerAuthentication:
   enabled: true
@@ -205,6 +228,13 @@ supervisor:
   enabled: false
   cron:
     enabled: true
+  # -- Node labels the supervisor pod must match.
+  nodeSelector: {}
+  # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A single-replica
+  # queue worker with the Kubernetes default of 30 loses any job still running
+  # at that point; a spot interruption notice gives 120, so 110 lets the current
+  # job finish. Omitted entirely when unset.
+  terminationGracePeriodSeconds: ""
   # -- Resource requests/limits for the supervisor container.
   # If unset, defaults to limits 500m/500Mi and requests 250m/250Mi.
   resources: {}

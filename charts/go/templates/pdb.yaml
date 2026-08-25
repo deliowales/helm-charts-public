@@ -1,4 +1,7 @@
 {{- if eq .Values.pdb.enabled true }}
+{{- if and .Values.pdb.minAvailable .Values.pdb.maxUnavailable }}
+{{- fail "pdb.minAvailable and pdb.maxUnavailable cannot both be set" }}
+{{- end }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
@@ -8,7 +11,11 @@ metadata:
   annotations:
     {{- include "go.annotations" . | nindent 4 }}
 spec:
-  minAvailable: {{ .Values.pdb.minAvailable }}
+  {{- if .Values.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.pdb.maxUnavailable }}
+  {{- else }}
+  minAvailable: {{ .Values.pdb.minAvailable | default 2 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "go.application.name" . }}

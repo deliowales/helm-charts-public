@@ -23,6 +23,10 @@ spec:
         {{- end }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- with .Values.application.migrations.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name | default (include "php.application.name" .) }}
       containers:
         - name: "{{ include "php.application.name" . }}"
