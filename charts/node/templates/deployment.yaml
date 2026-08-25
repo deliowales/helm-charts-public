@@ -26,9 +26,17 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- include "node.deployment.topologySpreadConstraints" . | nindent 6 }}
-      {{ if .Values.deployment.nodeSelector.toleration -}}
+      {{- if or .Values.deployment.nodeSelector.toleration .Values.deployment.nodeSelector.labels }}
       nodeSelector:
+        {{- if .Values.deployment.nodeSelector.toleration }}
         {{- include "node.deployment.nodeSelector.toleration" . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.deployment.nodeSelector.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.deployment.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
       {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name | default (include "node.application.name" .) }}
       containers:

@@ -100,6 +100,15 @@ deployment:
     targetMemory: 70
   nodeSelector:
     toleration: ""
+    # -- Node labels the pod must match, merged with the toleration label above.
+    # `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot
+    # capacity on an EKS managed node group.
+    labels: {}
+  # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A spot
+  # interruption notice is 120 seconds, so a workload that must finish its
+  # current unit of work needs a value comfortably inside that. Omitted
+  # entirely when unset, which leaves Kubernetes' own default of 30.
+  terminationGracePeriodSeconds: ""
   # -- Replica count not considering the HPA
   replicaCount: 3
   # -- Configure Topology Spread Constrains.
@@ -165,7 +174,14 @@ newrelic:
 # Pod Disruption Budget. Leave as false unless instructed otherwise.
 pdb:
   enabled: false
-  minAvailable: 2
+  # -- Pods that must stay available during a voluntary disruption. Defaults to
+  # 2 when neither this nor `maxUnavailable` is set. Mutually exclusive with it.
+  minAvailable: ""
+  # -- Pods that may be unavailable at once. Prefer this over `minAvailable` on
+  # an autoscaled service: `minAvailable: 1` against three replicas permits
+  # losing two, where `maxUnavailable: 1` bounds the loss whatever the replica
+  # count moves to. Mutually exclusive with `minAvailable`.
+  maxUnavailable: ""
 
 scheduler:
   enabled: false

@@ -27,6 +27,13 @@ spec:
         chart: {{ include "php.chartref" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- with .Values.scheduler.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.scheduler.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
       serviceAccountName: {{ include "php.application.name" . }}
       containers:
         - name: {{ include "php.application.name" . }}-scheduler
