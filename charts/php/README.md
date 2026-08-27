@@ -152,7 +152,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | supervisor.enabled | bool | `false` | Run a `supervisord` deployment alongside the application. The image's entrypoint must handle the `supervisor` argument, otherwise the liveness probe (`pgrep -a supervisord`) can never pass. |
 | supervisor.horizon.enabled | bool | `false` |  |
 | supervisor.hpa.enabled | bool | `false` |  |
-| supervisor.resources.limits.cpu | string | `"500m"` |  |
+| supervisor.resources.limits.cpu | string | `nil` |  |
 | supervisor.resources.limits.memory | string | `"500Mi"` |  |
 | supervisor.resources.requests.cpu | string | `"250m"` |  |
 | supervisor.resources.requests.memory | string | `"250Mi"` |  |
