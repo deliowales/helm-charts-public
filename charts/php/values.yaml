@@ -332,7 +332,7 @@ supervisor:
   terminationGracePeriodSeconds: ""
   resources:
     limits:
-      cpu: 500m
+      cpu:
       memory: 500Mi
     requests:
       cpu: 250m
