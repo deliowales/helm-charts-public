@@ -1,0 +1,78 @@
+{{ if eq .Values.cron.enabled true }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.cron.name | default (printf "%s-cron" (include "node.application.name" .)) }}
+  labels:
+    {{- include "node.labels" . | nindent 4 }}
+  annotations:
+    {{- include "node.annotations" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cron.schedule | required "Required: a schedule << .Values.cron.schedule >>" | quote }}
+  concurrencyPolicy: {{ .Values.cron.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.cron.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cron.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.cron.backoffLimit }}
+      template:
+        metadata:
+          annotations:
+            {{- include "node.istio.proxy.annotations" . | nindent 12 }}
+            {{- if eq .Values.cron.vault.enabled true }}
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/agent-pre-populate: "true"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-init-first: "true"
+            vault.hashicorp.com/role: {{ .Values.vault.role }}
+            vault.hashicorp.com/agent-inject-secret-env: {{ .Values.vault.env }}
+            vault.hashicorp.com/agent-inject-template-env: |
+                {{- if .Values.vault.sharedEnv }}
+                {{`{{ with secret "` }}{{ .Values.vault.sharedEnv }}{{`"  -}}
+                {{ range $k, $v := .Data.data -}}
+                export {{ $k }}='{{ $v }}'
+                {{ end -}}
+                {{ end -}}`}}
+                {{- end }}
+                {{`{{ with secret "` }}{{ .Values.vault.env }}{{`"  -}}
+                {{ range $k, $v := .Data.data -}}
+                export {{ $k }}='{{ $v }}'
+                {{ end -}}
+                {{ end -}}`}}
+            {{- end }}
+          labels:
+            app.kubernetes.io/name: {{ .Chart.Name }}
+        spec:
+          {{- with .Values.cron.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          restartPolicy: {{ .Values.cron.restartPolicy }}
+          serviceAccountName: {{ include "node.application.name" . }}
+          containers:
+            - name: {{ include "node.application.name" . }}
+              image: {{ include "node.application.imageURL" . }}
+              imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+              securityContext: {{ include "node.application.securityContext" . | nindent 16 }}
+              {{- with .Values.cron.command }}
+              command:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.cron.args }}
+              args:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              env:
+                {{- $defaults := list
+                    (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
+                    (dict "name" "DISABLE_INSTANA" "value" "true")
+                    (dict "name" "PLATFORM" "value" (include "node.cloud.provider" .))
+                    (dict "name" "SENTRY_ENABLED" "value" "true")
+                    (dict "name" "SENTRY_ENVIRONMENT" "value" .Values.cloud.environment) }}
+                {{- if eq (include "node.cloud.provider" .) "AWS" }}
+                {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
+                {{- end }}
+                {{- include "node.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 16 }}
+              resources:
+                {{- include "node.resources" .Values.cron.resources | nindent 16 }}
+{{- end }}

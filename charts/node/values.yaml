@@ -169,6 +169,32 @@ istio:
     memoryLimit: ""
 
 
+cron:
+  enabled: false
+  name: ""
+  # -- Cron expression, evaluated in the cluster's timezone (UTC).
+  schedule: ""
+  # -- Overrides the image entrypoint. Needed where the entrypoint starts the
+  # server, so a scheduled run has to invoke something else.
+  command: []
+  args: []
+  concurrencyPolicy: "Forbid"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  restartPolicy: "Never"
+  backoffLimit: 1
+  # -- Node labels the cron pod must match.
+  nodeSelector: {}
+  vault:
+    enabled: true
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu:
+      memory: ""
+
 job:
   enabled: false
   name: ""
