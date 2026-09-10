@@ -3,9 +3,9 @@
 {{- $all := ternary $spread (list $spread) (kindIs "slice" $spread) -}}
 topologySpreadConstraints:
 {{- range $all }}
-  - maxSkew: {{ .maxSkew }}
-    topologyKey: {{ .topologyKey }}
-    whenUnsatisfiable: {{ .whenUnsatisfiable }}
+  - maxSkew: {{ required "topologySpreadConstraints: every entry needs maxSkew" .maxSkew }}
+    topologyKey: {{ required "topologySpreadConstraints: every entry needs topologyKey" .topologyKey }}
+    whenUnsatisfiable: {{ required "topologySpreadConstraints: every entry needs whenUnsatisfiable" .whenUnsatisfiable }}
     # Scopes the skew calculation to the revision being rolled out. Without it the
     # old ReplicaSet's pods still count while they terminate, so the scheduler
     # measures balance against a moving target and the new pods land wherever the
