@@ -111,12 +111,15 @@ deployment:
   terminationGracePeriodSeconds: ""
   # -- Replica count not considering the HPA
   replicaCount: 3
-  # -- Configure Topology Spread Constrains.
+  # -- Configure Topology Spread Constrains. A constraint carries a single
+  # topologyKey, so keeping replicas off one node and out of one availability
+  # zone are separate entries — list both. A bare mapping is still accepted for
+  # the single-constraint case.
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
   topologySpreadConstraints:
-    maxSkew: 1
-    topologyKey: "kubernetes.io/hostname"
-    whenUnsatisfiable: "ScheduleAnyway"
+    - maxSkew: 1
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: "ScheduleAnyway"
   datadog:
     enabled: false
 

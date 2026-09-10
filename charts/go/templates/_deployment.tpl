@@ -1,8 +1,11 @@
 {{- define "go.deployment.topologySpreadConstraints" -}}
-  topologySpreadConstraints:
-  - maxSkew: {{ .Values.deployment.topologySpreadConstraints.maxSkew }}
-    topologyKey: {{ .Values.deployment.topologySpreadConstraints.topologyKey }}
-    whenUnsatisfiable: {{ .Values.deployment.topologySpreadConstraints.whenUnsatisfiable }}
+{{- $spread := .Values.deployment.topologySpreadConstraints -}}
+{{- $all := ternary $spread (list $spread) (kindIs "slice" $spread) -}}
+topologySpreadConstraints:
+{{- range $all }}
+  - maxSkew: {{ .maxSkew }}
+    topologyKey: {{ .topologyKey }}
+    whenUnsatisfiable: {{ .whenUnsatisfiable }}
     # Scopes the skew calculation to the revision being rolled out. Without it the
     # old ReplicaSet's pods still count while they terminate, so the scheduler
     # measures balance against a moving target and the new pods land wherever the
@@ -11,7 +14,8 @@
       - pod-template-hash
     labelSelector:
       matchLabels:
-        app.kubernetes.io/name: {{ .Values.application.name | lower }}
+        app.kubernetes.io/name: {{ $.Values.application.name | lower }}
+{{- end }}
 {{- end }}
 
 {{/*
