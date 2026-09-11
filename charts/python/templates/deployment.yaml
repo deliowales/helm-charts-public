@@ -9,7 +9,9 @@ metadata:
 
 
 spec:
+{{- if not .Values.deployment.hpa.enabled }}
   replicas: {{ .Values.deployment.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ include "python.application.name" . }}"
