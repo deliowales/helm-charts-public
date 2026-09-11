@@ -8,7 +8,9 @@ metadata:
   annotations:
     {{- include "node.annotations" . | nindent 4 }}
 spec:
+{{- if not .Values.deployment.hpa.enabled }}
   replicas: {{ .Values.deployment.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ include "node.application.name" . }}"

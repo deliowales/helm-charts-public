@@ -8,7 +8,9 @@ metadata:
   annotations:
     {{- include "go.annotations" . | nindent 4 }}
 spec:
+{{- if not .Values.deployment.hpa.enabled }}
   replicas: {{ .Values.deployment.replicaCount }}
+{{- end }}
   {{- with .Values.deployment.strategy }}
   strategy:
     type: RollingUpdate
