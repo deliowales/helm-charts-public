@@ -200,9 +200,12 @@ istio:
 job:
   enabled: false
   name: ""
-  # -- Node labels the job pod must match. A job that cannot be safely retried
-  # belongs on stable capacity however briefly it runs.
-  nodeSelector: {}
+  # -- Node labels the job pod must match. Defaults to on-demand capacity: a job
+  # that cannot be safely retried should not be interrupted, and it runs too
+  # briefly to be worth discounting. Set `nodeSelector: null` to lift it — an
+  # empty mapping will not, because Helm merges it into the default.
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
   annotations:
   # -- Annotations on the job's **pod** template, e.g.
   # `sidecar.istio.io/inject: "false"` — injection is decided from the pod, not

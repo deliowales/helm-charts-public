@@ -45,10 +45,12 @@ application:
     args: "migrations"
     restartPolicy: OnFailure
     backoffLimit: 2
-    # -- Node labels the migration pod must match. A kill mid-DDL is the one
-    # failure that needs a human, so pin this to stable capacity even though the
-    # job runs for seconds.
-    nodeSelector: {}
+    # -- Node labels the migration pod must match. Defaults to on-demand
+    # capacity: a kill mid-DDL is the one failure in the estate that needs a
+    # human, and the job runs for seconds. Set `nodeSelector: null` to lift it —
+    # an empty mapping will not, because Helm merges it into the default.
+    nodeSelector:
+      eks.amazonaws.com/capacityType: ON_DEMAND
     resources:
       limits:
         cpu: 1
@@ -208,9 +210,12 @@ istio:
 job:
   enabled: false
   name: ""
-  # -- Node labels the job pod must match. A job that cannot be safely retried
-  # belongs on stable capacity however briefly it runs.
-  nodeSelector: {}
+  # -- Node labels the job pod must match. Defaults to on-demand capacity: a job
+  # that cannot be safely retried should not be interrupted, and it runs too
+  # briefly to be worth discounting. Set `nodeSelector: null` to lift it — an
+  # empty mapping will not, because Helm merges it into the default.
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
   annotations:
   vault:
     enabled: true
