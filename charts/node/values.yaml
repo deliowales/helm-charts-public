@@ -267,11 +267,12 @@ supervisor:
     enabled: true
   # -- Node labels the supervisor pod must match.
   nodeSelector: {}
-  # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A single-replica
-  # queue worker with the Kubernetes default of 30 loses any job still running
-  # at that point; a spot interruption notice gives 120, so 110 lets the current
-  # job finish. Omitted entirely when unset.
-  terminationGracePeriodSeconds: ""
+  # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A ceiling, not a
+  # wait: the pod goes as soon as the process exits. A single-replica queue
+  # worker with the Kubernetes default of 30 loses whatever job is still running
+  # at that point, so this defaults to 110 — inside the 120 a spot interruption
+  # allows, and the same protection during an ordinary node drain.
+  terminationGracePeriodSeconds: 110
   # -- Resource requests/limits for the supervisor container.
   # If unset, defaults to limits 500m/500Mi and requests 250m/250Mi.
   resources: {}
