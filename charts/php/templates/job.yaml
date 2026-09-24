@@ -71,4 +71,5 @@ spec:
           emptyDir: {}
       {{- end }}
   backoffLimit: {{ .Values.job.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
   {{- end }}

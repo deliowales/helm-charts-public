@@ -188,6 +188,10 @@ pdb:
   # losing two, where `maxUnavailable: 1` bounds the loss whatever the replica
   # count moves to. Mutually exclusive with `minAvailable`.
   maxUnavailable: ""
+  # -- Whether a pod that is running but not Ready may be evicted even when the
+  # budget is not met. `AlwaysAllow` stops a crash-looping pod from blocking a
+  # node drain; it is not serving traffic, so the budget has nothing to protect.
+  unhealthyPodEvictionPolicy: AlwaysAllow
 
 scheduler:
   enabled: false

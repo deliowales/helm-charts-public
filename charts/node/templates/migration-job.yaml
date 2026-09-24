@@ -47,4 +47,5 @@ spec:
             {{- include "node.resources" .Values.application.migrations.resources | nindent 12 }}
       restartPolicy: {{ .Values.application.migrations.restartPolicy }}
   backoffLimit: {{ .Values.application.migrations.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.application.migrations.ttlSecondsAfterFinished }}
   {{- end }}

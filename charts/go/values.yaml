@@ -217,6 +217,9 @@ job:
   args: []
   restartPolicy: "OnFailure"
   backoffLimit: 2
+  # -- Seconds a finished job is kept before Kubernetes deletes it, long enough
+  # to read its logs after the fact.
+  ttlSecondsAfterFinished: 86400
   resources:
     limits:
       cpu:
@@ -239,6 +242,10 @@ pdb:
   # losing two, where `maxUnavailable: 1` bounds the loss whatever the replica
   # count moves to. Mutually exclusive with `minAvailable`.
   maxUnavailable: ""
+  # -- Whether a pod that is running but not Ready may be evicted even when the
+  # budget is not met. `AlwaysAllow` stops a crash-looping pod from blocking a
+  # node drain; it is not serving traffic, so the budget has nothing to protect.
+  unhealthyPodEvictionPolicy: AlwaysAllow
 
 peerAuthentication:
   enabled: true

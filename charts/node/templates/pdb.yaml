@@ -16,6 +16,7 @@ spec:
   {{- else }}
   minAvailable: {{ .Values.pdb.minAvailable | default 2 }}
   {{- end }}
+  unhealthyPodEvictionPolicy: {{ .Values.pdb.unhealthyPodEvictionPolicy }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "node.application.name" . }}

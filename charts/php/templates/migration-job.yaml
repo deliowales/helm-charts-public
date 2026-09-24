@@ -82,4 +82,5 @@ spec:
         {{- include "php.application.extraConfigmapVolumes" . | nindent 8 }}
         {{- end }}
   backoffLimit: {{ .Values.application.migrations.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.application.migrations.ttlSecondsAfterFinished }}
   {{- end }}
