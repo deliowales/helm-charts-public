@@ -40,9 +40,7 @@ spec:
           image: "{{ include "php.application.imageURL" . }}"
           imagePullPolicy: {{ .Values.application.image.pullPolicy }}
           args: ["scheduler"]
-          securityContext:
-          securityContext:
-            readOnlyRootFilesystem: true
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           livenessProbe:
             exec:
               command:

@@ -76,10 +76,7 @@ spec:
         - name: nightwatch-agent
           image: "{{ include "php.deployment.nightwatch.imageURL" . }}"
           imagePullPolicy: {{ .Values.nightwatch.image.pullPolicy }}
-          securityContext:
-            runAsNonRoot: false
-            readOnlyRootFilesystem: false
-            allowPrivilegeEscalation: true
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           env:
             - name: PLATFORM
               value: "{{ include "php.cloud.provider" . }}"

@@ -62,4 +62,5 @@ spec:
             {{- include "node.resources" .Values.job.resources | nindent 12 }}
       restartPolicy: {{ .Values.job.restartPolicy }}
   backoffLimit: {{ .Values.job.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
   {{- end }}

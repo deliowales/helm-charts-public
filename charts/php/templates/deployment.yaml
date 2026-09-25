@@ -60,6 +60,9 @@ spec:
             {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
             {{- end }}
             {{- include "php.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
+          ports:
+            - name: fpm
+              containerPort: 9000
           resources:
             {{- include "php.resources" .Values.application.resources | nindent 12 }}
           {{- if .Values.application.readinessProbe.enabled }}
@@ -137,10 +140,7 @@ spec:
         - name: nightwatch-agent
           image: "{{ include "php.deployment.nightwatch.imageURL" . }}"
           imagePullPolicy: {{ .Values.nightwatch.image.pullPolicy }}
-          securityContext:
-            runAsNonRoot: false
-            readOnlyRootFilesystem: false
-            allowPrivilegeEscalation: true
+          securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           env:
             - name: PLATFORM
               value: "{{ include "php.cloud.provider" . }}"
