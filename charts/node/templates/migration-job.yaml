@@ -16,12 +16,16 @@ spec:
         {{- include "node.annotations" . | nindent 8 }}
         {{- include "node.application.vault.annotations" . | nindent 8 }}
         {{- include "node.istio.proxy.annotations" . | nindent 8 }}
+      {{/* Spelled out, not `node.labels` + instance: those are the application's
+      own identity, and the PDB selects on them. A Job has no scale subresource,
+      so matching one wedges the disruption controller. */}}
       labels:
-        {{- include "node.labels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ include "node.application.name" . }}-migrations
+        chart: {{ include "node.chartref" . }}
+        release: {{ .Release.Name }}
         {{- if and (eq (include "node.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
         aadpodidbinding: {{ .Values.azure.identity.name }}
         {{- end }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- with .Values.application.migrations.nodeSelector }}
       nodeSelector:
