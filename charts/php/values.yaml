@@ -141,6 +141,11 @@ deployment:
   # interruption notice is 120 seconds, so a workload that must finish its
   # current unit of work needs a value comfortably inside that. Omitted
   # entirely when unset, which leaves Kubernetes' own default of 30.
+  # This is also the ceiling on `application.gracefulShutdown`: preStop and the
+  # SIGTERM that follows it share this one budget, so a request still running at
+  # the deadline is killed however graceful the hook was. nginx allows FastCGI
+  # reads of 360 seconds, well past any value spot leaves room for — a request
+  # that long cannot be drained on reclaimable capacity at all.
   terminationGracePeriodSeconds: ""
   # Enables the nginx pod to be created with the deployment
   nginx:
