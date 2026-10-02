@@ -24,6 +24,9 @@ data:
     autorestart=true
     priority=5
     user=node
+    {{- with .Values.supervisor.terminationGracePeriodSeconds }}
+    stopwaitsecs={{ sub (int .) 10 }}
+    {{- end }}
     stdout_logfile=/dev/stdout
     stdout_logfile_maxbytes=0
     stderr_logfile=/dev/stderr
@@ -37,6 +40,9 @@ data:
     autorestart=true
     priority=5
     user=node
+    {{- with .Values.supervisor.terminationGracePeriodSeconds }}
+    stopwaitsecs={{ sub (int .) 10 }}
+    {{- end }}
     stdout_logfile=/dev/stdout
     stdout_logfile_maxbytes=0
     stderr_logfile=/dev/stderr

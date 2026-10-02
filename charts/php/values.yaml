@@ -351,6 +351,10 @@ supervisor:
   # worker with the Kubernetes default of 30 loses whatever job is still running
   # at that point, so this defaults to 110 — inside the 120 a spot interruption
   # allows, and the same protection during an ordinary node drain.
+  # Also drives supervisord's `stopwaitsecs`, ten seconds lower, so the worker
+  # gets most of this window and supervisord still has time to exit before the
+  # kubelet's SIGKILL. Unset, supervisord falls back to its own 10s default,
+  # which is shorter than most jobs.
   terminationGracePeriodSeconds: 110
   resources:
     limits:
