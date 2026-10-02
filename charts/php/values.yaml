@@ -5,6 +5,12 @@
 application:
   # -- Name of the application e.g. Deals
   name: "php"
+  # -- Quit php-fpm and nginx with SIGQUIT on a preStop hook rather than letting
+  # the kubelet's SIGTERM stop them dead, so in-flight requests finish. Needs the
+  # service's entrypoint to `exec` php-fpm: without it PID 1 is the shell, which
+  # ignores SIGQUIT, and the pod waits out its grace period exactly as it does
+  # today. Turn off for an image whose entrypoint has not been fixed yet.
+  gracefulShutdown: true
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
   extraVolumes: []
@@ -135,6 +141,11 @@ deployment:
   # interruption notice is 120 seconds, so a workload that must finish its
   # current unit of work needs a value comfortably inside that. Omitted
   # entirely when unset, which leaves Kubernetes' own default of 30.
+  # This is also the ceiling on `application.gracefulShutdown`: preStop and the
+  # SIGTERM that follows it share this one budget, so a request still running at
+  # the deadline is killed however graceful the hook was. nginx allows FastCGI
+  # reads of 360 seconds, well past any value spot leaves room for — a request
+  # that long cannot be drained on reclaimable capacity at all.
   terminationGracePeriodSeconds: ""
   # Enables the nginx pod to be created with the deployment
   nginx:
@@ -351,6 +362,10 @@ supervisor:
   # worker with the Kubernetes default of 30 loses whatever job is still running
   # at that point, so this defaults to 110 — inside the 120 a spot interruption
   # allows, and the same protection during an ordinary node drain.
+  # Also drives supervisord's `stopwaitsecs`, ten seconds lower, so the worker
+  # gets most of this window and supervisord still has time to exit before the
+  # kubelet's SIGKILL. Unset, supervisord falls back to its own 10s default,
+  # which is shorter than most jobs.
   terminationGracePeriodSeconds: 110
   resources:
     limits:

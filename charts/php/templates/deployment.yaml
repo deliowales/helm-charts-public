@@ -60,6 +60,20 @@ spec:
             {{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
             {{- end }}
             {{- include "php.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
+          {{- if .Values.application.gracefulShutdown }}
+          {{/* php-fpm treats SIGTERM as "stop now" and takes SIGQUIT for the
+          graceful stop, so the kubelet's own signal drops whatever requests are
+          in flight. Quit it here instead and hold the hook open until it goes:
+          the SIGTERM only follows once preStop returns. Requires the entrypoint
+          to exec php-fpm, or PID 1 is the shell and ignores SIGQUIT. */}}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - kill -QUIT 1; while kill -0 1 2>/dev/null; do sleep 1; done
+          {{- end }}
           ports:
             - name: fpm
               containerPort: 9000
@@ -100,6 +114,18 @@ spec:
             postStart:
               exec:
                 command: ["sh"]
+            {{- if .Values.application.gracefulShutdown }}
+            {{/* nginx reads SIGTERM as a fast shutdown and SIGQUIT as the
+            graceful one, same as php-fpm behind it. Both containers are
+            signalled together and drain in step: nginx stops accepting while
+            finishing the requests it holds, which php-fpm is still serving. */}}
+            preStop:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - kill -QUIT 1; while kill -0 1 2>/dev/null; do sleep 1; done
+            {{- end }}
           ports:
             - name: http
               containerPort: 8080
