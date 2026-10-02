@@ -5,6 +5,12 @@
 application:
   # -- Name of the application e.g. Deals
   name: "php"
+  # -- Quit php-fpm and nginx with SIGQUIT on a preStop hook rather than letting
+  # the kubelet's SIGTERM stop them dead, so in-flight requests finish. Needs the
+  # service's entrypoint to `exec` php-fpm: without it PID 1 is the shell, which
+  # ignores SIGQUIT, and the pod waits out its grace period exactly as it does
+  # today. Turn off for an image whose entrypoint has not been fixed yet.
+  gracefulShutdown: true
   # -- Any args that need to be supplied to the `ENTRYPOINT` command.
   args: []
   extraVolumes: []
