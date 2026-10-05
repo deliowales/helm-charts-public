@@ -14,7 +14,9 @@ spec:
 {{- end }}
   {{- with .Values.deployment.strategy }}
   strategy:
-    {{- toYaml . | nindent 4 }}
+    type: RollingUpdate
+    rollingUpdate:
+      {{- toYaml . | nindent 6 }}
   {{- end }}
   selector:
     matchLabels:
