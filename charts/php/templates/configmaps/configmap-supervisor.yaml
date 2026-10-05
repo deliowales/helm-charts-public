@@ -25,6 +25,9 @@ data:
     autostart=true
     autorestart=true
     priority=2
+    {{- with .Values.supervisor.terminationGracePeriodSeconds }}
+    stopwaitsecs={{ max 1 (sub (int .) 10) }}
+    {{- end }}
     stdout_logfile=/dev/stdout
     stdout_logfile_maxbytes=0
     stderr_logfile=/dev/stderr
@@ -38,6 +41,9 @@ data:
     autostart=true
     autorestart=true
     priority=2
+    {{- with .Values.supervisor.terminationGracePeriodSeconds }}
+    stopwaitsecs={{ max 1 (sub (int .) 10) }}
+    {{- end }}
     stdout_logfile=/dev/stdout
     stdout_logfile_maxbytes=0
     stderr_logfile=/dev/stderr
