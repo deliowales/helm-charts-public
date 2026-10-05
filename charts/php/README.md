@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.2.17](https://img.shields.io/badge/Version-1.2.17-informational?style=flat-square)
+![Version: 1.24.0](https://img.shields.io/badge/Version-1.24.0-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -38,23 +38,30 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.cron | object | `{"enabled":false,"phpConfig":{"maxExecutionTime":30}}` | Enable CRON. This is only to be used with `Horizon` |
 | application.env | list | `[]` | Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt. |
 | application.extraVolumes | list | `[]` |  |
+| application.gracefulShutdown | bool | `true` | Quit php-fpm and nginx with SIGQUIT on a preStop hook rather than letting the kubelet's SIGTERM stop them dead, so in-flight requests finish. Needs the service's entrypoint to `exec` php-fpm: without it PID 1 is the shell, which ignores SIGQUIT, and the pod waits out its grace period exactly as it does today. Turn off for an image whose entrypoint has not been fixed yet. |
 | application.healthcheck.headers | string | `""` |  |
 | application.healthcheck.livenessPath | string | `"/_/system/liveness"` |  |
 | application.healthcheck.readinessPath | string | `"/_/system/readiness"` |  |
-| application.image.pullPolicy | string | `"Always"` |  |
+| application.image.pullPolicy | string | `"IfNotPresent"` |  |
 | application.image.repository | string | `""` | Name of the ECR/ACR repository |
 | application.image.tag | string | `"0.0.0"` | Image tag to be pulled |
 | application.livenessProbe.enabled | bool | `true` |  |
 | application.migrations.args | string | `"migrations"` |  |
 | application.migrations.backoffLimit | int | `2` |  |
 | application.migrations.enabled | bool | `false` |  |
+| application.migrations.nodeSelector | object | `{"eks.amazonaws.com/capacityType":"ON_DEMAND"}` | Node labels the migration pod must match. Defaults to on-demand capacity: a kill mid-DDL is the one failure in the estate that needs a human, and the job runs for seconds. Set `nodeSelector: null` to lift it — an empty mapping will not, because Helm merges it into the default. |
 | application.migrations.resources.limits.cpu | int | `1` |  |
 | application.migrations.resources.limits.memory | string | `"1G"` |  |
 | application.migrations.resources.requests.cpu | string | `"500m"` |  |
 | application.migrations.resources.requests.memory | string | `"500M"` |  |
 | application.migrations.restartPolicy | string | `"OnFailure"` |  |
+| application.migrations.ttlSecondsAfterFinished | int | `86400` | Seconds a finished job is kept before Kubernetes deletes it, long enough to read its logs after the fact. |
 | application.name | string | `"php"` | Name of the application e.g. Deals |
 | application.readinessProbe.enabled | bool | `true` |  |
+| application.readinessProbe.failureThreshold | int | `15` |  |
+| application.readinessProbe.initialDelaySeconds | int | `3` |  |
+| application.readinessProbe.periodSeconds | int | `2` |  |
+| application.readinessProbe.timeoutSeconds | int | `5` |  |
 | authorizationPolicy.enabled | bool | `true` |  |
 | aws | object | `{"iam":{"enabled":false,"role":"","rolePrefix":""}}` | IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed. |
 | azure.identity.clientName | string | `""` |  |
@@ -70,6 +77,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | cron.concurrencyPolicy | string | `"Forbid"` |  |
 | cron.enabled | bool | `false` |  |
 | cron.failedJobsHistoryLimit | int | `3` |  |
+| cron.nodeSelector | object | `{}` | Node labels the cron pod must match. |
 | cron.resources.limits.cpu | string | `nil` |  |
 | cron.resources.limits.memory | string | `""` |  |
 | cron.resources.requests.cpu | string | `nil` |  |
@@ -78,6 +86,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | cron.schedule | string | `""` |  |
 | cron.successfulJobsHistoryLimit | int | `1` |  |
 | cron.vault.enabled | bool | `true` |  |
+| deployment.datadog.enabled | bool | `false` |  |
 | deployment.enabled | bool | `true` |  |
 | deployment.hpa.enabled | bool | `true` |  |
 | deployment.hpa.maxReplicas | int | `10` | Maximum number of replica pods |
@@ -85,9 +94,12 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.hpa.targetCPU | int | `70` | Target CPU usage (%) |
 | deployment.hpa.targetMemory | int | `70` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
 | deployment.nginx.enabled | bool | `true` |  |
+| deployment.nodeSelector.labels | object | `{}` | Node labels the pod must match, merged with the toleration label above. `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot capacity on an EKS managed node group. |
 | deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
-| deployment.topologySpreadConstraints | object | `{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}` | Configure Topology Spread Constrains. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
+| deployment.strategy | object | `{}` | RollingUpdate parameters, e.g. `{maxSurge: 1, maxUnavailable: 0}` for zero-downtime rollouts. Omitted entirely when unset, which leaves the API server's 25% default — at 3 replicas that rounds to a surge of 1 and no unavailability, so the pods replace one at a time. |
+| deployment.terminationGracePeriodSeconds | string | `""` | Seconds the kubelet waits between SIGTERM and SIGKILL. A spot interruption notice is 120 seconds, so a workload that must finish its current unit of work needs a value comfortably inside that. Omitted entirely when unset, which leaves Kubernetes' own default of 30. This is also the ceiling on `application.gracefulShutdown`: preStop and the SIGTERM that follows it share this one budget, so a request still running at the deadline is killed however graceful the hook was. nginx allows FastCGI reads of 360 seconds, well past any value spot leaves room for — a request that long cannot be drained on reclaimable capacity at all. |
+| deployment.topologySpreadConstraints | list | `[{"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"},{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}]` | Configure Topology Spread Constrains. A constraint carries a single topologyKey, so keeping replicas off one node and out of one availability zone are separate entries — list both. A bare mapping is still accepted for the single-constraint case. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
 | destinationRule.enabled | bool | `true` |  |
 | fpm.maxChildren | int | `5` | Maximum number of worker processes, i.e. the pod's request concurrency. |
 | fpm.maxRequests | int | `0` | Requests a worker serves before it is respawned. `0` is unlimited; set it to recycle workers around a memory leak. |
@@ -101,6 +113,10 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | istio.mtls.mode | string | `"STRICT"` |  |
 | istio.portLevelSettings | list | `[]` |  |
 | istio.principals | list | `[]` |  |
+| istio.proxy.cpu | string | `""` |  |
+| istio.proxy.cpuLimit | string | `""` |  |
+| istio.proxy.memory | string | `""` |  |
+| istio.proxy.memoryLimit | string | `""` |  |
 | istio.subsets | list | `[]` |  |
 | istio.tls.mode | string | `"ISTIO_MUTUAL"` |  |
 | istio.virtualService.enabled | bool | `true` |  |
@@ -111,13 +127,16 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | job.backoffLimit | int | `2` |  |
 | job.enabled | bool | `false` |  |
 | job.name | string | `""` |  |
+| job.nodeSelector | object | `{"eks.amazonaws.com/capacityType":"ON_DEMAND"}` | Node labels the job pod must match. Defaults to on-demand capacity: a job that cannot be safely retried should not be interrupted, and it runs too briefly to be worth discounting. Set `nodeSelector: null` to lift it — an empty mapping will not, because Helm merges it into the default. |
 | job.resources.limits.cpu | string | `nil` |  |
 | job.resources.limits.memory | string | `""` |  |
 | job.resources.requests.cpu | string | `nil` |  |
 | job.resources.requests.memory | string | `""` |  |
 | job.restartPolicy | string | `"OnFailure"` |  |
+| job.ttlSecondsAfterFinished | int | `86400` | Seconds a finished job is kept before Kubernetes deletes it, long enough to read its logs after the fact. |
 | job.vault.enabled | bool | `true` |  |
-| newrelic | object | `{"licenseKey":""}` | The license key for New Relic. Only needed for FluentBit containers which are only used by PHP services. |
+| newrelic.ephemeralPods.enabled | bool | `false` |  |
+| newrelic.licenseKey | string | `""` |  |
 | nginx.config.clientMaxBodySize | string | `"1M"` |  |
 | nginx.image.pullPolicy | string | `"Always"` |  |
 | nginx.image.repository | string | `"nginx"` |  |
@@ -128,8 +147,19 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nginx.resources.requests.memory | string | `"10Mi"` |  |
 | nginx.service.internalPort | string | `""` | Port that nginx is listening on |
 | nginx.service.type | string | `"NodePort"` |  |
+| nightwatch.enabled | bool | `false` |  |
+| nightwatch.env | list | `[]` |  |
+| nightwatch.image.pullPolicy | string | `"Always"` |  |
+| nightwatch.image.repository | string | `"docker.io/laravelphp/nightwatch-agent"` |  |
+| nightwatch.image.tag | string | `"v1"` |  |
+| nightwatch.resources.limits.cpu | string | `"100m"` |  |
+| nightwatch.resources.limits.memory | string | `"128Mi"` |  |
+| nightwatch.resources.requests.cpu | string | `"50m"` |  |
+| nightwatch.resources.requests.memory | string | `"64Mi"` |  |
 | pdb.enabled | bool | `false` |  |
-| pdb.minAvailable | int | `2` |  |
+| pdb.maxUnavailable | string | `""` | Pods that may be unavailable at once. Prefer this over `minAvailable` on an autoscaled service: `minAvailable: 1` against three replicas permits losing two, where `maxUnavailable: 1` bounds the loss whatever the replica count moves to. Mutually exclusive with `minAvailable`. |
+| pdb.minAvailable | string | `""` | Pods that must stay available during a voluntary disruption. Defaults to 2 when neither this nor `maxUnavailable` is set. Mutually exclusive with it. |
+| pdb.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` | Whether a pod that is running but not Ready may be evicted even when the budget is not met. `AlwaysAllow` stops a crash-looping pod from blocking a node drain; it is not serving traffic, so the budget has nothing to protect. |
 | peerAuthentication.enabled | bool | `true` |  |
 | phpConfig.maxExecutionTime | int | `30` |  |
 | phpConfig.memoryLimit | string | `"128M"` |  |
@@ -138,6 +168,8 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | phpConfig.sessionSavePath | string | `""` |  |
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
 | scheduler.enabled | bool | `false` |  |
+| scheduler.nodeSelector | object | `{}` | Node labels the scheduler pod must match. |
+| scheduler.terminationGracePeriodSeconds | int | `110` | Seconds the kubelet waits between SIGTERM and SIGKILL. See the supervisor note above; same reasoning, same default. |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |
 | service.externalDNS.host | string | `""` |  |
@@ -152,10 +184,13 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | supervisor.enabled | bool | `false` | Run a `supervisord` deployment alongside the application. The image's entrypoint must handle the `supervisor` argument, otherwise the liveness probe (`pgrep -a supervisord`) can never pass. |
 | supervisor.horizon.enabled | bool | `false` |  |
 | supervisor.hpa.enabled | bool | `false` |  |
+| supervisor.nodeSelector | object | `{}` | Node labels the supervisor pod must match. |
 | supervisor.resources.limits.cpu | string | `nil` |  |
 | supervisor.resources.limits.memory | string | `"500Mi"` |  |
 | supervisor.resources.requests.cpu | string | `"250m"` |  |
 | supervisor.resources.requests.memory | string | `"250Mi"` |  |
-| vault | object | `{"env":"","role":""}` | Vault configuration |
+| supervisor.terminationGracePeriodSeconds | int | `110` | Seconds the kubelet waits between SIGTERM and SIGKILL. A ceiling, not a wait: the pod goes as soon as the process exits. A single-replica queue worker with the Kubernetes default of 30 loses whatever job is still running at that point, so this defaults to 110 — inside the 120 a spot interruption allows, and the same protection during an ordinary node drain. Also drives supervisord's `stopwaitsecs`, ten seconds lower, so the worker gets most of this window and supervisord still has time to exit before the kubelet's SIGKILL. Unset, supervisord falls back to its own 10s default, which is shorter than most jobs. |
+| vault | object | `{"env":"","role":"","sharedEnv":""}` | Vault configuration |
 | vault.env | string | `""` | Environment of the vault. Format: `<< env >>/<< vault name >> |
 | vault.role | string | `""` | Role name |
+| vault.sharedEnv | string | `""` | Optional path to a platform-wide shared secret (e.g. `<< env >>/data/_shared`). When set, its keys are appended into the same injected `/vault/secrets/env` file after the service's own secret, giving true single-source shared config. |
