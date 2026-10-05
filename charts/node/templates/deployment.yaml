@@ -11,6 +11,10 @@ spec:
 {{- if not .Values.deployment.hpa.enabled }}
   replicas: {{ .Values.deployment.replicaCount }}
 {{- end }}
+  {{- with .Values.deployment.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ include "node.application.name" . }}"
@@ -86,8 +90,7 @@ spec:
               port: 3000
               path: {{ .Values.application.readinessProbe.path }}
             {{- end }}
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            {{- include "node.application.readinessProbe.timing" . | nindent 12 }}
           volumeMounts:
             - name: tmp
               mountPath: /tmp

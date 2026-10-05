@@ -16,6 +16,10 @@ application:
   extraVolumes: []
   readinessProbe:
     enabled: true
+    initialDelaySeconds: 3
+    periodSeconds: 2
+    timeoutSeconds: 5
+    failureThreshold: 15
   livenessProbe:
     enabled: true
   healthcheck:
@@ -35,7 +39,7 @@ application:
     repository: ""
     # -- Image tag to be pulled
     tag: "0.0.0"
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   # @ignored Application container resources. Please ensure that these are fine-tuned when load-testing
   # has been carried out and a baseline has been defined.
   resources:
@@ -152,6 +156,11 @@ deployment:
     enabled: true
   # -- Replica count not considering the HPA
   replicaCount: 3
+  # -- RollingUpdate parameters, e.g. `{maxSurge: 1, maxUnavailable: 0}` for
+  # zero-downtime rollouts. Omitted entirely when unset, which leaves the API
+  # server's 25% default — at 3 replicas that rounds to a surge of 1 and no
+  # unavailability, so the pods replace one at a time.
+  strategy: {}
   # -- Configure Topology Spread Constrains. A constraint carries a single
   # topologyKey, so keeping replicas off one node and out of one availability
   # zone are separate entries — list both. A bare mapping is still accepted for
