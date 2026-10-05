@@ -115,3 +115,12 @@ application.env), because each workload here starts from a different set.
   value: "{{ .value }}"
 {{- end }}
 {{- end -}}
+
+{{/* Set explicitly because the API server's default 10-second period rounds
+readiness up to the next ten, and that is what paces a rolling update. */}}
+{{- define "node.application.readinessProbe.timing" -}}
+initialDelaySeconds: {{ .Values.application.readinessProbe.initialDelaySeconds }}
+periodSeconds: {{ .Values.application.readinessProbe.periodSeconds }}
+timeoutSeconds: {{ .Values.application.readinessProbe.timeoutSeconds }}
+failureThreshold: {{ .Values.application.readinessProbe.failureThreshold }}
+{{- end -}}

@@ -12,6 +12,10 @@ spec:
 {{- if not .Values.deployment.hpa.enabled }}
   replicas: {{ .Values.deployment.replicaCount }}
 {{- end }}
+  {{- with .Values.deployment.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ include "php.application.name" . }}"
@@ -83,8 +87,7 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 9000
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
+            {{- include "php.application.readinessProbe.timing" . | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: fpm-pool-config-volume
@@ -150,8 +153,7 @@ spec:
               {{- if (include "php.application.healthcheck.headers" . ) -}}
               {{ include "php.application.healthcheck.headers" .  | nindent 14 }}
               {{- end }}
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
+            {{- include "php.application.readinessProbe.timing" . | nindent 12 }}
           {{ end }}
           volumeMounts:
             - name: nginx-config-volume
