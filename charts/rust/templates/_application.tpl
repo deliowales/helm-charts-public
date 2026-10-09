@@ -128,13 +128,17 @@ server rejects a container with two env entries of the same name, so without
 this a service could only avoid the collision by not setting the variable.
 */}}
 {{- define "rust.application.env" -}}
+{{- $ctx := .ctx -}}
 {{- $overridden := dict -}}
-{{- range .Values.application.env }}{{- $_ := set $overridden .name true -}}{{- end }}
+{{- range $ctx.Values.application.env }}{{- $_ := set $overridden .name true -}}{{- end }}
 {{- $defaults := list
-    (dict "name" "APP_NAME" "value" (.Values.application.name | lower))
-    (dict "name" "PLATFORM" "value" (include "rust.cloud.provider" .)) }}
-{{- if eq (include "rust.cloud.provider" .) "AWS" }}
-{{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" .Values.cloud.region) }}
+    (dict "name" "APP_NAME" "value" ($ctx.Values.application.name | lower))
+    (dict "name" "PLATFORM" "value" (include "rust.cloud.provider" $ctx)) }}
+{{- if eq (include "rust.cloud.provider" $ctx) "AWS" }}
+{{- $defaults = append $defaults (dict "name" "AWS_REGION" "value" $ctx.Values.cloud.region) }}
+{{- end }}
+{{- range (.extra | default list) }}
+{{- $defaults = append $defaults . }}
 {{- end }}
 {{- range $default := $defaults }}
 {{- if not (hasKey $overridden $default.name) }}
@@ -142,7 +146,7 @@ this a service could only avoid the collision by not setting the variable.
   value: {{ $default.value | quote }}
 {{- end }}
 {{- end }}
-{{- range .Values.application.env }}
+{{- range $ctx.Values.application.env }}
 - name: "{{ .name }}"
   value: "{{ .value }}"
 {{- end }}

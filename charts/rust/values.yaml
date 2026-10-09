@@ -72,6 +72,29 @@ application:
       cpu: ""
       memory: ""
 
+  # -- Database migrations Job, run as a `pre-upgrade` hook so a failed
+  # migration stops the rollout. Not `pre-install`: the release's
+  # ServiceAccount (and so its Vault role) does not exist yet on a first
+  # install, so a new environment deploys twice and the second run migrates.
+  migrations:
+    enabled: false
+    # -- Args passed to the binary for the migration run.
+    args: ["migrations"]
+    # -- Node labels the Job pod must match. On-demand capacity by default: a
+    # half-applied migration should not be interrupted by a spot reclaim.
+    nodeSelector:
+      eks.amazonaws.com/capacityType: ON_DEMAND
+    backoffLimit: 2
+    # -- Seconds a finished Job is kept, long enough to read its logs.
+    ttlSecondsAfterFinished: 86400
+    resources:
+      limits:
+        cpu:
+        memory: ""
+      requests:
+        cpu: ""
+        memory: ""
+
 authorizationPolicy:
   enabled: true
   # -- Additional Istio AuthorizationPolicy rules, appended after the default
