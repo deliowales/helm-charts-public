@@ -2,7 +2,7 @@
 
 A generic chart to be used for all GoLang microservices
 
-![Version: 1.16.0](https://img.shields.io/badge/Version-1.16.0-informational?style=flat-square)
+![Version: 1.17.0](https://img.shields.io/badge/Version-1.17.0-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -103,7 +103,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | job.resources.limits.memory | string | `""` |  |
 | job.resources.requests.cpu | string | `nil` |  |
 | job.resources.requests.memory | string | `""` |  |
-| job.restartPolicy | string | `"OnFailure"` |  |
 | job.ttlSecondsAfterFinished | int | `86400` | Seconds a finished job is kept before Kubernetes deletes it, long enough to read its logs after the fact. |
 | job.vault.enabled | bool | `true` |  |
 | kong.enabled | bool | `false` |  |

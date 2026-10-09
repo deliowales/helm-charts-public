@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.24.0](https://img.shields.io/badge/Version-1.24.0-informational?style=flat-square)
+![Version: 1.25.0](https://img.shields.io/badge/Version-1.25.0-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -54,7 +54,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.migrations.resources.limits.memory | string | `"1G"` |  |
 | application.migrations.resources.requests.cpu | string | `"500m"` |  |
 | application.migrations.resources.requests.memory | string | `"500M"` |  |
-| application.migrations.restartPolicy | string | `"OnFailure"` |  |
 | application.migrations.ttlSecondsAfterFinished | int | `86400` | Seconds a finished job is kept before Kubernetes deletes it, long enough to read its logs after the fact. |
 | application.name | string | `"php"` | Name of the application e.g. Deals |
 | application.readinessProbe.enabled | bool | `true` |  |
