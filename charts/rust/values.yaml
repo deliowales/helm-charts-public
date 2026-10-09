@@ -1,0 +1,316 @@
+#######################################################################
+#                         VALUES FOR RUST CHART
+# THESE ARE DEFAULTS AND CAN BE OVERRIDDEN IN THE SERVICE'S VALUES FILE
+#######################################################################
+
+application:
+  # -- Name of the application e.g. Deals
+  name: "rust"
+  # -- Args passed to the binary's entrypoint. Rust services dispatch on a subcommand.
+  args: ["serve"]
+  extraVolumes: []
+  readOnly: true
+  healthcheck:
+    path: ""
+    headers: ""
+  # -- Container security context. Defaults suit distroless nonroot images (65532).
+  securityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+    fsGroup: 65532
+  # -- Optional startup probe, for apps that need longer to warm up than the
+  # liveness probe tolerates. Uses the same shape as the probes below.
+  startupProbe:
+    enabled: true
+    type: http
+    path: /livez
+    httpHeaders: []
+    initialDelaySeconds: 0
+    timeoutSeconds: 2
+    periodSeconds: 3
+    failureThreshold: 20
+  # -- HTTP GET against the container port; set type: tcp for a TCP check.
+  livenessProbe:
+    # -- Type of liveness healthcheck. `http` or `tcp`
+    type: http
+    path: /livez
+    # -- Custom headers to set in the request. HTTP allows repeated headers.
+    httpHeaders: []
+    initialDelaySeconds: 10
+    timeoutSeconds: 5
+    periodSeconds: ""
+    failureThreshold: ""
+  # -- HTTP GET against the container port; set type: tcp for a TCP check.
+  # Timings are explicit because the API server's default 10-second period
+  # rounds readiness up to the next ten, and that is what paces a rolling update.
+  readinessProbe:
+    # -- Type of readiness healthcheck. `http` or `tcp`
+    type: http
+    path: /readyz
+    # -- Custom headers to set in the request. HTTP allows repeated headers.
+    httpHeaders: []
+    initialDelaySeconds: 3
+    timeoutSeconds: 5
+    periodSeconds: 2
+    failureThreshold: 15
+  # -- Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt.
+  env: []
+  # Configure container registry details
+  image:
+    # -- Name of the ECR/ACR repository
+    repository: ""
+    # -- Image tag to be pulled
+    tag: "0.0.0"
+    pullPolicy: IfNotPresent
+  # @ignored Application container resources. Please ensure that these are fine-tuned when load-testing
+  # has been carried out and a baseline has been defined.
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu: ""
+      memory: ""
+
+  # -- Database migrations Job, run as a `pre-upgrade` hook so a failed
+  # migration stops the rollout. Not `pre-install`: the release's
+  # ServiceAccount (and so its Vault role) does not exist yet on a first
+  # install, so a new environment deploys twice and the second run migrates.
+  migrations:
+    enabled: false
+    # -- Args passed to the binary for the migration run.
+    args: ["migrations"]
+    # -- Node labels the Job pod must match. On-demand capacity by default: a
+    # half-applied migration should not be interrupted by a spot reclaim.
+    nodeSelector:
+      eks.amazonaws.com/capacityType: ON_DEMAND
+    backoffLimit: 2
+    # -- Seconds a finished Job is kept, long enough to read its logs.
+    ttlSecondsAfterFinished: 86400
+    resources:
+      limits:
+        cpu:
+        memory: ""
+      requests:
+        cpu: ""
+        memory: ""
+
+authorizationPolicy:
+  enabled: true
+  # -- Additional Istio AuthorizationPolicy rules, appended after the default
+  # allow-rule above. Use this to grant narrower access than the blanket rule —
+  # e.g. read-only principals on specific paths plus a separate admin rule.
+  extraRules: []
+
+# -- IAM Role to allow the application access to AWS resources (e.g. S3, SQS, Lambda) if needed.
+aws:
+  iam:
+    enabled: false
+    role: ""
+    rolePrefix: ""
+
+azure:
+  identity:
+    enabled: false
+    clientName: ""
+    name: ""
+    resourceName: ""
+
+# -- Enable ClamAV. Currently only used by `virus-scanner`.
+clamAV:
+  enabled: false
+
+# Configure cloud details
+cloud:
+  # -- **Required**: Cloud Environment. `staging-demo` (aws only), `demo`, `staging-production` (azure only) or `production`.
+  environment: "uat"
+  # -- **Required**: Cloud Provider. Either `AWS` or `Azure`
+  provider: "aws"
+  # -- Cloud Region. Only needed for AWS
+  region: "eu-west-1"
+  # -- **Required**: URL for the Container Registry
+  containerRegistryURL: "1234.ecr.com"
+
+deployment:
+  enabled: true
+  # -- Port the HTTP server listens on.
+  containerPort: 3000
+  # Horizontal Pod Autoscaler configuration.
+  hpa:
+    enabled: true
+    # -- Maximum number of replica pods
+    maxReplicas: 10
+    # -- Minimum number of replica pods
+    minReplicas: 3
+    # -- Target CPU usage (%)
+    targetCPU: 70
+    # -- Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary.
+    targetMemory: 70
+  # Specify what type of node you want this app to be deployed on: ["cpu", "memory"]
+  nodeSelector:
+    toleration: ""
+    # -- Node labels the pod must match, merged with the toleration label above.
+    # `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot
+    # capacity on an EKS managed node group.
+    labels: {}
+  # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A spot
+  # interruption notice is 120 seconds, so a workload that must finish its
+  # current unit of work needs a value comfortably inside that. Omitted
+  # entirely when unset, which leaves Kubernetes' own default of 30.
+  terminationGracePeriodSeconds: ""
+  # -- Configure Topology Spread Constrains. A constraint carries a single
+  # topologyKey, so keeping replicas off one node and out of one availability
+  # zone are separate entries — list both. A bare mapping is still accepted for
+  # the single-constraint case.
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: "ScheduleAnyway"
+    - maxSkew: 1
+      topologyKey: "topology.kubernetes.io/zone"
+      whenUnsatisfiable: "ScheduleAnyway"
+
+  # -- Replica count not considering the HPA
+  replicaCount: 3
+  # -- RollingUpdate parameters, e.g. `{maxSurge: 1, maxUnavailable: 0}` for
+  # zero-downtime rollouts. Omitted entirely when unset.
+  strategy: {}
+  # -- Seconds to sleep in a preStop hook, letting in-flight requests drain
+  # before the container is signalled. Omitted entirely when unset.
+  preStopSleepSeconds: ""
+  # -- Label drained pods with the castai pod-node-lifecycle opt-out. Every
+  # published version of that webhook (<= v0.31.0) predates Kubernetes 1.29,
+  # strips the native sleep handler from pods at admission, and the API server
+  # then rejects them with "must specify a handler type" — a configured drain
+  # is undeployable wherever the webhook runs. Only applied when
+  # preStopSleepSeconds is set. Trade-off while labelled: CAST AI stops
+  # steering those pods between spot and on-demand. Set false once CAST AI
+  # ships a fixed webhook.
+  castaiPodNodeLifecycleOptOut: true
+
+destinationRule:
+  enabled: true
+
+istio:
+  tls:
+    mode: ISTIO_MUTUAL
+  mtls:
+    mode: STRICT
+  # List of services **allowed** to make requests to the current service.
+  principals: []
+  # Subsets of endpoints of a service for routing traffic to specific versions of application.
+  subsets: []
+  # Per-deployment sidecar sizing. Unset, the pod inherits the mesh defaults set
+  # in the bootstrap. Setting any one of these switches the pod to annotation
+  # sizing, which replaces the mesh values outright rather than merging, so all
+  # four are emitted together and the unset ones fall back to the mesh figures.
+  # istio-init reads the same annotations — it cannot be sized separately.
+  proxy:
+    cpu: ""
+    memory: ""
+    cpuLimit: ""
+    memoryLimit: ""
+
+job:
+  enabled: false
+  name: ""
+  # -- Node labels the job pod must match. Defaults to on-demand capacity: a job
+  # that cannot be safely retried should not be interrupted, and it runs too
+  # briefly to be worth discounting. Set `nodeSelector: null` to lift it — an
+  # empty mapping will not, because Helm merges it into the default.
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+  annotations:
+  # -- Annotations on the job's **pod** template, e.g.
+  # `sidecar.istio.io/inject: "false"` — injection is decided from the pod, not
+  # the Job.
+  podAnnotations: {}
+  vault:
+    enabled: true
+  # -- Args passed to the job container's entrypoint, e.g. `["migrations"]`.
+  args: []
+  backoffLimit: 2
+  # -- Seconds a finished job is kept before Kubernetes deletes it, long enough
+  # to read its logs after the fact.
+  ttlSecondsAfterFinished: 86400
+  resources:
+    limits:
+      cpu:
+      memory: ""
+    requests:
+      cpu:
+      memory: ""
+
+metrics:
+  # -- Expose the Prometheus endpoint the binary serves on its own port, kept
+  # off the VirtualService.
+  enabled: true
+  port: 9090
+  serviceMonitor:
+    # -- Create a prometheus-operator ServiceMonitor for the metrics port.
+    # Prometheus has no sidecar, so enabling this also makes the metrics port
+    # PERMISSIVE in the PeerAuthentication and admits it in the
+    # AuthorizationPolicy; nothing else on the pod loosens.
+    enabled: false
+    interval: 30s
+    # -- Extra labels the Prometheus `serviceMonitorSelector` matches on.
+    labels: {}
+
+# Pod Disruption Budget. Leave as false unless instructed otherwise.
+pdb:
+  enabled: false
+  # -- Pods that must stay available during a voluntary disruption. Defaults to
+  # 2 when neither this nor `maxUnavailable` is set. Mutually exclusive with it.
+  minAvailable: ""
+  # -- Pods that may be unavailable at once. Prefer this over `minAvailable` on
+  # an autoscaled service: `minAvailable: 1` against three replicas permits
+  # losing two, where `maxUnavailable: 1` bounds the loss whatever the replica
+  # count moves to. Mutually exclusive with `minAvailable`.
+  maxUnavailable: ""
+  # -- Whether a pod that is running but not Ready may be evicted even when the
+  # budget is not met. `AlwaysAllow` stops a crash-looping pod from blocking a
+  # node drain; it is not serving traffic, so the budget has nothing to protect.
+  unhealthyPodEvictionPolicy: AlwaysAllow
+
+peerAuthentication:
+  enabled: true
+
+service:
+  enabled: true
+  externalDNS:
+    enabled: false
+    host: ""
+  port: 80
+  type: ClusterIP
+
+serviceAccount:
+  enabled: true
+  # -- Leave blank to default to the application name
+  name: ""
+
+serviceEntry:
+  enabled: false
+  hosts: []
+  location: ""
+  ports: []
+
+# -- Vault configuration
+vault:
+  # -- Environment of the vault. Format: `<< env >>/<< vault name >>
+  env: ""
+  # -- Role name
+  role: ""
+  # -- Optional path to a platform-wide shared secret (e.g. `<< env >>/data/_shared`).
+  # When set, its keys are appended into the same injected `/vault/secrets/env`
+  # file after the service's own secret, giving true single-source shared config.
+  sharedEnv: ""
+
+virtualService:
+  enabled: true
+  gateways: []
+  hosts: []
+  # -- Per-route request timeout, e.g. `2s`. Omitted entirely when unset.
+  timeout: ""
+  # -- Retry policy, e.g. `{attempts: 2, perTryTimeout: 2s}`. Omitted when unset.
+  retries: {}
