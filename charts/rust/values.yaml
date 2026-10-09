@@ -242,6 +242,21 @@ job:
       cpu:
       memory: ""
 
+metrics:
+  # -- Expose the Prometheus endpoint the binary serves on its own port, kept
+  # off the VirtualService.
+  enabled: true
+  port: 9090
+  serviceMonitor:
+    # -- Create a prometheus-operator ServiceMonitor for the metrics port.
+    # Prometheus has no sidecar, so enabling this also makes the metrics port
+    # PERMISSIVE in the PeerAuthentication and admits it in the
+    # AuthorizationPolicy; nothing else on the pod loosens.
+    enabled: false
+    interval: 30s
+    # -- Extra labels the Prometheus `serviceMonitorSelector` matches on.
+    labels: {}
+
 # Pod Disruption Budget. Leave as false unless instructed otherwise.
 pdb:
   enabled: false

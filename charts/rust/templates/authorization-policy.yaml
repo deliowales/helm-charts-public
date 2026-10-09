@@ -20,6 +20,13 @@ spec:
             {{- end }}
             {{- end }}
             ]
+    {{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled }}
+    - to:
+        - operation:
+            ports: ["{{ .Values.metrics.port }}"]
+            paths: ["/metrics"]
+            methods: ["GET"]
+    {{- end }}
     {{- with .Values.authorizationPolicy.extraRules }}
     {{- toYaml . | nindent 4 }}
     {{- end }}

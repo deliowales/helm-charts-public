@@ -17,6 +17,12 @@ spec:
       protocol: TCP
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.deployment.containerPort }}
+    {{- if .Values.metrics.enabled }}
+    - name: metrics
+      protocol: TCP
+      port: {{ .Values.metrics.port }}
+      targetPort: {{ .Values.metrics.port }}
+    {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "rust.application.name" . }}
 {{- end }}

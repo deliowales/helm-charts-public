@@ -8,6 +8,17 @@ metadata:
   annotations:
     {{- include "rust.annotations" . | nindent 4 }}
 spec:
+  {{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled }}
+  {{- /* portLevelMtls is only honoured with a workload selector. */}}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rust.application.name" . }}
+  {{- end }}
   mtls:
     mode: {{ .Values.istio.mtls.mode }}
+  {{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled }}
+  portLevelMtls:
+    {{ .Values.metrics.port }}:
+      mode: PERMISSIVE
+  {{- end }}
 {{- end }}

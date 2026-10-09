@@ -68,6 +68,11 @@ spec:
             - name: http
               containerPort: {{ .Values.deployment.containerPort }}
               protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
           resources:
             {{- include "rust.resources" .Values.application.resources | nindent 12 }}
           {{- if .Values.application.startupProbe.enabled }}
