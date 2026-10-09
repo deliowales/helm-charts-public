@@ -1,0 +1,26 @@
+{{- if eq .Values.authorizationPolicy.enabled true }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "rust.application.name" . }}
+  labels:
+    {{- include "rust.labels" . | nindent 4 }}
+  annotations:
+    {{- include "rust.annotations" . | nindent 4 }}
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [
+              "cluster.local/ns/monitoring/sa/prometheus-blackbox-exporter",
+            {{- if .Values.istio.principals }}
+            {{- range .Values.istio.principals }}
+              "{{ . }}",
+            {{- end }}
+            {{- end }}
+            ]
+    {{- with .Values.authorizationPolicy.extraRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}
