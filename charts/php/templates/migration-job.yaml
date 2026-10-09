@@ -16,6 +16,7 @@ spec:
         {{- include "php.annotations" . | nindent 8 }}
         {{- include "php.application.vault.annotations" . | nindent 8 }}
         {{- include "php.istio.proxy.annotations" . | nindent 8 }}
+        proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
       {{/* Spelled out, not `php.labels` + instance: those are the application's
       own identity, and the PDB selects on them. A Job has no scale subresource,
       so matching one wedges the disruption controller. */}}
@@ -65,7 +66,10 @@ spec:
           securityContext: {{ include "php.application.securityContext" . | nindent 12 }}
           resources:
             {{- include "php.resources" .Values.application.migrations.resources | nindent 12 }}
-      restartPolicy: {{ .Values.application.migrations.restartPolicy }}
+      {{- /* Never, not OnFailure: the entrypoint stops the Istio sidecar on the way
+      out, and a sidecar that exits 0 is not restarted, so an in-place retry would
+      run with no proxy. Never gives every attempt a fresh pod and sidecar. */}}
+      restartPolicy: Never
       volumes:
         - name: fpm-pool-config-volume
           configMap:

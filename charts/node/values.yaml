@@ -60,7 +60,6 @@ application:
   migrations:
     enabled: false
     args: "migrations"
-    restartPolicy: OnFailure
     backoffLimit: 2
     # -- Seconds a finished job is kept before Kubernetes deletes it, long
     # enough to read its logs after the fact.

@@ -215,7 +215,6 @@ job:
     enabled: true
   # -- Args passed to the job container's entrypoint, e.g. `["migrations"]`.
   args: []
-  restartPolicy: "OnFailure"
   backoffLimit: 2
   # -- Seconds a finished job is kept before Kubernetes deletes it, long enough
   # to read its logs after the fact.
