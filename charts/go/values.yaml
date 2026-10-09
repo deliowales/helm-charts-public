@@ -60,7 +60,7 @@ application:
     repository: ""
     # -- Image tag to be pulled
     tag: "0.0.0"
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   # @ignored Application container resources. Please ensure that these are fine-tuned when load-testing
   # has been carried out and a baseline has been defined.
   resources:

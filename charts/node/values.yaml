@@ -28,6 +28,10 @@ application:
     path: /_/system/readiness
     # -- Custom headers to set in the request. HTTP allows repeated headers.
     httpHeaders: []
+    initialDelaySeconds: 3
+    periodSeconds: 2
+    timeoutSeconds: 5
+    failureThreshold: 15
   # -- Application environment variables. Currently, most of these should be stored in Vault and defined in Terragrunt.
   env: []
   # Configure container registry details
@@ -36,7 +40,7 @@ application:
     repository: ""
     # -- Image tag to be pulled
     tag: "0.0.0"
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   # @ignored Application container resources. Please ensure that these are fine-tuned when load-testing
   # has been carried out and a baseline has been defined.
   resources:
@@ -148,6 +152,11 @@ deployment:
 
   # -- Replica count not considering the HPA
   replicaCount: 3
+  # -- RollingUpdate parameters, e.g. `{maxSurge: 1, maxUnavailable: 0}` for
+  # zero-downtime rollouts. Omitted entirely when unset, which leaves the API
+  # server's 25% default — at 3 replicas that rounds to a surge of 1 and no
+  # unavailability, so the pods replace one at a time.
+  strategy: {}
 
 destinationRule:
   enabled: true
