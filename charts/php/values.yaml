@@ -408,3 +408,36 @@ nightwatch:
       cpu: "50m"
       memory: "64Mi"
   env: []
+
+vaultSecrets:
+  # -- Pre-install/pre-upgrade hook Job that applies the service's vault-secrets Terraform leaf,
+  # cloned from the service repository at the deployed tag, before the pods roll. Needs the
+  # vault-secrets-runner Vault role, IAM role and KV secret from the infra repo.
+  enabled: false
+  image: 835441458204.dkr.ecr.ap-southeast-2.amazonaws.com/vault-secrets-runner:tf1.15.8
+  # -- GitHub repository under deliowales to clone; defaults to application.name
+  repository: ""
+  # -- Git ref to clone; defaults to application.image.tag
+  ref: ""
+  # -- Leaf path inside the repository; defaults to infra/terraform/environments/prod/<cloud.region>/vault-secrets
+  leaf: ""
+  # -- In-cluster Vault address; required when enabled
+  vaultAddr: ""
+  vaultRole: vault-secrets-runner
+  # -- KV mount; defaults to the first segment of vault.env
+  kvMount: ""
+  # -- Secret under the mount holding GITHUB_TOKEN and VAULT_CA_PEM
+  runnerSecret: vault-secrets-runner
+  serviceAccount:
+    name: vault-secrets-runner
+    # -- IAM role (IRSA) the Terraform S3 backend assumes
+    roleArn: ""
+  backoffLimit: 0
+  activeDeadlineSeconds: 900
+  nodeSelector: {}
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
