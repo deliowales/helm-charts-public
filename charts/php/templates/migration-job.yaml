@@ -32,6 +32,9 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.application.migrations.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name | default (include "php.application.name" .) }}
       containers:
         - name: "{{ include "php.application.name" . }}"
