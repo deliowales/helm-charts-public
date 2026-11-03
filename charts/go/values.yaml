@@ -206,6 +206,8 @@ job:
   # empty mapping will not, because Helm merges it into the default.
   nodeSelector:
     eks.amazonaws.com/capacityType: ON_DEMAND
+  # -- PriorityClass for the job pod. Empty unless the cluster defines one.
+  priorityClassName: ""
   annotations:
   # -- Annotations on the job's **pod** template, e.g.
   # `sidecar.istio.io/inject: "false"` — injection is decided from the pod, not

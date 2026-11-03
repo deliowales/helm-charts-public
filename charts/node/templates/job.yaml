@@ -38,6 +38,9 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.job.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
       serviceAccountName: {{ include "node.application.name" . }}
       containers:
         - name: {{ include "node.application.name" . }}

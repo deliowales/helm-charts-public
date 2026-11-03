@@ -63,6 +63,8 @@ application:
     # an empty mapping will not, because Helm merges it into the default.
     nodeSelector:
       eks.amazonaws.com/capacityType: ON_DEMAND
+    # -- PriorityClass for the migration pod. Empty unless the cluster defines one.
+    priorityClassName: ""
     resources:
       limits:
         cpu: 1
@@ -112,6 +114,8 @@ cron:
   backoffLimit: 1
   # -- Node labels the cron pod must match.
   nodeSelector: {}
+  # -- PriorityClass for the cron pod. Empty unless the cluster defines one.
+  priorityClassName: ""
   resources:
     limits:
       cpu:
@@ -238,6 +242,8 @@ job:
   # empty mapping will not, because Helm merges it into the default.
   nodeSelector:
     eks.amazonaws.com/capacityType: ON_DEMAND
+  # -- PriorityClass for the job pod. Empty unless the cluster defines one.
+  priorityClassName: ""
   annotations:
   vault:
     enabled: true
