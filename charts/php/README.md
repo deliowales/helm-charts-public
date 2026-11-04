@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.25.0](https://img.shields.io/badge/Version-1.25.0-informational?style=flat-square)
+![Version: 1.27.0](https://img.shields.io/badge/Version-1.27.0-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -50,6 +50,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.migrations.backoffLimit | int | `2` |  |
 | application.migrations.enabled | bool | `false` |  |
 | application.migrations.nodeSelector | object | `{"eks.amazonaws.com/capacityType":"ON_DEMAND"}` | Node labels the migration pod must match. Defaults to on-demand capacity: a kill mid-DDL is the one failure in the estate that needs a human, and the job runs for seconds. Set `nodeSelector: null` to lift it — an empty mapping will not, because Helm merges it into the default. |
+| application.migrations.priorityClassName | string | `""` | PriorityClass for the migration pod. Empty unless the cluster defines one. |
 | application.migrations.resources.limits.cpu | int | `1` |  |
 | application.migrations.resources.limits.memory | string | `"1G"` |  |
 | application.migrations.resources.requests.cpu | string | `"500m"` |  |
@@ -77,6 +78,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | cron.enabled | bool | `false` |  |
 | cron.failedJobsHistoryLimit | int | `3` |  |
 | cron.nodeSelector | object | `{}` | Node labels the cron pod must match. |
+| cron.priorityClassName | string | `""` | PriorityClass for the cron pod. Empty unless the cluster defines one. |
 | cron.resources.limits.cpu | string | `nil` |  |
 | cron.resources.limits.memory | string | `""` |  |
 | cron.resources.requests.cpu | string | `nil` |  |
@@ -97,16 +99,18 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.nodeSelector.toleration | string | `""` |  |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.strategy | object | `{}` | RollingUpdate parameters, e.g. `{maxSurge: 1, maxUnavailable: 0}` for zero-downtime rollouts. Omitted entirely when unset, which leaves the API server's 25% default — at 3 replicas that rounds to a surge of 1 and no unavailability, so the pods replace one at a time. |
-| deployment.terminationGracePeriodSeconds | string | `""` | Seconds the kubelet waits between SIGTERM and SIGKILL. A spot interruption notice is 120 seconds, so a workload that must finish its current unit of work needs a value comfortably inside that. Omitted entirely when unset, which leaves Kubernetes' own default of 30. This is also the ceiling on `application.gracefulShutdown`: preStop and the SIGTERM that follows it share this one budget, so a request still running at the deadline is killed however graceful the hook was. nginx allows FastCGI reads of 360 seconds, well past any value spot leaves room for — a request that long cannot be drained on reclaimable capacity at all. |
+| deployment.terminationGracePeriodSeconds | string | `""` | Seconds the kubelet waits between SIGTERM and SIGKILL. A spot interruption notice is 120 seconds, so a workload that must finish its current unit of work needs a value comfortably inside that. Omitted entirely when unset, which leaves Kubernetes' own default of 30. This is also the ceiling on `application.gracefulShutdown`: preStop and the SIGTERM that follows it share this one budget, so a request still running at the deadline is killed however graceful the hook was. A request can run for up to `fpm.requestTerminateTimeout`, so a service that raises it past what spot leaves room for cannot drain that request on reclaimable capacity. |
 | deployment.topologySpreadConstraints | list | `[{"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"},{"maxSkew":1,"topologyKey":"topology.kubernetes.io/zone","whenUnsatisfiable":"ScheduleAnyway"}]` | Configure Topology Spread Constrains. A constraint carries a single topologyKey, so keeping replicas off one node and out of one availability zone are separate entries — list both. A bare mapping is still accepted for the single-constraint case. # Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints |
 | destinationRule.enabled | bool | `true` |  |
-| fpm.maxChildren | int | `5` | Maximum number of worker processes, i.e. the pod's request concurrency. |
+| fpm.maxChildren | int | sized from the memory limit: 5 at 200Mi or less, 24 at 1Gi, 32 at 2Gi or more | Maximum number of worker processes, i.e. the pod's request concurrency. |
 | fpm.maxRequests | int | `0` | Requests a worker serves before it is respawned. `0` is unlimited; set it to recycle workers around a memory leak. |
-| fpm.maxSpareServers | int | `3` | Idle workers above which the pool is trimmed back. `dynamic` only. |
-| fpm.minSpareServers | int | `1` | Idle workers kept available to absorb a burst. `dynamic` only. |
+| fpm.maxSpareServers | int | three tenths of `maxChildren`, at least 3 | Idle workers above which the pool is trimmed back. `dynamic` only. |
+| fpm.minSpareServers | int | a tenth of `maxChildren`, at least 1 | Idle workers kept available to absorb a burst. `dynamic` only. |
 | fpm.pm | string | `"dynamic"` | Process manager. `dynamic`, `static` or `ondemand`. |
 | fpm.processIdleTimeout | string | `"10s"` | How long an idle worker survives. `ondemand` only. |
-| fpm.startServers | int | `2` | Workers forked on startup. Must sit between `minSpareServers` and `maxSpareServers`. `dynamic` only. |
+| fpm.requestTerminateTimeout | string | `"60s"` | Wall-clock limit on a single request, after which the worker is killed. `phpConfig.maxExecutionTime` only counts CPU time, so it never stops a worker blocked on a slow downstream call; this does. `0` disables it. Keep `nginx.config.fastcgiTimeout` at or above it. |
+| fpm.startServers | int | halfway between `minSpareServers` and `maxSpareServers` | Workers forked on startup. Must sit between `minSpareServers` and `maxSpareServers`. `dynamic` only. |
+| fpm.workerMemoryMi | int | `40` | Memory one worker is expected to add, in Mi, when sizing `maxChildren`. Measured worker PSS runs ~20Mi (horizon) to ~40Mi (core, portfolio). |
 | istio.externalIngress.enabled | bool | `true` |  |
 | istio.externalIngress.path | string | `""` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
@@ -127,6 +131,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | job.enabled | bool | `false` |  |
 | job.name | string | `""` |  |
 | job.nodeSelector | object | `{"eks.amazonaws.com/capacityType":"ON_DEMAND"}` | Node labels the job pod must match. Defaults to on-demand capacity: a job that cannot be safely retried should not be interrupted, and it runs too briefly to be worth discounting. Set `nodeSelector: null` to lift it — an empty mapping will not, because Helm merges it into the default. |
+| job.priorityClassName | string | `""` | PriorityClass for the job pod. Empty unless the cluster defines one. |
 | job.resources.limits.cpu | string | `nil` |  |
 | job.resources.limits.memory | string | `""` |  |
 | job.resources.requests.cpu | string | `nil` |  |
@@ -137,6 +142,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | newrelic.ephemeralPods.enabled | bool | `false` |  |
 | newrelic.licenseKey | string | `""` |  |
 | nginx.config.clientMaxBodySize | string | `"1M"` |  |
+| nginx.config.fastcgiTimeout | string | `"60s"` | How long nginx waits on php-fpm before answering 504. Keep it at or above `fpm.requestTerminateTimeout`. |
 | nginx.image.pullPolicy | string | `"Always"` |  |
 | nginx.image.repository | string | `"nginx"` |  |
 | nginx.image.tag | string | `"1.30.4-alpine-unprivileged"` |  |
