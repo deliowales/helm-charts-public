@@ -150,9 +150,9 @@ deployment:
   # entirely when unset, which leaves Kubernetes' own default of 30.
   # This is also the ceiling on `application.gracefulShutdown`: preStop and the
   # SIGTERM that follows it share this one budget, so a request still running at
-  # the deadline is killed however graceful the hook was. nginx allows FastCGI
-  # reads of 360 seconds, well past any value spot leaves room for — a request
-  # that long cannot be drained on reclaimable capacity at all.
+  # the deadline is killed however graceful the hook was. A request can run for
+  # up to `fpm.requestTerminateTimeout`, so a service that raises it past what
+  # spot leaves room for cannot drain that request on reclaimable capacity.
   terminationGracePeriodSeconds: ""
   # Enables the nginx pod to be created with the deployment
   nginx:
@@ -184,22 +184,34 @@ destinationRule:
 
 # Configuration options for the php-fpm `www` pool. `maxChildren` is the ceiling
 # on requests this pod serves at once; anything past it queues in the listen
-# backlog. Size it from the php container's memory limit:
-#   maxChildren = (memory limit - 60Mi for the fpm master and opcache) / worker RSS
-# where worker RSS is ~25Mi for a typical Lumen/Laravel service. The default suits
-# the 200Mi limit most services run with — raise it in step with the limit, and
-# remember `phpConfig.memoryLimit` is the worst case a single worker can reach.
+# backlog. Left unset, it is sized from `application.resources.limits.memory`:
+#   maxChildren = (memory limit - 60Mi for the fpm master and opcache) / workerMemoryMi
+# kept between 5 and 32, and 5 when no limit is set. The spare-server counts
+# follow from it unless set. Remember `phpConfig.memoryLimit` is the worst case
+# a single worker can reach.
 fpm:
   # -- Process manager. `dynamic`, `static` or `ondemand`.
   pm: "dynamic"
-  # -- Maximum number of worker processes, i.e. the pod's request concurrency.
-  maxChildren: 5
-  # -- Workers forked on startup. Must sit between `minSpareServers` and `maxSpareServers`. `dynamic` only.
-  startServers: 2
-  # -- Idle workers kept available to absorb a burst. `dynamic` only.
-  minSpareServers: 1
-  # -- Idle workers above which the pool is trimmed back. `dynamic` only.
-  maxSpareServers: 3
+  # -- (int) Maximum number of worker processes, i.e. the pod's request concurrency.
+  # @default -- sized from the memory limit: 5 at 200Mi or less, 24 at 1Gi, 32 at 2Gi or more
+  maxChildren:
+  # -- Memory one worker is expected to add, in Mi, when sizing `maxChildren`.
+  # Measured worker PSS runs ~20Mi (horizon) to ~40Mi (core, portfolio).
+  workerMemoryMi: 40
+  # -- (int) Workers forked on startup. Must sit between `minSpareServers` and `maxSpareServers`. `dynamic` only.
+  # @default -- halfway between `minSpareServers` and `maxSpareServers`
+  startServers:
+  # -- (int) Idle workers kept available to absorb a burst. `dynamic` only.
+  # @default -- a tenth of `maxChildren`, at least 1
+  minSpareServers:
+  # -- (int) Idle workers above which the pool is trimmed back. `dynamic` only.
+  # @default -- three tenths of `maxChildren`, at least 3
+  maxSpareServers:
+  # -- Wall-clock limit on a single request, after which the worker is killed.
+  # `phpConfig.maxExecutionTime` only counts CPU time, so it never stops a worker
+  # blocked on a slow downstream call; this does. `0` disables it. Keep
+  # `nginx.config.fastcgiTimeout` at or above it.
+  requestTerminateTimeout: "60s"
   # -- How long an idle worker survives. `ondemand` only.
   processIdleTimeout: "10s"
   # -- Requests a worker serves before it is respawned. `0` is unlimited; set it to recycle workers around a memory leak.
@@ -289,6 +301,9 @@ nginx:
   config:
     #    This is nginx default max body size
     clientMaxBodySize: 1M
+    # -- How long nginx waits on php-fpm before answering 504. Keep it at or
+    # above `fpm.requestTerminateTimeout`.
+    fastcgiTimeout: "60s"
   image:
     repository: nginx
     tag: 1.30.4-alpine-unprivileged

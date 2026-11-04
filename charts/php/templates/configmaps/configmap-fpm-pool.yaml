@@ -110,20 +110,21 @@ data:
     ; forget to tweak pm.* to fit your needs.
     ; Note: Used when pm is set to 'static', 'dynamic' or 'ondemand'
     ; Note: This value is mandatory.
-    pm.max_children = {{ .Values.fpm.maxChildren }}
+    pm.max_children = {{ include "php.fpm.maxChildren" . }}
     {{- if eq .Values.fpm.pm "dynamic" }}
+    {{- include "php.fpm.validateDynamic" . }}
     ; The number of child processes created on startup.
     ; Note: Used only when pm is set to 'dynamic'
     ; Default Value: min_spare_servers + (max_spare_servers - min_spare_servers) / 2
-    pm.start_servers = {{ .Values.fpm.startServers }}
+    pm.start_servers = {{ include "php.fpm.startServers" . }}
     ; The desired minimum number of idle server processes.
     ; Note: Used only when pm is set to 'dynamic'
     ; Note: Mandatory when pm is set to 'dynamic'
-    pm.min_spare_servers = {{ .Values.fpm.minSpareServers }}
+    pm.min_spare_servers = {{ include "php.fpm.minSpareServers" . }}
     ; The desired maximum number of idle server processes.
     ; Note: Used only when pm is set to 'dynamic'
     ; Note: Mandatory when pm is set to 'dynamic'
-    pm.max_spare_servers = {{ .Values.fpm.maxSpareServers }}
+    pm.max_spare_servers = {{ include "php.fpm.maxSpareServers" . }}
     {{- end }}
     {{- if eq .Values.fpm.pm "ondemand" }}
     ; The number of seconds after which an idle process will be killed.
@@ -327,7 +328,7 @@ data:
     ; does not stop script execution for some reason. A value of '0' means 'off'.
     ; Available units: s(econds)(default), m(inutes), h(ours), or d(ays)
     ; Default Value: 0
-    ;request_terminate_timeout = 0
+    request_terminate_timeout = {{ .Values.fpm.requestTerminateTimeout }}
     ; Set open file descriptor rlimit.
     ; Default Value: system defined value
     ;rlimit_files = 1024
