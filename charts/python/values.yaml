@@ -105,8 +105,11 @@ deployment:
     # capacity on an EKS managed node group.
     labels: {}
   # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A spot
-  # interruption notice is 120 seconds, so a workload that must finish its
-  # current unit of work needs a value comfortably inside that. Omitted
+  # interruption notice is 120 seconds for the whole node, not a budget per pod:
+  # EKS begins evicting only after a delay and then works through the pods one
+  # at a time, so on a busy node what any single pod actually gets is seconds.
+  # AWS's guidance for reclaimable capacity is 30 or less, and past that a pod
+  # is likelier to be killed with no SIGTERM at all than to be given longer. Omitted
   # entirely when unset, which leaves Kubernetes' own default of 30.
   terminationGracePeriodSeconds: ""
   # -- Replica count not considering the HPA
