@@ -145,8 +145,11 @@ deployment:
     # capacity on an EKS managed node group.
     labels: {}
   # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A spot
-  # interruption notice is 120 seconds, so a workload that must finish its
-  # current unit of work needs a value comfortably inside that. Omitted
+  # interruption notice is 120 seconds for the whole node, not a budget per pod:
+  # EKS begins evicting only after a delay and then works through the pods one
+  # at a time, so on a busy node what any single pod actually gets is seconds.
+  # AWS's guidance for reclaimable capacity is 30 or less, and past that a pod
+  # is likelier to be killed with no SIGTERM at all than to be given longer. Omitted
   # entirely when unset, which leaves Kubernetes' own default of 30.
   # This is also the ceiling on `application.gracefulShutdown`: preStop and the
   # SIGTERM that follows it share this one budget, so a request still running at
@@ -353,8 +356,8 @@ scheduler:
   # -- Node labels the scheduler pod must match.
   nodeSelector: {}
   # -- Seconds the kubelet waits between SIGTERM and SIGKILL. See the supervisor
-  # note above; same reasoning, same default.
-  terminationGracePeriodSeconds: 110
+  # note; same reasoning, same default.
+  terminationGracePeriodSeconds: 30
 
 service:
   enabled: true
@@ -387,15 +390,17 @@ supervisor:
   # -- Node labels the supervisor pod must match.
   nodeSelector: {}
   # -- Seconds the kubelet waits between SIGTERM and SIGKILL. A ceiling, not a
-  # wait: the pod goes as soon as the process exits. A single-replica queue
-  # worker with the Kubernetes default of 30 loses whatever job is still running
-  # at that point, so this defaults to 110 — inside the 120 a spot interruption
-  # allows, and the same protection during an ordinary node drain.
+  # wait: the pod goes as soon as the process exits. A longer value does not buy
+  # a longer wait on reclaimable capacity — the 120 second interruption notice
+  # covers the whole node and EKS evicts sequentially, so a worker holding out
+  # for its ceiling is one the node outlives, killed with no SIGTERM at all. 30
+  # is Kubernetes' own default and what AWS asks for on spot; a job that cannot
+  # finish inside it needs to be resumable rather than given a bigger number.
   # Also drives supervisord's `stopwaitsecs`, ten seconds lower, so the worker
   # gets most of this window and supervisord still has time to exit before the
   # kubelet's SIGKILL. Unset, supervisord falls back to its own 10s default,
   # which is shorter than most jobs.
-  terminationGracePeriodSeconds: 110
+  terminationGracePeriodSeconds: 30
   resources:
     limits:
       cpu:
