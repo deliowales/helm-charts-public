@@ -1,0 +1,109 @@
+{{- if eq .Values.deployment.enabled true}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rust.application.name" . }}
+  labels:
+    {{- include "rust.labels" . | nindent 4 }}
+  annotations:
+    {{- include "rust.annotations" . | nindent 4 }}
+spec:
+{{- if not .Values.deployment.hpa.enabled }}
+  replicas: {{ .Values.deployment.replicaCount }}
+{{- end }}
+  {{- with .Values.deployment.strategy }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ include "rust.application.name" . }}"
+  template:
+    metadata:
+      annotations:
+        {{- include "rust.annotations" . | nindent 8 }}
+        {{- include "rust.application.vault.annotations" . | nindent 8 }}
+        {{- include "rust.istio.proxy.annotations" . | nindent 8 }}
+      labels:
+        {{- include "rust.labels" . | nindent 8 }}
+        {{- if and (eq (include "rust.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
+        aadpodidbinding: {{ .Values.azure.identity.name }}
+        {{- end }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- if and .Values.deployment.preStopSleepSeconds .Values.deployment.castaiPodNodeLifecycleOptOut }}
+        # The castai pod-node-lifecycle webhook strips the native sleep preStop
+        # handler at admission and the pod is then rejected, so drained pods
+        # carry its opt-out label until CAST AI ships a fix.
+        pod-node-lifecycle.cast.ai/ignore: "true"
+        {{- end }}
+    spec:
+      {{- include "rust.deployment.topologySpreadConstraints" . | nindent 6 }}
+      {{- if or .Values.deployment.nodeSelector.toleration .Values.deployment.nodeSelector.labels }}
+      nodeSelector:
+        {{- if .Values.deployment.nodeSelector.toleration }}
+        {{- include "rust.deployment.nodeSelector.toleration" . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.deployment.nodeSelector.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.deployment.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name | default (include "rust.application.name" .) }}
+      containers:
+        - name: "{{ include "rust.application.name" . }}"
+          image: "{{ include "rust.application.imageURL" . }}"
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+          securityContext: {{ include "rust.application.securityContext" . | nindent 12 }}
+          {{- with .Values.application.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            {{- include "rust.application.env" (dict "ctx" .) | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.deployment.containerPort }}
+              protocol: TCP
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            {{- end }}
+          resources:
+            {{- include "rust.resources" .Values.application.resources | nindent 12 }}
+          {{- if .Values.application.startupProbe.enabled }}
+          startupProbe:
+            {{- include "rust.application.probe" (dict "ctx" . "probe" .Values.application.startupProbe) | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            {{- include "rust.application.probe" (dict "ctx" . "probe" .Values.application.livenessProbe) | nindent 12 }}
+          readinessProbe:
+            {{- include "rust.application.probe" (dict "ctx" . "probe" .Values.application.readinessProbe) | nindent 12 }}
+          {{- with .Values.deployment.preStopSleepSeconds }}
+          lifecycle:
+            preStop:
+              # Native sleep action, not exec: these images are distroless and have
+              # no /bin/sleep, so the exec form failed on every termination and the
+              # drain never happened. Needs Kubernetes 1.29+.
+              sleep:
+                seconds: {{ . }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.application.extraVolumes -}}
+            {{- include "rust.application.extraConfigmapMounts" . | nindent 12 }}
+            {{- end }}
+      securityContext:
+        fsGroup: {{ .Values.application.securityContext.fsGroup }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.application.extraVolumes -}}
+        {{- include "rust.application.extraConfigmapVolumes" . | nindent 8 }}
+        {{- end }}
+{{- end }}

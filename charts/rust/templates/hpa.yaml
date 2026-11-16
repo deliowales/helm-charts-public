@@ -1,0 +1,30 @@
+{{- if and (eq .Values.deployment.hpa.enabled true) }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "rust.application.name" . }}
+  labels:
+    {{- include "rust.labels" . | nindent 4 }}
+  annotations:
+    {{- include "rust.annotations" . | nindent 4 }}
+spec:
+  maxReplicas: {{ .Values.deployment.hpa.maxReplicas }}
+  minReplicas: {{ .Values.deployment.hpa.minReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "rust.application.name" . }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.deployment.hpa.targetCPU }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.deployment.hpa.targetMemory }}
+{{- end }}

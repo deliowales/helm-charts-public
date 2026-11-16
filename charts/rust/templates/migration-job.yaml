@@ -1,0 +1,61 @@
+{{- if eq .Values.application.migrations.enabled true }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "rust.application.name" . }}-migrations"
+  labels:
+    {{- include "rust.labels" . | nindent 4 }}
+  annotations:
+    {{- include "rust.annotations" . | nindent 4 }}
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      annotations:
+        {{- include "rust.annotations" . | nindent 8 }}
+        {{- include "rust.application.vault.annotations" . | nindent 8 }}
+        {{- include "rust.istio.proxy.annotations" . | nindent 8 }}
+        proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
+      {{/* Spelled out, not `rust.labels` + instance: those are the application's
+      own identity, and the PDB selects on them. A Job has no scale subresource,
+      so matching one wedges the disruption controller. */}}
+      labels:
+        app.kubernetes.io/name: {{ include "rust.application.name" . }}-migrations
+        chart: {{ include "rust.chartref" . }}
+        release: {{ .Release.Name }}
+        {{- if and (eq (include "rust.cloud.provider" .) "Azure") (eq .Values.azure.identity.enabled true) }}
+        aadpodidbinding: {{ .Values.azure.identity.name }}
+        {{- end }}
+    spec:
+      {{- with .Values.application.migrations.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.serviceAccount.name | default (include "rust.application.name" .) }}
+      containers:
+        - name: "{{ include "rust.application.name" . }}"
+          image: "{{ include "rust.application.imageURL" . }}"
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+          args:
+            {{- toYaml .Values.application.migrations.args | nindent 12 }}
+          env:
+            {{- include "rust.application.env" (dict "ctx" . "extra" (list (dict "name" "ISTIO_QUIT_ON_EXIT" "value" "true"))) | nindent 12 }}
+          securityContext: {{ include "rust.application.securityContext" . | nindent 12 }}
+          resources:
+            {{- include "rust.resources" .Values.application.migrations.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      securityContext:
+        fsGroup: {{ .Values.application.securityContext.fsGroup }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      {{- /* Never, not OnFailure: the binary stops the Istio sidecar on the way
+      out, and a sidecar that exits 0 is not restarted, so an in-place retry would
+      run with no proxy. Never gives every attempt a fresh pod and sidecar. */}}
+      restartPolicy: Never
+  backoffLimit: {{ .Values.application.migrations.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.application.migrations.ttlSecondsAfterFinished }}
+{{- end }}
