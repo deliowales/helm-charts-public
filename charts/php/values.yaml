@@ -309,7 +309,7 @@ nginx:
     fastcgiTimeout: "60s"
   image:
     repository: nginx
-    tag: 1.30.4-alpine-unprivileged
+    tag: 1.31.9-alpine-slim-unprivileged
     pullPolicy: Always
   resources:
     limits:
