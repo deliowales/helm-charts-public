@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.27.0](https://img.shields.io/badge/Version-1.27.0-informational?style=flat-square)
+![Version: 1.29.0](https://img.shields.io/badge/Version-1.29.0-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -145,7 +145,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nginx.config.fastcgiTimeout | string | `"60s"` | How long nginx waits on php-fpm before answering 504. Keep it at or above `fpm.requestTerminateTimeout`. |
 | nginx.image.pullPolicy | string | `"Always"` |  |
 | nginx.image.repository | string | `"nginx"` |  |
-| nginx.image.tag | string | `"1.30.4-alpine-unprivileged"` |  |
+| nginx.image.tag | string | `"1.31.9-alpine-slim-unprivileged"` |  |
 | nginx.resources.limits.cpu | string | `"100m"` |  |
 | nginx.resources.limits.memory | string | `"128Mi"` |  |
 | nginx.resources.requests.cpu | string | `"10m"` |  |
