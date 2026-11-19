@@ -67,7 +67,6 @@ application:
     priorityClassName: ""
     resources:
       limits:
-        cpu: 1
         memory: 1G
       requests:
         cpu: 500m
@@ -287,7 +286,6 @@ logging:
   parserPath: /fluent-bit/etc/php-parser.conf
   resources:
     limits:
-      cpu: "100m"
       memory: "100Mi"
     requests:
       cpu: "10m"
@@ -311,7 +309,6 @@ nginx:
     pullPolicy: Always
   resources:
     limits:
-      cpu: "100m"
       memory: "128Mi"
     requests:
       cpu: "10m"
@@ -351,6 +348,13 @@ phpConfig:
 
 scheduler:
   enabled: false
+  # -- Scheduler container resources.
+  resources:
+    limits:
+      memory: 500Mi
+    requests:
+      cpu: 250m
+      memory: 250Mi
   # -- Node labels the scheduler pod must match.
   nodeSelector: {}
   # -- Seconds the kubelet waits between SIGTERM and SIGKILL. See the supervisor
@@ -426,7 +430,6 @@ nightwatch:
     pullPolicy: Always
   resources:
     limits:
-      cpu: "100m"
       memory: "128Mi"
     requests:
       cpu: "50m"

@@ -60,7 +60,6 @@ spec:
             {{- include "node.resources" .Values.supervisor.resources | nindent 12 }}
             {{- else }}
             limits:
-              cpu: 500m
               memory: 500Mi
             requests:
               cpu: 250m

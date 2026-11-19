@@ -50,7 +50,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.migrations.backoffLimit | int | `2` |  |
 | application.migrations.enabled | bool | `false` |  |
 | application.migrations.nodeSelector | object | `{"eks.amazonaws.com/capacityType":"ON_DEMAND"}` | Node labels the migration pod must match. Defaults to on-demand capacity: a kill mid-DDL is the one failure in the estate that needs a human, and the job runs for seconds. Set `nodeSelector: null` to lift it — an empty mapping will not, because Helm merges it into the default. |
-| application.migrations.resources.limits.cpu | int | `1` |  |
 | application.migrations.resources.limits.memory | string | `"1G"` |  |
 | application.migrations.resources.requests.cpu | string | `"500m"` |  |
 | application.migrations.resources.requests.memory | string | `"500M"` |  |
