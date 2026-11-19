@@ -17,14 +17,3 @@ topologySpreadConstraints:
         app.kubernetes.io/name: {{ $.Values.application.name | lower }}
 {{- end }}
 {{- end }}
-
-{{/*
-Set the nodeSelector toleration
-*/}}
-{{- define "node.deployment.nodeSelector.toleration" -}}
-  {{- if eq .Values.deployment.nodeSelector.toleration "cpu" -}}
-    scheduling.cast.ai/compute-optimized: "true"
-  {{- else -}}
-    scheduling.cast.ai/memory-optimized: "true"
-  {{- end }}
-{{- end -}} 

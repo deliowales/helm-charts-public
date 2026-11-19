@@ -29,14 +29,3 @@ topologySpreadConstraints:
     {{- printf "%s/%s:%s" .Values.cloud.containerRegistryURL .Values.nightwatch.image.repository .Values.nightwatch.image.tag }}
   {{- end -}}
 {{- end -}}
-
-{{/*
-Set the nodeSelector toleration
-*/}}
-{{- define "node.deployment.nodeSelector.toleration" -}}
-  {{- if eq .Values.deployment.nodeSelector.toleration "cpu" -}}
-    scheduling.cast.ai/compute-optimized: "true"
-  {{- else -}}
-    scheduling.cast.ai/memory-optimized: "true"
-  {{- end }}
-{{- end -}}

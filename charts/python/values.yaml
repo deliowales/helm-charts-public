@@ -99,8 +99,7 @@ deployment:
     targetCPU: 70
     targetMemory: 70
   nodeSelector:
-    toleration: ""
-    # -- Node labels the pod must match, merged with the toleration label above.
+    # -- Node labels the pod must match.
     # `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot
     # capacity on an EKS managed node group.
     labels: {}
