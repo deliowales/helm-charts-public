@@ -57,12 +57,7 @@ spec:
             {{- end }}
             {{- include "php.application.env" (dict "defaults" $defaults "env" .Values.application.env) | nindent 12 }}
           resources:
-            limits:
-              cpu: 500m
-              memory: 500Mi
-            requests:
-              cpu: 250m
-              memory: 250Mi
+            {{- include "php.resources" .Values.scheduler.resources | nindent 12 }}
           volumeMounts:
             - name: php-config-volume
               mountPath: /usr/local/etc/php/php.ini

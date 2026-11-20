@@ -126,10 +126,8 @@ deployment:
     # -- Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary.
     targetMemory: 70
 
-  # Specify what type of node you want this app to be deployed on: ["cpu", "memory"]
   nodeSelector:
-    toleration: ""
-    # -- Node labels the pod must match, merged with the toleration label above.
+    # -- Node labels the pod must match.
     # `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot
     # capacity on an EKS managed node group.
     labels: {}

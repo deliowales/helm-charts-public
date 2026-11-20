@@ -2,7 +2,7 @@
 
 A generic chart to be used for all PHP microservices
 
-![Version: 1.29.0](https://img.shields.io/badge/Version-1.29.0-informational?style=flat-square)
+![Version: 1.30.0](https://img.shields.io/badge/Version-1.30.0-informational?style=flat-square)
 
 ## Adding the Helm repo
 
@@ -95,8 +95,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.hpa.targetCPU | int | `70` | Target CPU usage (%) |
 | deployment.hpa.targetMemory | int | `70` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
 | deployment.nginx.enabled | bool | `true` |  |
-| deployment.nodeSelector.labels | object | `{}` | Node labels the pod must match, merged with the toleration label above. `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot capacity on an EKS managed node group. |
-| deployment.nodeSelector.toleration | string | `""` |  |
+| deployment.nodeSelector.labels | object | `{}` | Node labels the pod must match. `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot capacity on an EKS managed node group. |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.strategy | object | `{}` | RollingUpdate parameters, e.g. `{maxSurge: 1, maxUnavailable: 0}` for zero-downtime rollouts. Omitted entirely when unset, which leaves the API server's 25% default — at 3 replicas that rounds to a surge of 1 and no unavailability, so the pods replace one at a time. |
 | deployment.terminationGracePeriodSeconds | string | `""` | Seconds the kubelet waits between SIGTERM and SIGKILL. A spot interruption notice is 120 seconds for the whole node, not a budget per pod: EKS begins evicting only after a delay and then works through the pods one at a time, so on a busy node what any single pod actually gets is seconds. AWS's guidance for reclaimable capacity is 30 or less, and past that a pod is likelier to be killed with no SIGTERM at all than to be given longer. Omitted entirely when unset, which leaves Kubernetes' own default of 30. This is also the ceiling on `application.gracefulShutdown`: preStop and the SIGTERM that follows it share this one budget, so a request still running at the deadline is killed however graceful the hook was. A request can run for up to `fpm.requestTerminateTimeout`, so a service that raises it past what spot leaves room for cannot drain that request on reclaimable capacity. |
@@ -146,7 +145,6 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nginx.image.pullPolicy | string | `"Always"` |  |
 | nginx.image.repository | string | `"nginx"` |  |
 | nginx.image.tag | string | `"1.31.9-alpine-slim-unprivileged"` |  |
-| nginx.resources.limits.cpu | string | `"100m"` |  |
 | nginx.resources.limits.memory | string | `"128Mi"` |  |
 | nginx.resources.requests.cpu | string | `"10m"` |  |
 | nginx.resources.requests.memory | string | `"10Mi"` |  |
@@ -174,6 +172,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
 | scheduler.enabled | bool | `false` |  |
 | scheduler.nodeSelector | object | `{}` | Node labels the scheduler pod must match. |
+| scheduler.resources | object | `{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"250m","memory":"250Mi"}}` | Scheduler container resources. |
 | scheduler.terminationGracePeriodSeconds | int | `30` | Seconds the kubelet waits between SIGTERM and SIGKILL. See the supervisor note; same reasoning, same default. |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |

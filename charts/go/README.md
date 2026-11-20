@@ -73,8 +73,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.hpa.minReplicas | int | `3` | Minimum number of replica pods |
 | deployment.hpa.targetCPU | int | `70` | Target CPU usage (%) |
 | deployment.hpa.targetMemory | int | `70` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
-| deployment.nodeSelector.labels | object | `{}` | Node labels the pod must match, merged with the toleration label above. `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot capacity on an EKS managed node group. |
-| deployment.nodeSelector.toleration | string | `""` |  |
+| deployment.nodeSelector.labels | object | `{}` | Node labels the pod must match. `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot capacity on an EKS managed node group. |
 | deployment.preStopSleepSeconds | string | `""` | Seconds to sleep in a preStop hook, letting in-flight requests drain before the container is signalled. Omitted entirely when unset. |
 | deployment.replicaCount | int | `3` | Replica count not considering the HPA |
 | deployment.strategy | object | `{}` | RollingUpdate parameters, e.g. `{maxSurge: 1, maxUnavailable: 0}` for zero-downtime rollouts. Omitted entirely when unset. |
