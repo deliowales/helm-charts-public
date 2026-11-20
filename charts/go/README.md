@@ -71,6 +71,8 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | deployment.hpa.enabled | bool | `true` |  |
 | deployment.hpa.maxReplicas | int | `10` | Maximum number of replica pods |
 | deployment.hpa.minReplicas | int | `3` | Minimum number of replica pods |
+| deployment.hpa.scaleOnCPU | bool | `true` | Scale on CPU as well as memory. CPU utilisation is measured against the request, so with a small request it fires on load far below what a pod can serve; set false to scale on memory only. |
+| deployment.hpa.scaleUpStabilizationSeconds | int | `180` | Seconds a higher replica count must be wanted before scaling up, so a burst does not add pods that then hold for the five-minute scale-down window. |
 | deployment.hpa.targetCPU | int | `70` | Target CPU usage (%) |
 | deployment.hpa.targetMemory | int | `70` | Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary. |
 | deployment.nodeSelector.labels | object | `{}` | Node labels the pod must match. `{eks.amazonaws.com/capacityType: ON_DEMAND}` keeps a pod off spot capacity on an EKS managed node group. |

@@ -123,6 +123,13 @@ deployment:
     minReplicas: 3
     # -- Target CPU usage (%)
     targetCPU: 70
+    # -- Scale on CPU as well as memory. CPU utilisation is measured against the
+    # request, so with a small request it fires on load far below what a pod can
+    # serve; set false to scale on memory only.
+    scaleOnCPU: true
+    # -- Seconds a higher replica count must be wanted before scaling up, so a
+    # burst does not add pods that then hold for the five-minute scale-down window.
+    scaleUpStabilizationSeconds: 180
     # -- Target Memory usage (Mi). Default is `(request+limit) / 2`. Feel free to overwrite that here if necessary.
     targetMemory: 70
 
