@@ -51,6 +51,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | application.migrations.enabled | bool | `false` |  |
 | application.migrations.nodeSelector | object | `{"eks.amazonaws.com/capacityType":"ON_DEMAND"}` | Node labels the migration pod must match. Defaults to on-demand capacity: a kill mid-DDL is the one failure in the estate that needs a human, and the job runs for seconds. Set `nodeSelector: null` to lift it — an empty mapping will not, because Helm merges it into the default. |
 | application.migrations.priorityClassName | string | `""` | PriorityClass for the migration pod. Empty unless the cluster defines one. |
+| application.migrations.resources.limits.cpu | int | `1` |  |
 | application.migrations.resources.limits.memory | string | `"1G"` |  |
 | application.migrations.resources.requests.cpu | string | `"500m"` |  |
 | application.migrations.resources.requests.memory | string | `"500M"` |  |
@@ -154,6 +155,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | nightwatch.image.pullPolicy | string | `"Always"` |  |
 | nightwatch.image.repository | string | `"docker.io/laravelphp/nightwatch-agent"` |  |
 | nightwatch.image.tag | string | `"v1"` |  |
+| nightwatch.resources.limits.cpu | string | `"100m"` |  |
 | nightwatch.resources.limits.memory | string | `"128Mi"` |  |
 | nightwatch.resources.requests.cpu | string | `"50m"` |  |
 | nightwatch.resources.requests.memory | string | `"64Mi"` |  |
@@ -170,7 +172,7 @@ $ helm upgrade horizon . --values uat-values.yaml --namespace horizon
 | phpConfig.uploadMaxFilesize | string | `"2M"` |  |
 | scheduler.enabled | bool | `false` |  |
 | scheduler.nodeSelector | object | `{}` | Node labels the scheduler pod must match. |
-| scheduler.resources | object | `{"limits":{"memory":"500Mi"},"requests":{"cpu":"250m","memory":"250Mi"}}` | Scheduler container resources. |
+| scheduler.resources | object | `{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"250m","memory":"250Mi"}}` | Scheduler container resources. |
 | scheduler.terminationGracePeriodSeconds | int | `30` | Seconds the kubelet waits between SIGTERM and SIGKILL. See the supervisor note; same reasoning, same default. |
 | service.enabled | bool | `true` |  |
 | service.externalDNS.enabled | bool | `false` |  |

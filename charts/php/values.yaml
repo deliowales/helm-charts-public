@@ -67,6 +67,7 @@ application:
     priorityClassName: ""
     resources:
       limits:
+        cpu: 1
         memory: 1G
       requests:
         cpu: 500m
@@ -286,6 +287,7 @@ logging:
   parserPath: /fluent-bit/etc/php-parser.conf
   resources:
     limits:
+      cpu: "100m"
       memory: "100Mi"
     requests:
       cpu: "10m"
@@ -351,6 +353,7 @@ scheduler:
   # -- Scheduler container resources.
   resources:
     limits:
+      cpu: 500m
       memory: 500Mi
     requests:
       cpu: 250m
@@ -430,6 +433,7 @@ nightwatch:
     pullPolicy: Always
   resources:
     limits:
+      cpu: "100m"
       memory: "128Mi"
     requests:
       cpu: "50m"
