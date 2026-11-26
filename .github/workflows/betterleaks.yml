@@ -13,15 +13,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       # betterleaks v2.0.0-rc.9; v2 has no stable image yet.
-      # Scans every file in the checkout, not just what the PR changed, so a
-      # secret already on the default branch fails every PR until it is removed.
+      # Scans the full git history, not just what the PR changed, so a secret
+      # already on the default branch fails every PR until it is removed.
       - name: Scan the codebase
         id: scan
         run: |
           docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/repo" -w /repo \
-            ghcr.io/betterleaks/betterleaks@sha256:4258956e745465a9a0a8b71157d30ae9492d58a683934a69e432616f7f166daf fs . --redact --output betterleaks-report.json
+            ghcr.io/betterleaks/betterleaks@sha256:4258956e745465a9a0a8b71157d30ae9492d58a683934a69e432616f7f166daf git . --redact --output betterleaks-report.json
 
       - name: Build findings report
         if: always() && hashFiles('betterleaks-report.json') != ''
