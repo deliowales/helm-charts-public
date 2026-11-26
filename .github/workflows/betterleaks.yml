@@ -8,4 +8,4 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: deliowales/reusable-workflows/.github/workflows/betterleaks.yml@v4.5.0
+    uses: deliowales/reusable-workflows/.github/workflows/betterleaks.yml@v4
