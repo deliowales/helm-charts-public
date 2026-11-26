@@ -26,8 +26,6 @@ jobs:
           echo "${BETTERLEAKS_SHA256}  ${archive}" | sha256sum -c -
           tar -xzf "$archive" betterleaks
 
-      # Only the PR's own commits, so old history doesn't fail new PRs
-      - name: Scan PR commits
+      - name: Scan repo
         run: |
-          ./betterleaks git . --redact --verbose \
-            --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          ./betterleaks git . --redact --verbose
