@@ -1,31 +1,53 @@
-name: Secret Scan
+name: Betterleaks
+
 on:
   pull_request:
-
-permissions:
-  contents: read
 
 jobs:
   betterleaks:
     runs-on: ubuntu-latest
-    env:
-      BETTERLEAKS_VERSION: 1.10.1
-      BETTERLEAKS_SHA256: c174b42d7aa60caf58c0c3e555c0e4bed01fe6b0d99a412bce777b5af4ce913e
+    name: Betterleaks
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # betterleaks v2.0.0-rc.9; v2 has no stable image yet.
+      # Scans every file in the checkout, not just what the PR changed, so a
+      # secret already on the default branch fails every PR until it is removed.
+      - name: Scan the codebase
+        id: scan
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/repo" -w /repo \
+            ghcr.io/betterleaks/betterleaks@sha256:4258956e745465a9a0a8b71157d30ae9492d58a683934a69e432616f7f166daf fs . --redact --output betterleaks-report.json
+
+      - name: Build findings report
+        if: always() && hashFiles('betterleaks-report.json') != ''
+        env:
+          SCAN_OUTCOME: ${{ steps.scan.outcome }}
+        run: |
+          if [ "$SCAN_OUTCOME" = "success" ]; then
+            echo "## 🔑 Betterleaks — all clear ✅" > report.md
+          else
+            {
+              echo "## 🔑 Betterleaks — secrets found ❌"
+              echo ""
+              echo "| Rule | File | Line |"
+              echo "|---|---|---|"
+              jq -r '.findings[] | "| \(.rule_id) | \(.location.path) | \(.location.start_line) |"' betterleaks-report.json
+              echo ""
+              echo "Remove the secret from the codebase and rotate it. Deleting it does not remove it from git history."
+            } > report.md
+          fi
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment on PR
+        if: always() && github.event_name == 'pull_request' && hashFiles('report.md') != ''
+        continue-on-error: true
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Install Betterleaks
-        run: |
-          archive="betterleaks_${BETTERLEAKS_VERSION}_linux_x64.tar.gz"
-          curl -sSfL -o "$archive" \
-            "https://github.com/betterleaks/betterleaks/releases/download/v${BETTERLEAKS_VERSION}/${archive}"
-          echo "${BETTERLEAKS_SHA256}  ${archive}" | sha256sum -c -
-          tar -xzf "$archive" betterleaks
-
-      - name: Scan repo
-        run: |
-          ./betterleaks git . --redact --verbose
+          header: betterleaks
+          path: report.md
+          only_update: ${{ steps.scan.outcome == 'success' }}
