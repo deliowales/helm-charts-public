@@ -1,0 +1,33 @@
+name: Secret Scan
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  betterleaks:
+    runs-on: ubuntu-latest
+    env:
+      BETTERLEAKS_VERSION: 1.10.1
+      BETTERLEAKS_SHA256: c174b42d7aa60caf58c0c3e555c0e4bed01fe6b0d99a412bce777b5af4ce913e
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install Betterleaks
+        run: |
+          archive="betterleaks_${BETTERLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL -o "$archive" \
+            "https://github.com/betterleaks/betterleaks/releases/download/v${BETTERLEAKS_VERSION}/${archive}"
+          echo "${BETTERLEAKS_SHA256}  ${archive}" | sha256sum -c -
+          tar -xzf "$archive" betterleaks
+
+      # Only the PR's own commits, so old history doesn't fail new PRs
+      - name: Scan PR commits
+        run: |
+          ./betterleaks git . --redact --verbose \
+            --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
